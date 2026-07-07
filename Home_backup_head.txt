@@ -1,0 +1,392 @@
+import React, { useEffect, useState, useRef } from 'react';
+-import {
+-  StyleSheet,
+-  View,
+-  Text,
+-  Pressable,
+-  Alert,
+-  Linking,
+-  Platform,
+-  Modal,
+-  Animated,
+-  TouchableOpacity,
+-  ScrollView,
+-  useWindowDimensions,
+-  TextInput,
+-  ActivityIndicator,
+-  KeyboardAvoidingView,
+-} from 'react-native';
+-import { Ionicons } from '@expo/vector-icons';
+-import * as Location from 'expo-location';
+-import * as Notifications from 'expo-notifications';
+-import AsyncStorage from '@react-native-async-storage/async-storage';
+-import { Coordinates, PrayerTimes, CalculationMethod, Madhab, SunnahTimes, HighLatitudeRule } from 'adhan';
+-import Header from '../components/Header';
+-import ThemedView from '../components/ThemedView';
+-import Colors from '../constants/Colors';
+-import { Audio } from 'expo-av';
+-import useAppTranslation from '../hooks/useAppTranslation';
+-import { useNavigationContext } from '../components/NavigationContext';
+-import dateTranslations from '../constants/dateTranslations';
+-import { scaleFontSize, moderateScale } from '../utils/responsive';
+-import { getHijriForPrayerTimes } from '../utils/hijriDate';
+-import LearnModal from '../components/LearnModal';
+-import QiblahModal from '../components/QiblahModal';
+-import CalculationMethodModal from '../components/CalculationMethodModal';
+-import PrayerOffsetsModal from '../components/PrayerOffsetsModal';
+-import DailyInsightModal from '../components/DailyInsightModal';
+-import usePremium from '../hooks/usePremium';
+-import {
+-  detectCalculationMethod,
+-  getMethodDisplayName,
+-  CALCULATION_METHODS,
+-} from '../utils/calculationMethodDetector';
+-import { StatusBar } from 'expo-status-bar';
+-
+-// ─── STORAGE KEYS ───────────────────────────────────────────────
+-const COORDS_KEY = '@home:coords';
+-const NOTIF_KEY = '@home:notifications';
+-const CALCULATION_METHOD_KEY = '@prayer:calculationMethod';
+-const OFFSETS_KEY = '@prayer:offsets';
+-
+-// ─── SOUND FILES ────────────────────────────────────────────────
+-const sounds = {
+-  Fajr: require('../../assets/sounds/fajr.mp3'),
+-  Sunrise: require('../../assets/sounds/beep.mp3'),
+-  default: require('../../assets/sounds/regular.mp3'),
+-};
+-
+-// ─── NOTIFICATIONS HANDLER ──────────────────────────────────────
+-Notifications.setNotificationHandler({
+-  handleNotification: async () => ({
+-    shouldShowAlert: true,
+-    shouldPlaySound: false,
+-    shouldSetBadge: false,
+-  }),
+-});
+-
+-// ─── HELPERS ────────────────────────────────────────────────────
+-const fmt = (date) =>
+-  `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+-
+-const calculatePrayerTimes = (latitude, longitude, date = new Date(), method = 'MuslimWorldLeague', offsets = {}) => {
+-  const coords = new Coordinates(latitude, longitude);
+-
+-  // Select the appropriate calculation method
+-  let params;
+-  switch (method) {
+-    case 'UmmAlQura':
+-      params = CalculationMethod.UmmAlQura();
+-      break;
+-    case 'Karachi':
+-      params = CalculationMethod.Karachi();
+-      break;
+-    case 'NorthAmerica':
+-      params = CalculationMethod.NorthAmerica();
+-      break;
+-    case 'MuslimWorldLeague':
+-    default:
+-      params = CalculationMethod.MuslimWorldLeague();
+-      break;
+-  }
+-
+-  params.madhab = Madhab.Shafi;
+-  params.highLatitudeRule = HighLatitudeRule.TwilightAngle;
+-
+-  params.adjustments.fajr = offsets.Fajr || 0;
+-  params.adjustments.sunrise = offsets.Sunrise || 0;
+-  params.adjustments.dhuhr = offsets.Dhuhr || 0;
+-  params.adjustments.asr = offsets.Asr || 0;
+-  params.adjustments.maghrib = offsets.Maghrib || 0;
+-  params.adjustments.isha = offsets.Isha || 0;
+-
+-  const pt = new PrayerTimes(coords, date, params);
+-  const sunnah = new SunnahTimes(pt);
+-
+-  const { HijriDay: hijriDay, HijriMonth: hijriMonth, HijriYear: hijriYear } = getHijriForPrayerTimes(date);
+-
+-  return {
+-    Fajr: fmt(pt.fajr), Sunrise: fmt(pt.sunrise), Dhuhr: fmt(pt.dhuhr),
+-    Asr: fmt(pt.asr), Maghrib: fmt(pt.maghrib), Isha: fmt(pt.isha),
+-    Midnight: fmt(sunnah.middleOfTheNight),
+-    Qiyam: fmt(sunnah.lastThirdOfTheNight),
+-    HijriDay: hijriDay, HijriMonth: hijriMonth, HijriYear: hijriYear,
+-    _raw: pt,
+-  };
+-};
+-
+-// ─── MAIN COMPONENT ─────────────────────────────────────────────
+-const Home = () => {
+-  const { colorScheme: scheme, triggerPrayerAlert, dismissPrayerAlert, registerAthanControl } =
+-    useNavigationContext();
+-  const theme = scheme === 'dark' ? Colors.dark : Colors.light;
+-  const { t, language } = useAppTranslation();
+-  const { width: screenWidth } = useWindowDimensions();
+-  const isCompactHero = screenWidth <= 380;
+-
+-  // ── State ──────────────────────────────────────────────────────
+-  const [prayerTimes, setPrayerTimes] = useState({
+-    Fajr: '--', Sunrise: '--', Dhuhr: '--', Asr: '--',
+-    Maghrib: '--', Isha: '--', Midnight: '--', Qiyam: '--',
+-    HijriDay: '--', HijriMonth: '--', HijriYear: '--',
+-  });
+-  const [userCity, setUserCity] = useState('');
+-  const [locationGranted, setLocationGranted] = useState(false);
+-  const [loadingLocation, setLoadingLocation] = useState(false);
+-  const [nextPrayer, setNextPrayer] = useState({ name: '', time: '' });
+-  const [currentPrayer, setCurrentPrayer] = useState({ name: '', time: '' });
+-  const [countdown, setCountdown] = useState('--:--:--');
+-  const [gregorianDate, setGregorianDate] = useState('');
+-  const [locationModal, setLocationModal] = useState(false);
+-  const [showChangeLocation, setShowChangeLocation] = useState(false);
+-  const [citySearch, setCitySearch] = useState('');
+-  const [searchResults, setSearchResults] = useState([]);
+-  const [searching, setSearching] = useState(false);
+-  const [showQiblahModal, setShowQiblahModal] = useState(false);
+-  const [showLearnModal, setShowLearnModal] = useState(false);
+-  const [calculationMethod, setCalculationMethod] = useState('MuslimWorldLeague');
+-  const [showMethodModal, setShowMethodModal] = useState(false);
+-  const [dailyInsightModalVisible, setDailyInsightModalVisible] = useState(false);
+-  const [notifications, setNotifications] = useState({
+-    Fajr: true, Sunrise: true, Dhuhr: true,
+-    Asr: true, Maghrib: true, Isha: true, Midnight: false,
+-  });
+-  const [prayerOffsets, setPrayerOffsets] = useState({ Fajr: 0, Sunrise: 0, Dhuhr: 0, Asr: 0, Maghrib: 0, Isha: 0 });
+-  const [showOffsetsModal, setShowOffsetsModal] = useState(false);
+-
+-  const { requirePremium, isPremium } = usePremium();
+-  const [showFlashHint, setShowFlashHint] = useState(false);
+-  const prevIsPremiumRef = useRef(null);
+-
+-  // Detect first-ever premium unlock and show flash hint once
+-  useEffect(() => {
+-    if (prevIsPremiumRef.current === false && isPremium === true) {
+-      // Just became premium — show hint if never shown before
+-      AsyncStorage.getItem('@app:flashHintShown').then(val => {
+-        if (!val) {
+-          setShowFlashHint(true);
+-          AsyncStorage.setItem('@app:flashHintShown', '1').catch(() => { });
+-          // Auto dismiss after 5 seconds
+-          setTimeout(() => setShowFlashHint(false), 5000);
+-        }
+-      }).catch(() => { });
+-    }
+-    prevIsPremiumRef.current = isPremium;
+-  }, [isPremium]);
+-
+-  const handleFlashPress = () => {
+-    setShowFlashHint(false);
+-    requirePremium(() => {
+-      setDailyInsightModalVisible(true);
+-    });
+-  };
+-
+-  const soundRef = useRef(null);
+-  const scrollY = useRef(new Animated.Value(0)).current;
+-  const coordsRef = useRef(null);
+-  const searchTimer = useRef(null);
+-
+-  const hijriCardOpacity = scrollY.interpolate({ inputRange: [0, 100], outputRange: [0, 1], extrapolate: 'clamp' });
+-
+-  // ── Gregorian date ─────────────────────────────────────────────
+-  const updateGregorianDate = () => {
+-    const lang = dateTranslations[language] || dateTranslations.english;
+-    const now = new Date();
+-    setGregorianDate(
+-      `${lang.days[now.getDay()]}, ${now.getDate()} ${lang.months[now.getMonth()]} ${now.getFullYear()}`
+-    );
+-  };
+-
+-  // ── Apply coords + persist + recalculate ──────────────────────
+-  const applyCoords = async (latitude, longitude, city, method = null) => {
+-    coordsRef.current = { latitude, longitude };
+-    setUserCity(city || '');
+-    setLocationGranted(true);
+-
+-    // Use provided method or current state
+-    const activeMethod = method || calculationMethod;
+-    setPrayerTimes(calculatePrayerTimes(latitude, longitude, new Date(), activeMethod, prayerOffsets));
+-
+-    await AsyncStorage.setItem(COORDS_KEY, JSON.stringify({ latitude, longitude, city }));
+-  };
+-
+-  // ── Reverse geocode helper ─────────────────────────────────────
+-  const getCityFromCoords = async (lat, lon) => {
+-    try {
+-      const results = await Location.reverseGeocodeAsync({ latitude: lat, longitude: lon });
+-      if (results?.length > 0) {
+-        const r = results[0];
+-        return r.city || r.district || r.subregion || r.region || r.country || r.name || '';
+-      }
+-    } catch { }
+-    return '';
+-  };
+-
+-  // ── Restore stored coords (instant, offline) ──────────────────
+-  const recalculateFromStoredCoords = async () => {
+-    try {
+-      const raw = await AsyncStorage.getItem(COORDS_KEY);
+-      if (!raw) return false;
+-      const parsed = JSON.parse(raw);
+-      const lat = parseFloat(parsed.latitude);
+-      const lon = parseFloat(parsed.longitude);
+-      const validLat = Number.isFinite(lat) && lat >= -90 && lat <= 90;
+-      const validLon = Number.isFinite(lon) && lon >= -180 && lon <= 180;
+-      if (!validLat || !validLon) { await AsyncStorage.removeItem(COORDS_KEY); return false; }
+-      coordsRef.current = { latitude: lat, longitude: lon };
+-      setUserCity(parsed.city || '');
+-      setLocationGranted(true);
+-
+-      let savedMethod = calculationMethod;
+-      try {
+-        const storedMethod = await AsyncStorage.getItem(CALCULATION_METHOD_KEY);
+-        if (storedMethod) savedMethod = storedMethod;
+-      } catch (e) { }
+-
+-      let savedOffsets = prayerOffsets;
+-      try {
+-        const storedOffsets = await AsyncStorage.getItem(OFFSETS_KEY);
+-        if (storedOffsets) {
+-          savedOffsets = JSON.parse(storedOffsets);
+-          setPrayerOffsets(savedOffsets);
+-        }
+-      } catch (e) { }
+-
+-      setPrayerTimes(calculatePrayerTimes(lat, lon, new Date(), savedMethod, savedOffsets));
+-      return true;
+-    } catch { return false; }
+-  };
+-
+-  // ── GPS: get fresh location ────────────────────────────────────
+-  // silent=true → runs in background, no spinners or alerts.
+-  // Used on mount to fix the "returned from travel" bug — always updates
+-  // even when cached coords exist.
+-  const handleSaveOffsets = async (newOffsets) => {
+-    setPrayerOffsets(newOffsets);
+-    try {
+-      await AsyncStorage.setItem(OFFSETS_KEY, JSON.stringify(newOffsets));
+-      // Re-calculate with new offsets immediately
++const getUserLocationAndCalculate = async ({ silent = false } = {}) => {
++  if (!silent) setLoadingLocation(true);
++  try {
++    let permission = await Location.getForegroundPermissionsAsync();
++    if (permission.status !== 'granted' && permission.canAskAgain) {
++      permission = await Location.requestForegroundPermissionsAsync();
++    }
++    if (permission.status !== 'granted') {
++      if (!silent) {
++        setLocationGranted(false);
++        Alert.alert(
++          t('home.permissionRequired'),
++          t('home.locationNeeded'),
++          permission.canAskAgain
++            ? [{ text: t('home.tryAgain'), onPress: () => getUserLocationAndCalculate() }]
++            : [
++              { text: t('common.cancel'), style: 'cancel' },
++              { text: t('home.openSettings'), onPress: () => Linking.openSettings() },
++            ]
++        );
++      }
++      return;
++    }
++
++    const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
++    const { latitude, longitude } = loc.coords;
++    const city = await getCityFromCoords(latitude, longitude);
++    await applyCoords(latitude, longitude, city);
++  } catch (err) {
++    console.log('Location error:', err);
++    if (!silent) Alert.alert(t('home.errorTitle'), t('home.locationErrorMessage'));
++  } finally {
++    if (!silent) setLoadingLocation(false);
++  }
++};
++
++// ── City search by name ────────────────────────────────────────
++const handleCitySearch = (text) => {
++  setCitySearch(text);
++  if (searchTimer.current) clearTimeout(searchTimer.current);
++  if (!text.trim()) { setSearchResults([]); return; }
++
++  searchTimer.current = setTimeout(async () => {
++    setSearching(true);
++    try {
++      const results = await Location.geocodeAsync(text);
++      const enriched = await Promise.all(
++        results.slice(0, 6).map(async (r) => {
++          const city = await getCityFromCoords(r.latitude, r.longitude);
++          return { latitude: r.latitude, longitude: r.longitude, city: city || text };
++        })
++      );
++      // Deduplicate
++      const seen = new Set();
++      setSearchResults(
++        enriched.filter(r => { if (seen.has(r.city)) return false; seen.add(r.city); return true; })
++      );
++    } catch {
++      setSearchResults([]);
++    } finally {
++      setSearching(false);
++    }
++  }, 600);
++};
++
++// ── Select city from results ───────────────────────────────────
++const handleSelectCity = async ({ latitude, longitude, city }) => {
++  setShowChangeLocation(false);
++  setCitySearch('');
++  setSearchResults([]);
++  setLoadingLocation(true);
++  try {
++    await applyCoords(latitude, longitude, city);
++  } finally {
++    setLoadingLocation(false);
++  }
++};
++
++// ── Tap on location label → open change-location sheet ────────
++const handleLocationTap = () => {
++  if (loadingLocation) return;
++  setShowChangeLocation(true);
++};
++
++const closeChangeLocation = () => {
++  setShowChangeLocation(false);
++  setCitySearch('');
++  setSearchResults([]);
++};
++
++// ── Athan ──────────────────────────────────────────────────────
++const playAthan = async (prayerName) => {
++  try {
++    if (soundRef.current) {
++      await soundRef.current.stopAsync();
++      await soundRef.current.unloadAsync();
++      soundRef.current = null;
++    }
++    const { sound } = await Audio.Sound.createAsync(sounds[prayerName] || sounds.default);
++    soundRef.current = sound;
++    await sound.playAsync();
++  } catch (err) { console.log('Athan error:', err); }
++};
++
++const stopAthan = async () => {
++  try {
++    if (soundRef.current) {
++      await soundRef.current.stopAsync();
++      await soundRef.current.unloadAsync();
++      soundRef.current = null;
++    }
++  } catch { }
++  dismissPrayerAlert();
++};
++
++useEffect(() => {
++  registerAthanControl(stopAthan);
++  return () => registerAthanControl(null);
++}, [registerAthanControl]);
++
++// ── Notifications ──────────────────────────────────────────────
++const registerForNotifications = async () => {
++  let perm = await Notifications.getPermissionsAsync();
++  if (!perm.granted) perm = await Notifications.requestPermissionsAsync
