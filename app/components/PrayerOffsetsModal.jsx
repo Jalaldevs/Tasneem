@@ -32,6 +32,10 @@ const PrayerOffsetsModal = ({ visible, onClose, theme, offsets, onSave }) => {
     setLocalOffsets((prev) => ({ ...prev, [prayer]: (prev[prayer] || 0) - 1 }));
   };
 
+  const handleReset = () => {
+    setLocalOffsets({});
+  };
+
   const handleSave = () => {
     onSave(localOffsets);
     onClose();
@@ -103,8 +107,11 @@ const PrayerOffsetsModal = ({ visible, onClose, theme, offsets, onSave }) => {
             })}
           </ScrollView>
 
-          {/* Save Button */}
+          {/* Save & Reset Buttons */}
           <View style={[styles.footer, { borderTopColor: isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.08)' }]}>
+            <TouchableOpacity style={[styles.resetButton, { backgroundColor: isDark ? '#374151' : '#f3f4f6' }]} onPress={handleReset}>
+              <Text style={[styles.resetButtonText, { color: theme.text }]}>{t('prayerOffsets.reset', 'Reset')}</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
               <Text style={styles.saveButtonText}>{t('prayerOffsets.save', 'Save Changes')}</Text>
             </TouchableOpacity>
@@ -195,12 +202,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: ms(20),
     paddingVertical: ms(16),
     borderTopWidth: 1,
+    flexDirection: 'row',
+    gap: ms(12),
+  },
+  resetButton: {
+    borderRadius: ms(12),
+    paddingVertical: ms(14),
+    paddingHorizontal: ms(24),
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  resetButtonText: {
+    fontSize: scaleFontSize(16),
+    fontWeight: '600',
   },
   saveButton: {
+    flex: 1,
     backgroundColor: '#1b83de',
     borderRadius: ms(12),
     paddingVertical: ms(14),
     alignItems: 'center',
+    justifyContent: 'center',
   },
   saveButtonText: {
     color: '#ffffff',
