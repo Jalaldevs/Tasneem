@@ -41,14 +41,13 @@ const QiblahCompassContent = ({ t, isDark }) => {
   return (
     <View style={styles.compassWrapper}>
 
-
       {/* Compass Graphic */}
       <View style={[
         styles.compassGraphicContainer,
-        isDark && { 
-          backgroundColor: 'rgba(255, 255, 255, 0.92)', 
-          borderRadius: 155, 
-          width: 310, 
+        isDark && {
+          backgroundColor: 'rgba(255, 255, 255, 0.92)',
+          borderRadius: 155,
+          width: 310,
           height: 310,
           shadowColor: '#ffffff',
           shadowOffset: { width: 0, height: 0 },
