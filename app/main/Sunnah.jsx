@@ -237,12 +237,16 @@ export default function Sunnah() {
         const data = bundledGetter();
         if (data && typeof data === 'object' && data.hadiths) return data;
       }
-      // Fallback to the async chain (external/downloaded files)
+      // Fallback to the async chain (SQLite DB — may not be ready on first launch)
       const araData = await readOfflineSunnahEdition(editionKey);
-      if (!araData) throw new Error(`Arabic data for ${selectedBook} not found in bundled assets`);
+      // Throw so React Query retries — the DB may not be initialized yet
+      if (!araData) throw new Error(`Arabic data for ${selectedBook} not available yet — will retry`);
       return araData;
     },
     staleTime: 1000 * 60 * 10,
+    retry: 3,
+    retryDelay: (attempt) => Math.min(1000 * (attempt + 1), 3000),
+    refetchOnMount: true,
   });
 
   useEffect(() => { setLoading(arabicBookQuery.isLoading && !hasData); }, [arabicBookQuery.isLoading, hasData]);

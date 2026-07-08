@@ -3,6 +3,7 @@ const english = {
     title: "Adjust Prayer Times",
     infoText: "Add or subtract minutes manually",
     save: "Save",
+    reset: "Reset",
   },
   privacyModal: {
     title: "Privacy Policy",
@@ -672,6 +673,7 @@ const arabic = {
     title: "تعديل أوقات الصلاة",
     infoText: "إضافة أو طرح دقائق يدوياً",
     save: "حفظ",
+    reset: "إعادة تعيين",
   },
   privacyModal: {
     title: "سياسة الخصوصية",
@@ -1328,6 +1330,7 @@ const chinese = {
     title: "调整祈祷时间",
     infoText: "手动添加或减去分钟",
     save: "保存",
+    reset: "重置",
   },
   privacyModal: {
     title: "隐私政策",
@@ -1964,6 +1967,7 @@ const hindi = {
     title: "प्रार्थना का समय समायोजित करें",
     infoText: "मैन्युअल रूप से मिनट जोड़ें या घटाएं",
     save: "सहेजें",
+    reset: "रीसेट",
   },
   privacyModal: {
     title: "गोपनीयता नीति",
@@ -2625,6 +2629,7 @@ const spanish = {
     title: "Ajustar Tiempos de Oración",
     infoText: "Agrega o resta minutos manualmente",
     save: "Guardar",
+    reset: "Restablecer",
   },
   privacyModal: {
     title: "Política de Privacidad",
@@ -3295,6 +3300,7 @@ const french = {
     title: "Ajuster les heures de prière",
     infoText: "Ajouter ou soustraire des minutes manuellement",
     save: "Enregistrer",
+    reset: "Réinitialiser",
   },
   privacyModal: {
     title: "Politique de Confidentialité",
@@ -3970,6 +3976,7 @@ const bengali = {
     title: "নামাজের সময় সামঞ্জস্য করুন",
     infoText: "ম্যানুয়ালি মিনিট যোগ বা বিয়োগ করুন",
     save: "সংরক্ষণ করুন",
+    reset: "রিসেট করুন",
   },
   privacyModal: {
     title: "গোপনীয়তা নীতি",
@@ -4634,6 +4641,7 @@ const portuguese = {
     title: "Ajustar Horários de Oração",
     infoText: "Adicione ou subtraia minutos manualmente",
     save: "Salvar",
+    reset: "Redefinir",
   },
   privacyModal: {
     title: "Política de Privacidade",
@@ -5304,6 +5312,7 @@ const russian = {
     title: "Корректировка времени молитвы",
     infoText: "Вручную добавьте или убавьте минуты",
     save: "Сохранить",
+    reset: "Сбросить",
   },
   privacyModal: {
     title: "Политика конфиденциальности",
@@ -5972,6 +5981,7 @@ const urdu = {
     title: "نماز کے اوقات کو ایڈجسٹ کریں",
     infoText: "دستی طور پر منٹ شامل کریں یا کم کریں",
     save: "محفوظ کریں",
+    reset: "ری سیٹ کریں",
   },
   privacyModal: {
     title: "پالیسی",
@@ -6623,6 +6633,7 @@ const german = {
     title: "Gebetszeiten anpassen",
     infoText: "Minuten manuell hinzufügen oder abziehen",
     save: "Speichern",
+    reset: "Zurücksetzen",
   },
   privacyModal: {
     title: "Datenschutzerklärung",
@@ -7299,6 +7310,7 @@ const japanese = {
     title: "祈りの時間を調整する",
     infoText: "手動で分を追加または減算する",
     save: "保存",
+    reset: "リセット",
   },
   privacyModal: {
     title: "プライバシーポリシー",
@@ -7960,6 +7972,7 @@ const italian = {
     title: "Regola gli orari delle preghiere",
     infoText: "Aggiungi o sottrai minuti manualmente",
     save: "Salva",
+    reset: "Ripristina",
   },
   privacyModal: {
     title: "Informativa sulla privacy",
@@ -8629,6 +8642,7 @@ const korean = {
     title: "기도 시간 조정",
     infoText: "수동으로 분을 더하거나 뺍니다",
     save: "저장",
+    reset: "초기화",
   },
   privacyModal: {
     title: "개인정보 보호정책",
@@ -9279,6 +9293,7 @@ const kurdish = {
     title: "Demên nimêjê rast bikin",
     infoText: "Deqeyan bi destan zêde bikin an kêm bikin",
     save: "Tomar bike",
+    reset: "Sifir bike",
   },
   privacyModal: {
     title: "Siyaseta Taybetî",
@@ -9931,6 +9946,7 @@ const macedonian = {
     title: "Прилагоди ги времињата за молитва",
     infoText: "Рачно додадете или одземете минути",
     save: "Зачувај",
+    reset: "Ресетирај",
   },
   privacyModal: {
     title: "Политика за приватност",
@@ -10594,6 +10610,7 @@ const malay = {
     title: "Laraskan Waktu Solat",
     infoText: "Tambah atau tolak minit secara manual",
     save: "Simpan",
+    reset: "Tetapkan semula",
   },
   privacyModal: {
     title: "Dasar Privasi",
@@ -11252,6 +11269,7 @@ const maltese = {
     title: "Aġġusta l-Ħinijiet tat-Talb",
     infoText: "Żid jew naqqas minuti manwalment",
     save: "Issejvja",
+    reset: "Irrisettja",
   },
   privacyModal: {
     title: "Politika ta' Privatezza",
@@ -11913,6 +11931,7 @@ const nepali = {
     title: "प्रार्थना समय समायोजन गर्नुहोस्",
     infoText: "म्यानुअल रूपमा मिनेट थप्नुहोस् वा घटाउनुहोस्",
     save: "बचत गर्नुहोस्",
+    reset: "रिसेट गर्नुहोस्",
   },
   privacyModal: {
     title: "गोपनीयता नीति",
@@ -12572,6 +12591,7 @@ const norwegian = {
     title: "Juster bønnetider",
     infoText: "Legg til eller trekk fra minutter manuelt",
     save: "Lagre",
+    reset: "Tilbakestill",
   },
   privacyModal: {
     title: "Personvernerklæring",
@@ -13230,6 +13250,7 @@ const persian = {
     title: "تنظیم اوقات شرعی",
     infoText: "دقیقه ها را به صورت دستی اضافه یا کم کنید",
     save: "ذخیره",
+    reset: "بازنشانی",
   },
   privacyModal: {
     title: "حریم خصوصی",
@@ -13886,6 +13907,7 @@ const polish = {
     title: "Dostosuj czasy modlitwy",
     infoText: "Ręcznie dodaj lub odejmij minuty",
     save: "Zapisz",
+    reset: "Resetuj",
   },
   privacyModal: {
     title: "Polityka Prywatności",
@@ -14552,6 +14574,7 @@ const filipino = {
     title: "Ayusin ang Oras ng Panalangin",
     infoText: "Manu-manong magdagdag o magbawas ng mga minuto",
     save: "I-save",
+    reset: "I-reset",
   },
   privacyModal: {
     title: "Patakaran sa Pagkapribado",
@@ -15235,6 +15258,7 @@ const romanian = {
     title: "Ajustați orele de rugăciune",
     infoText: "Adăugați sau scădeți minute manual",
     save: "Salvează",
+    reset: "Resetează",
   },
   privacyModal: {
     title: "Politica de Confidențialitate",
@@ -15895,6 +15919,7 @@ const dutch = {
     title: "Gebedstijden aanpassen",
     infoText: "Handmatig minuten toevoegen of aftrekken",
     save: "Opslaan",
+    reset: "Resetten",
   },
   privacyModal: {
     title: "Privacybeleid",
@@ -16559,6 +16584,7 @@ const slovak = {
     title: "Upravte časy modlitieb",
     infoText: "Ručne pridajte alebo odčítajte minúty",
     save: "Uložiť",
+    reset: "Resetovať",
   },
   privacyModal: {
     title: "Zásady ochrany osobných údajov",
@@ -17218,6 +17244,7 @@ const somali = {
     title: "Hagaaji Waqtiyada Salaadda",
     infoText: "Gacanta ku dar ama ka jar daqiiqado",
     save: "Keydi",
+    reset: "Dib u habeynta",
   },
   privacyModal: {
     title: "Siyaasadda Khaaska ah",
@@ -17883,6 +17910,7 @@ const swedish = {
     title: "Justera bönetider",
     infoText: "Lägg till eller subtrahera minuter manuellt",
     save: "Spara",
+    reset: "Återställ",
   },
   privacyModal: {
     title: "Integritetspolicy",
@@ -18541,6 +18569,7 @@ const turkish = {
     title: "Namaz Vakitlerini Ayarla",
     infoText: "Dakikaları manuel olarak ekle veya çıkar",
     save: "Kaydet",
+    reset: "Sıfırla",
   },
   privacyModal: {
     title: "Gizlilik Politikası",
@@ -19208,6 +19237,7 @@ const uzbek = {
     title: "Namoz vaqtlarini sozlash",
     infoText: "Daqiqalarni qo'lda qo'shing yoki ayiring",
     save: "Saqlash",
+    reset: "Qayta o'rnatish",
   },
   privacyModal: {
     title: "Maxfiylik siyosati",
@@ -19875,6 +19905,7 @@ const finnish = {
     title: "Säädä rukousaikoja",
     infoText: "Lisää tai vähennä minuutteja manuaalisesti",
     save: "Tallenna",
+    reset: "Nollaa",
   },
   privacyModal: {
     title: "Tietosuojakäytäntö",
@@ -20532,6 +20563,7 @@ const tamil = {
     title: "தொழுகை நேரங்களை சரிசெய்யவும்",
     infoText: "கைமுறையாக நிமிடங்களைச் சேர்க்கவும் அல்லது கழிக்கவும்",
     save: "சேமி",
+    reset: "மீட்டமை",
   },
   privacyModal: {
     title: "தனியுரிமைக் கொள்கை",

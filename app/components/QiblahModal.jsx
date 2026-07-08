@@ -40,12 +40,7 @@ const QiblahCompassContent = ({ t, isDark }) => {
 
   return (
     <View style={styles.compassWrapper}>
-      {/* Compass direction indicators */}
-      <View style={styles.directionRow}>
-        <Text style={[styles.directionText, { color: isDark ? '#f1f5f9' : '#2c3e50' }]}>
-          {qiblaData.direction}  {degree}°
-        </Text>
-      </View>
+
 
       {/* Compass Graphic */}
       <View style={[
