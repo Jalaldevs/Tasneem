@@ -482,26 +482,10 @@ const SearchModal = ({ visible, onClose, isNested = false }) => {
     onClose();
   }, [router, onClose, searchLimitReached, isPremium, requirePremium, incrementSearchCount, getSearchCount]);
 
-  // Collection (kitab) search — always free for all users, no limit check
-  const handleCollectionResultPress = useCallback((result) => {
-    router.push({
-      pathname: '/main/Sunnah',
-      params: { book: result.book, collection: result.sectionId },
-    });
-    onClose();
-  }, [router, onClose]);
-
   // ─── RENDERERS ─────────────────────────────
   const renderResult = useCallback(({ item }) => {
     const words = searchValue.split(/\s+/).filter(Boolean);
-    let handlePress;
-    if (item.matchType === 'collection') {
-      handlePress = handleCollectionResultPress;
-    } else if (searchSource === 'quran') {
-      handlePress = handleQuranResultPress;
-    } else {
-      handlePress = handleSunnahResultPress;
-    }
+    const handlePress = searchSource === 'quran' ? handleQuranResultPress : handleSunnahResultPress;
 
     return (
       <ResultCard
@@ -513,7 +497,7 @@ const SearchModal = ({ visible, onClose, isNested = false }) => {
         onPress={handlePress}
       />
     );
-  }, [searchValue, searchSource, theme, colorScheme, handleQuranResultPress, handleSunnahResultPress, handleCollectionResultPress]);
+  }, [searchValue, searchSource, theme, colorScheme, handleQuranResultPress, handleSunnahResultPress]);
 
 
 

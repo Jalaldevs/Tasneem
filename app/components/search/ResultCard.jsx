@@ -160,32 +160,6 @@ const ResultCard = ({
     );
   }
 
-  // Sunnah: collection (kitab/chapter) result
-  if (item.matchType === 'collection') {
-    return (
-      <TouchableOpacity
-        style={[styles.card, { backgroundColor: theme.surface, borderBottomColor: theme.border + '30' }]}
-        onPress={() => onPress(item)}
-        activeOpacity={0.7}
-      >
-        <View style={styles.row}>
-          <View style={[styles.iconWrap, { backgroundColor: isDark ? 'rgba(52,211,153,0.12)' : 'rgba(5,150,105,0.08)' }]}>
-            <Ionicons name="bookmarks-outline" size={ms(18)} color={isDark ? '#34d399' : '#059669'} />
-          </View>
-          <View style={styles.textWrap}>
-            <Text style={[styles.collectionTitle, { color: theme.text }]} numberOfLines={1}>
-              {item.collectionTitle}
-            </Text>
-            <Text style={[styles.subtitle, { color: theme.muted }]} numberOfLines={1}>
-              {item.bookDisplayName}
-            </Text>
-          </View>
-          <Ionicons name="chevron-forward" size={ms(18)} color={theme.muted} />
-        </View>
-      </TouchableOpacity>
-    );
-  }
-
   // Sunnah: reference or full-text
   const gradeTier = item.bestGrade || 'unknown';
   const gradeStyle = getGradePillStyle(gradeTier, scheme);
@@ -262,12 +236,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: scaleFontSize(14),
     fontWeight: '600',
-  },
-  collectionTitle: {
-    fontSize: scaleFontSize(14),
-    fontWeight: '700',
-    writingDirection: 'rtl',
-    textAlign: 'right',
   },
   subtitle: {
     fontSize: scaleFontSize(12),
