@@ -7,6 +7,7 @@ import surahs from '../constants/surahs';
 import { BOOKS, booksFrontEnd } from '../constants/sunnahBooks';
 import { normaliseGrade, getBestGrade } from './gradeUtils';
 import { readOfflineSunnahEdition } from './offlineContent';
+import sunnahCollections from '../constants/sunnahCollectionsTitles';
 
 // ─── STRING NORMALISATION ─────────────────────────────────────────────────────
 
@@ -215,6 +216,126 @@ export const getSynonyms = (term) => {
   const normalized = term.toLowerCase().trim();
   return SYNONYM_MAP[normalized] || [];
 };
+
+// ─── COLLECTION INDEX (Sunnah chapter titles) ─────────────────────────────────
+// Maps common English/transliteration keywords to Arabic chapter-title fragments
+const COLLECTION_TRANSLITERATION = {
+  salah: 'الصلاة', salat: 'الصلاة', prayer: 'الصلاة', prayers: 'الصلاة',
+  taharah: 'الطهارة', tahara: 'الطهارة', purity: 'الطهارة', purification: 'الطهارة',
+  zakat: 'الزكاة', zakah: 'الزكاة', zakaat: 'الزكاة',
+  sawm: 'الصوم', siyam: 'الصوم', fasting: 'الصوم', ramadan: 'رمضان',
+  hajj: 'الحج', pilgrimage: 'الحج', manasik: 'المناسك',
+  jihad: 'الجهاد', jihaad: 'الجهاد',
+  nikah: 'النكاح', marriage: 'النكاح', wedding: 'النكاح',
+  talaq: 'الطلاق', divorce: 'الطلاق',
+  janazah: 'الجنائز', funeral: 'الجنائز', death: 'الجنائز',
+  iman: 'الإيمان', faith: 'الإيمان', belief: 'الإيمان',
+  ilm: 'العلم', knowledge: 'العلم', learning: 'العلم',
+  adab: 'الأدب', manners: 'الأدب', etiquette: 'الأدب',
+  buyu: 'البيوع', trade: 'البيوع', commerce: 'البيوع', business: 'البيوع',
+  hudud: 'الحدود', punishments: 'الحدود',
+  diyat: 'الديات', bloodmoney: 'الديات',
+  quran: 'القرآن', fadhail: 'الفضائل', virtues: 'الفضائل',
+  dua: 'الدعاء', supplication: 'الدعاء', dhikr: 'الذكر',
+  libas: 'اللباس', clothing: 'اللباس',
+  atima: 'الأطعمة', food: 'الأطعمة', eating: 'الأطعمة',
+  ashribah: 'الأشربة', drinks: 'الأشربة', beverages: 'الأشربة',
+  tibb: 'الطب', medicine: 'الطب', medical: 'الطب',
+  fitnah: 'الفتن', trials: 'الفتن', tribulations: 'الفتن',
+  qadar: 'القدر', predestination: 'القدر', decree: 'القدر',
+  riqaq: 'الرقاق', zuhd: 'الزهد', asceticism: 'الزهد',
+  tawbah: 'التوبة', repentance: 'التوبة',
+  ayman: 'الأيمان', oaths: 'الأيمان', vows: 'النذور',
+  sayd: 'الصيد', hunting: 'الصيد',
+  aqiqah: 'العقيقة', adahi: 'الأضاح',
+  wudu: 'الوضوء', ablution: 'الوضوء',
+  ghusl: 'الغسل', bathing: 'الغسل',
+  tayammum: 'التيمم',
+  adhan: 'الأذان', iqamah: 'الإقامة', azan: 'الأذان',
+  jummah: 'الجمعة', jumah: 'الجمعة', friday: 'الجمعة',
+  itikaf: 'الاعتكاف', retreat: 'الاعتكاف',
+  umrah: 'العمرة',
+  witr: 'الوتر',
+  wasaya: 'الوصايا', wills: 'الوصايا', inheritance: 'الفرائض', faraid: 'الفرائض',
+};
+
+// Build a flat array of { book, sectionId, title, titleLower } at module load time
+const buildCollectionIndex = () => {
+  const index = [];
+  for (const [book, data] of Object.entries(sunnahCollections)) {
+    if (!data.sections) continue;
+    for (const [sectionId, title] of Object.entries(data.sections)) {
+      if (!title || sectionId === '0') continue;
+      index.push({
+        book,
+        sectionId,
+        title,
+        titleLower: stripDiacritics(title).toLowerCase(),
+        bookDisplayName: data.name,
+      });
+    }
+  }
+  return index;
+};
+
+const COLLECTION_INDEX = buildCollectionIndex();
+
+/**
+ * Search the collection index for chapters matching the query.
+ * Supports Arabic direct match and English/transliteration keywords.
+ */
+const searchCollections = (rawQuery, minLength = 2) => {
+  const query = rawQuery.trim();
+  if (query.length < minLength) return [];
+
+  const queryLower = query.toLowerCase();
+  const isArabic = /[\u0600-\u06FF]/.test(query);
+  const queryStripped = stripDiacritics(query).toLowerCase();
+
+  const results = [];
+
+  // Check transliteration map first
+  const transKey = Object.keys(COLLECTION_TRANSLITERATION).find(k => queryLower.includes(k) || k.includes(queryLower));
+  const transArabic = transKey ? stripDiacritics(COLLECTION_TRANSLITERATION[transKey]).toLowerCase() : null;
+
+  for (const entry of COLLECTION_INDEX) {
+    let score = 999;
+
+    if (isArabic) {
+      // Arabic query: match against stripped Arabic title
+      if (entry.titleLower.includes(queryStripped)) score = entry.titleLower.startsWith(queryStripped) ? 0 : 1;
+      else if (queryStripped.includes(entry.titleLower) && entry.titleLower.length > 3) score = 2;
+      else {
+        const dist = levenshtein(queryStripped, entry.titleLower);
+        if (dist <= 3) score = dist + 3;
+      }
+    } else {
+      // Latin query: use transliteration mapping
+      if (transArabic && entry.titleLower.includes(transArabic)) {
+        score = entry.titleLower.startsWith(transArabic) ? 0 : 1;
+      } else {
+        // Also try direct matching of any query word against title
+        const queryWords = queryLower.split(/\s+/);
+        for (const qw of queryWords) {
+          if (qw.length < 3) continue;
+          const tk = Object.keys(COLLECTION_TRANSLITERATION).find(k => k === qw || k.startsWith(qw) || qw.startsWith(k));
+          if (tk) {
+            const tkArabic = stripDiacritics(COLLECTION_TRANSLITERATION[tk]).toLowerCase();
+            if (entry.titleLower.includes(tkArabic)) { score = 1; break; }
+          }
+        }
+      }
+    }
+
+    if (score < 999) results.push({ ...entry, score });
+  }
+
+  return results
+    .sort((a, b) => a.score - b.score || a.book.localeCompare(b.book))
+    .slice(0, 15);
+};
+
+export { searchCollections };
 
 // ─── LEVENSHTEIN / FUZZY (ported from Header.jsx) ────────────────────────────
 
@@ -682,6 +803,21 @@ export const parseQuery = (input, source) => {
     }
   }
 
+  // Try collection (chapter/kitab) search
+  if (raw.length >= 2) {
+    const collectionMatches = searchCollections(raw);
+    if (collectionMatches.length > 0) {
+      return {
+        mode: 'collection_search',
+        terms: tokens,
+        verseRef: null,
+        hadithRef: null,
+        rawInput: raw,
+        collectionMatches,
+      };
+    }
+  }
+
   const allTerms = [...tokens];
   tokens.forEach(t => {
     const syns = getSynonyms(t);
@@ -975,6 +1111,19 @@ export const searchSunnahIndex = (index, query, filters = {}) => {
       bookDisplayName: booksFrontEnd[BOOKS.indexOf(book)] || book,
       score: 800,
       matchType: 'book',
+    }));
+  }
+
+  // Collection (chapter/kitab) search results
+  if (mode === 'collection_search' && query.collectionMatches) {
+    return query.collectionMatches.map((match) => ({
+      id: `collection:${match.book}:${match.sectionId}`,
+      book: match.book,
+      sectionId: match.sectionId,
+      collectionTitle: match.title,
+      bookDisplayName: match.bookDisplayName,
+      score: match.score,
+      matchType: 'collection',
     }));
   }
 
