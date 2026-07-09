@@ -501,6 +501,7 @@ const Header = ({
   const [bookmarkItems, setBookmarkItems] = useState([]);
   const [expandedBookmarks, setExpandedBookmarks] = useState(new Set());
   const [bookmarkLoading, setBookmarkLoading] = useState(false);
+
   const [weakSurahsModal, setWeakSurahsModal] = useState(false);
   const [weakSurahsList, setWeakSurahsList] = useState([]);
   // premiumPaywallVisible now managed by usePremium() hook
@@ -1172,30 +1173,40 @@ const Header = ({
     const arabicText = isExpanded ? getBookmarkArabicText(item) : '';
     const arabicFontFamily = isQuran ? 'UthmanicHafs' : 'KFGQPCUthmanTahaNaskh';
 
-    const renderRightActions = () => {
-      return (
-        <TouchableOpacity
-          style={{
-            backgroundColor: isDarkMode ? '#dc2626' : '#ef4444',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: ms(80),
-            borderBottomWidth: 1,
-            borderBottomColor: theme.border + '40',
-          }}
-          onPress={(e) => {
-            e.stopPropagation();
-            handleRequestDeleteBookmark(item);
-          }}
-        >
-          <Ionicons name="trash-outline" size={ms(24)} color="#fff" />
-        </TouchableOpacity>
-      );
-    };
+    const renderRightActions = () => (
+      <TouchableOpacity
+        style={{
+          backgroundColor: isDarkMode ? '#dc2626' : '#ef4444',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: ms(80),
+          borderBottomWidth: 1,
+          borderBottomColor: theme.border + '40',
+        }}
+        onPress={(e) => {
+          e.stopPropagation();
+          handleRequestDeleteBookmark(item);
+        }}
+      >
+        <Ionicons name="trash-outline" size={ms(24)} color="#fff" />
+      </TouchableOpacity>
+    );
 
     return (
       <Swipeable renderRightActions={renderRightActions}>
-        <View style={[styles.bookmarkItem, { borderBottomColor: theme.border + '40', backgroundColor: theme.surface, flexDirection: 'column', alignItems: 'stretch', paddingVertical: ms(12), paddingHorizontal: ms(14) }]}>
+        <Pressable
+          style={[
+            styles.bookmarkItem,
+            {
+              borderBottomColor: theme.border + '40',
+              backgroundColor: theme.surface,
+              flexDirection: 'column',
+              alignItems: 'stretch',
+              paddingVertical: ms(12),
+              paddingHorizontal: ms(14),
+            }
+          ]}
+        >
           <View style={{ width: '100%' }}>
             <View style={styles.bookmarkItemLeft}>
               <View
@@ -1277,7 +1288,7 @@ const Header = ({
               )}
             </View>
           )}
-        </View>
+        </Pressable>
       </Swipeable>
     );
   };
