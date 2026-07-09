@@ -55,7 +55,7 @@ export const isDatabaseReady = async () => {
     const isReady = await AsyncStorage.getItem(DB_READY_KEY);
     if (isReady === 'true') {
       const fileInfo = await FileSystem.getInfoAsync(LOCAL_DB_PATH);
-      if (fileInfo.exists && fileInfo.size > 100 * 1024 * 1024) {
+      if (fileInfo.exists && fileInfo.size > 0) {
         return true;
       }
     }

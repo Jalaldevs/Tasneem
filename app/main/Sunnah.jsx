@@ -114,11 +114,7 @@ export default function Sunnah() {
   const HadithListComponent = HAS_AUTO_LAYOUT_VIEW ? FlashList : FlatList;
 
   const [selectedBook, setSelectedBook] = useState('bukhari');
-  const [metadata, setMetadata] = useState(null);
-  const [hadiths, setHadiths] = useState([]);
-  const [sections, setSections] = useState([]);
   const [selectedSection, setSelectedSection] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [isSelectionHydrated, setIsSelectionHydrated] = useState(false);
   const [referenceModalVisible, setReferenceModalVisible] = useState(false);
   const [referenceModalData, setReferenceModalData] = useState(null);
@@ -138,8 +134,6 @@ export default function Sunnah() {
   useEffect(() => {
     console.log('Sunnah loading state - fontsLoaded:', fontsLoaded, 'fontError:', fontError, 'isSelectionHydrated:', isSelectionHydrated);
   }, [fontsLoaded, fontError, isSelectionHydrated]);
-
-  const hasData = hadiths.length > 0 && metadata !== null && sections.length > 0;
 
   const getBookName = useCallback((bookKey) => {
     const index = BOOKS.indexOf(bookKey);
@@ -237,26 +231,28 @@ export default function Sunnah() {
         const data = bundledGetter();
         if (data && typeof data === 'object' && data.hadiths) return data;
       }
-      // Fallback to the async chain (SQLite DB — may not be ready on first launch)
-      const araData = await readOfflineSunnahEdition(editionKey);
-      // Throw so React Query retries — the DB may not be initialized yet
+      // Fallback to the async chain (SQLite DB)
+      let araData = null;
+      let retries = 0;
+      while (!araData && retries < 15) {
+        araData = await readOfflineSunnahEdition(editionKey);
+        if (araData) break;
+        await new Promise(resolve => setTimeout(resolve, 800));
+        retries++;
+      }
       if (!araData) throw new Error(`Arabic data for ${selectedBook} not available yet — will retry`);
       return araData;
     },
     staleTime: 1000 * 60 * 10,
-    retry: 3,
+    retry: 6,
     retryDelay: (attempt) => Math.min(1000 * (attempt + 1), 3000),
     refetchOnMount: true,
   });
 
-  useEffect(() => { setLoading(arabicBookQuery.isLoading && !hasData); }, [arabicBookQuery.isLoading, hasData]);
-
-  useEffect(() => {
-    if (!arabicBookQuery.data) return;
+  const { metadata, hadiths, sections } = useMemo(() => {
+    if (!arabicBookQuery.data) return { metadata: null, hadiths: [], sections: [] };
     const araData = arabicBookQuery.data;
-    setMetadata(araData.metadata);
-    setHadiths(araData.hadiths);
-
+    
     const preparedSections = Object.entries(araData.metadata.sections)
       .map(([id, title]) => {
         const details = araData.metadata.section_details[id];
@@ -266,10 +262,17 @@ export default function Sunnah() {
       })
       .filter(Boolean);
 
-    setSections(preparedSections);
-    const hasCurrentSection = preparedSections.some((s) => String(s.id) === String(selectedSection));
-    setSelectedSection(hasCurrentSection ? String(selectedSection) : (preparedSections[0]?.id ?? null));
-  }, [arabicBookQuery.data, selectedSection, selectedBook]);
+    return { metadata: araData.metadata, hadiths: araData.hadiths, sections: preparedSections };
+  }, [arabicBookQuery.data, selectedBook, t]);
+
+  useEffect(() => {
+    if (sections.length > 0) {
+      setSelectedSection((prev) => {
+        const hasCurrent = sections.some((s) => String(s.id) === String(prev));
+        return hasCurrent ? String(prev) : String(sections[0].id);
+      });
+    }
+  }, [sections]);
 
   const shareHadith = async ({
     arabicText,
@@ -290,13 +293,15 @@ export default function Sunnah() {
   };
 
   const filteredHadiths = useMemo(() => {
-    if (!metadata || !selectedSection) return [];
+    if (!metadata || !selectedSection || hadiths.length === 0) return [];
     const details = metadata.section_details[String(selectedSection)];
     if (!details) return [];
     return hadiths.filter((h) => {
       const hNum = parseFloat(h.hadithnumber);
       if (isNaN(hNum)) return false;
-      return hNum >= details.hadithnumber_first && hNum <= details.hadithnumber_last;
+      const first = parseFloat(details.hadithnumber_first);
+      const last = parseFloat(details.hadithnumber_last);
+      return hNum >= first && hNum <= last;
     });
   }, [hadiths, metadata, selectedSection]);
 
@@ -532,7 +537,14 @@ export default function Sunnah() {
       </ThemedView>
 
       <ThemedCard intensity={18} style={styles.hadithCard}>
-        {loading ? (
+        {arabicBookQuery.isError ? (
+          <View style={styles.loadingContainer}>
+            <Text style={{color: theme.text, marginBottom: 10, fontSize: scaleFontSize(15)}}>{t('sunnahUI.errorLoadingData') || 'Failed to load data.'}</Text>
+            <TouchableOpacity onPress={() => arabicBookQuery.refetch()} style={[styles.bookButton, { borderColor: theme.primary, backgroundColor: 'transparent' }]}>
+              <Text style={[styles.bookText, { color: theme.primary }]}>{t('sunnahUI.retry') || 'Retry'}</Text>
+            </TouchableOpacity>
+          </View>
+        ) : arabicBookQuery.isLoading || !metadata || sections.length === 0 ? (
           <View style={styles.loadingContainer}><ActivityIndicator size="large" color={theme.primary} /></View>
         ) : (
           <>
