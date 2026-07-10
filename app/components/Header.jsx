@@ -42,6 +42,7 @@ import GetStarted, { LegalModal } from './GetStarted';
 import ShopifyModal from './ShopifyModal';
 import PreferencesModal from './PreferencesModal';
 import usePremium, { USE_MOCK_PREMIUM } from '../hooks/usePremium';
+import NotesModal from './notes/NotesModal';
 import SearchModal from './search/SearchModal';
 import RemindersModal from './Remindersmodal';
 import ZakatModal from './ZakatModal';
@@ -512,6 +513,7 @@ const Header = ({
   const [preferencesModalVisible, setPreferencesModalVisible] = useState(false);
   const [zakatModalVisible, setZakatModalVisible] = useState(false);
   const [calculationMethodModalVisible, setCalculationMethodModalVisible] = useState(false);
+  const [notesModal, setNotesModal] = useState(false);
   const [pendingRemindersCount, setPendingRemindersCount] = useState(0);
   const [tempAthanVisible, setTempAthanVisible] = useState(false);
   const insets = useSafeAreaInsets();
@@ -640,6 +642,7 @@ const Header = ({
     { id: 'tasbeeh', title: t('settings.options.tasbeeh.title'), icon: 'arrow-redo', color: '#06d6a0', iconLibrary: Ionicons, isModal: true, modalType: 'tasbeeh' },
     { id: 'zakat', title: t('settings.options.zakat.title') || 'Zakat Calculator', icon: 'calculator', color: '#10b981', iconLibrary: Ionicons, isModal: true, modalType: 'zakat' },
     { id: 'themeToggle', title: isDarkMode ? (t('settings.options.lightMode.title') || 'Light Mode') : (t('settings.options.darkMode.title') || 'Dark Mode'), icon: isDarkMode ? 'sunny' : 'moon', color: isDarkMode ? '#f59e0b' : '#3b82f6', iconLibrary: Ionicons, isThemeToggle: true },
+    { id: 'notes', title: t('settings.options.notes.title') || 'Notes', icon: 'document-text', color: '#3b82f6', iconLibrary: Ionicons, isModal: true, modalType: 'notes' },
     { id: 'message', title: t('message.title'), icon: 'mail', color: '#6366f1', iconLibrary: Ionicons, isModal: true, modalType: 'message' },
     { id: 'asmaUlHusna', title: 'أسماء الله الحسنى', icon: 'albums', color: '#38BDF8', iconLibrary: Ionicons, isModal: true, modalType: 'asmaUlHusna' },
     { id: 'appSettings', title: t('home.openSettings'), icon: 'settings-sharp', color: '#64748b', iconLibrary: Ionicons, isModal: true, modalType: 'appSettings' },
@@ -658,7 +661,7 @@ const Header = ({
       searchMenu || settingsModal || athkarModal || asmaUlHusnaModal ||
       tasbeehModal || legalModal || messageModal || aboutModal ||
       languageModal || creditsModal || bookmarkModal ||
-      paywallVisible || preferencesModalVisible || zakatModalVisible
+      paywallVisible || preferencesModalVisible || zakatModalVisible || notesModal
     ) {
       stopAudio();
     }
@@ -666,6 +669,7 @@ const Header = ({
     searchMenu, settingsModal, athkarModal, asmaUlHusnaModal, tasbeehModal,
     legalModal, messageModal, aboutModal, languageModal, creditsModal,
     bookmarkModal, paywallVisible, zakatModalVisible, calculationMethodModalVisible,
+    notesModal,
     stopAudio,
   ]);
 
@@ -676,6 +680,7 @@ const Header = ({
       setLegalModal(false); setMessageModal(false);
       setAboutModal(false);
       setLanguageModal(false); setCreditsModal(false); setBookmarkModal(false);
+      setNotesModal(false);
       setRemindersModal(false);
       setPreferencesModalVisible(false);
       setCalculationMethodModalVisible(false);
@@ -1328,6 +1333,7 @@ const Header = ({
         else if (option.modalType === 'message') setMessageModal(true);
         else if (option.modalType === 'about') setAboutModal(true);
         else if (option.modalType === 'language') setLanguageModal(true);
+        else if (option.modalType === 'notes') setNotesModal(true);
         else if (option.modalType === 'credits') setCreditsModal(true);
         else if (option.modalType === 'appSettings') setPreferencesModalVisible(true);
         else if (option.modalType === 'zakat') setZakatModalVisible(true);
@@ -1470,6 +1476,12 @@ const Header = ({
       {preferencesModalVisible && <PreferencesModal
         visible={preferencesModalVisible}
         onClose={() => setPreferencesModalVisible(false)}
+        theme={theme}
+        isDarkMode={isDarkMode}
+      />}
+      {notesModal && <NotesModal
+        visible={notesModal}
+        onClose={() => setNotesModal(false)}
         theme={theme}
         isDarkMode={isDarkMode}
       />}

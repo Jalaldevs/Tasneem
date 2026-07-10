@@ -229,6 +229,9 @@ const english = {
   settings: {
     title: "Menu App",
     options: {
+      notes: {
+        title: "Create Notes",
+      },
       morning: {
         title: "Morning Adhkar",
       },
@@ -902,6 +905,9 @@ const arabic = {
   settings: {
     title: "قائمة التطبيق",
     options: {
+      notes: {
+        title: "إنشاء ملاحظات",
+      },
       morning: {
         title: "أذكار الصباح",
       },
@@ -1559,6 +1565,9 @@ const chinese = {
   settings: {
     title: "菜单应用",
     options: {
+      notes: {
+        title: "创建笔记",
+      },
       morning: {
         title: "晨间祷词",
       },
@@ -2214,6 +2223,9 @@ const hindi = {
   settings: {
     title: "मेनू ऐप",
     options: {
+      notes: {
+        title: "नोट्स बनाएं",
+      },
       morning: {
         title: "सुबह के अज़्कार",
       },
@@ -2884,6 +2896,9 @@ const spanish = {
   settings: {
     title: "App de Menú",
     options: {
+      notes: {
+        title: "Crear Notas",
+      },
       morning: {
         title: "Adhkar de la Mañana",
       },
@@ -3561,6 +3576,9 @@ const french = {
   settings: {
     title: "Application Menu",
     options: {
+      notes: {
+        title: "Créer des notes",
+      },
       morning: {
         title: "Adhkar du matin",
       },
@@ -4240,6 +4258,9 @@ const bengali = {
   settings: {
     title: "মেনু অ্যাপ",
     options: {
+      notes: {
+        title: "নোট তৈরি করুন",
+      },
       morning: {
         title: "সকালের যিকির",
       },
@@ -4912,6 +4933,9 @@ const portuguese = {
   settings: {
     title: "App de Menu",
     options: {
+      notes: {
+        title: "Criar Notas",
+      },
       morning: {
         title: "Adhkar da Manhã",
       },
@@ -5588,6 +5612,9 @@ const russian = {
   settings: {
     title: "Меню приложения",
     options: {
+      notes: {
+        title: "Создать заметки",
+      },
       morning: {
         title: "Утренние азкары",
       },
@@ -6254,6 +6281,9 @@ const urdu = {
   settings: {
     title: "مینو ایپ",
     options: {
+      notes: {
+        title: "نوٹس بنائیں",
+      },
       morning: {
         title: "صبح کے اذکار",
       },
@@ -6919,6 +6949,9 @@ const german = {
   settings: {
     title: "Menü-App",
     options: {
+      notes: {
+        title: "Notizen erstellen",
+      },
       morning: {
         title: "Morgen-Adhkar",
       },
@@ -7600,6 +7633,9 @@ const japanese = {
   settings: {
     title: "メニューアプリ",
     options: {
+      notes: {
+        title: "メモを作成",
+      },
       morning: {
         title: "朝のアズカル",
       },
@@ -8273,6 +8309,9 @@ const italian = {
   settings: {
     title: "App di Menu",
     options: {
+      notes: {
+        title: "Crea Note",
+      },
       morning: {
         title: "Adhkar del mattino",
       },
@@ -8941,6 +8980,9 @@ const korean = {
   settings: {
     title: "메뉴 앱",
     options: {
+      notes: {
+        title: "메모 만들기",
+      },
       morning: {
         title: "아침 아즈카르",
       },
@@ -9592,6 +9634,9 @@ const kurdish = {
   settings: {
     title: "Menu App",
     options: {
+      notes: {
+        title: "Têbînî Biafirîne",
+      },
       morning: {
         title: "Ezkarê Sibehê",
       },
@@ -10261,6 +10306,9 @@ const macedonian = {
   settings: {
     title: "Мени Апликација",
     options: {
+      notes: {
+        title: "Создади белешки",
+      },
       morning: {
         title: "Утрински азкари",
       },
@@ -10926,6 +10974,9 @@ const malay = {
   settings: {
     title: "Apl Menu",
     options: {
+      notes: {
+        title: "Cipta Nota",
+      },
       morning: {
         title: "Zikir Pagi",
       },
@@ -11597,6 +11648,9 @@ const maltese = {
   settings: {
     title: "App tal-Menu",
     options: {
+      notes: {
+        title: "Oħloq Noti",
+      },
       morning: {
         title: "Adhkar ta' Filgħodu",
       },
@@ -12262,6 +12316,9 @@ const nepali = {
   settings: {
     title: "मेनु एप",
     options: {
+      notes: {
+        title: "नोटहरू सिर्जना गर्नुहोस्",
+      },
       morning: {
         title: "बिहानको अज्कार",
       },
@@ -12930,6 +12987,9 @@ const norwegian = {
   settings: {
     title: "Meny App",
     options: {
+      notes: {
+        title: "Opprett notater",
+      },
       morning: {
         title: "Morgen-Adhkar",
       },
@@ -13594,6 +13654,9 @@ const persian = {
   settings: {
     title: "برنامه منو",
     options: {
+      notes: {
+        title: "ایجاد یادداشت",
+      },
       morning: {
         title: "اذکار صبح",
       },
@@ -14262,6 +14325,9 @@ const polish = {
   settings: {
     title: "Aplikacja Menu",
     options: {
+      notes: {
+        title: "Utwórz notatki",
+      },
       morning: {
         title: "Adhkar poranne",
       },
@@ -14937,6 +15003,9 @@ const filipino = {
   settings: {
     title: "Menu App",
     options: {
+      notes: {
+        title: "Lumikha ng Tala",
+      },
       morning: {
         title: "Mga Pagpapaalala sa Umaga",
       },
@@ -15616,6 +15685,9 @@ const romanian = {
   settings: {
     title: "Aplicația Meniu",
     options: {
+      notes: {
+        title: "Creează Notițe",
+      },
       morning: {
         title: "Adhkar de dimineață",
       },
@@ -16287,6 +16359,9 @@ const dutch = {
   settings: {
     title: "Menu App",
     options: {
+      notes: {
+        title: "Notities maken",
+      },
       morning: {
         title: "Ochtend-Adhkar",
       },
@@ -16959,6 +17034,9 @@ const slovak = {
   settings: {
     title: "Aplikácia Menu",
     options: {
+      notes: {
+        title: "Vytvoriť poznámky",
+      },
       morning: {
         title: "Ranné azkary",
       },
@@ -17621,6 +17699,9 @@ const somali = {
   settings: {
     title: "App-ka Menu",
     options: {
+      notes: {
+        title: "Abuur Xusuusin",
+      },
       morning: {
         title: "Adhkaarta subaxa",
       },
@@ -18297,6 +18378,9 @@ const swedish = {
   settings: {
     title: "Meny App",
     options: {
+      notes: {
+        title: "Skapa anteckningar",
+      },
       morning: {
         title: "Morgon-Adhkar",
       },
@@ -18963,6 +19047,9 @@ const turkish = {
   settings: {
     title: "Menü Uygulaması",
     options: {
+      notes: {
+        title: "Not Oluştur",
+      },
       morning: {
         title: "Sabah Zikirleri",
       },
@@ -19637,6 +19724,9 @@ const uzbek = {
   settings: {
     title: "Menyu ilovasi",
     options: {
+      notes: {
+        title: "Eslatma yaratish",
+      },
       morning: {
         title: "Ertalabki zikrlar",
       },
@@ -20307,6 +20397,9 @@ const finnish = {
   settings: {
     title: "Valikko",
     options: {
+      notes: {
+        title: "Luo muistiinpanoja",
+      },
       morning: {
         title: "Aamu-adhkarit",
       },
@@ -20979,6 +21072,9 @@ const tamil = {
   settings: {
     title: "மெனு பயன்பாடு",
     options: {
+      notes: {
+        title: "குறிப்புகளை உருவாக்கு",
+      },
       morning: {
         title: "காலை திக்ருகள்",
       },

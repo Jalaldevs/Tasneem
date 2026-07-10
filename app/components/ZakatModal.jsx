@@ -19,10 +19,9 @@ import * as Notifications from 'expo-notifications';
 import Colors from '../constants/Colors';
 import { useNavigationContext } from './NavigationContext';
 import useAppTranslation from '../hooks/useAppTranslation';
-import ThemedView from './ThemedView';
 import { moderateScale, scaleFontSize } from '../utils/responsive';
 import { LinearGradient } from 'expo-linear-gradient';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import hc from 'hijri-converter';
 
 // Enable LayoutAnimation for Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -32,24 +31,30 @@ if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental
 const MODERATE_FACTOR = 0.35;
 const ms = (size) => moderateScale(size, MODERATE_FACTOR);
 
+const HIJRI_MONTHS = [
+  'Muharram', 'Safar', 'Rabi al-Awwal', 'Rabi al-Thani', 'Jumada al-Awwal', 'Jumada al-Thani',
+  'Rajab', 'Sha\'ban', 'Ramadan', 'Shawwal', 'Dhu al-Qi\'dah', 'Dhu al-Hijjah'
+];
+
 const ZakatModal = ({ visible, onClose }) => {
   const { colorScheme: scheme } = useNavigationContext();
   const theme = { ...(scheme === 'dark' ? Colors.dark : Colors.light), primary: Colors.primary };
   const { t } = useAppTranslation();
 
   const [wealth, setWealth] = useState('');
-  const [reminderDate, setReminderDate] = useState(new Date(Date.now() + 354 * 24 * 60 * 60 * 1000));
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [hijriDate, setHijriDate] = useState({ hd: 1, hm: 1, hy: 1445 });
+  const [showPicker, setShowPicker] = useState(false);
   const [hasSetReminder, setHasSetReminder] = useState(false);
 
-  const minDate = new Date();
-  const maxDate = new Date(minDate.getFullYear() + 1, 11, 31);
-
   useEffect(() => {
-    if (!visible) {
+    if (visible) {
+      // Set to 1 Hijri year from today by default
+      const today = new Date();
+      const currentHijri = hc.toHijri(today.getFullYear(), today.getMonth() + 1, today.getDate());
+      setHijriDate({ hd: currentHijri.hd, hm: currentHijri.hm, hy: currentHijri.hy + 1 });
+    } else {
       setWealth('');
-      setReminderDate(new Date(Date.now() + 354 * 24 * 60 * 60 * 1000));
-      setShowDatePicker(false);
+      setShowPicker(false);
       setHasSetReminder(false);
     }
   }, [visible]);
@@ -58,16 +63,6 @@ const ZakatModal = ({ visible, onClose }) => {
     const amount = parseFloat(wealth);
     if (isNaN(amount) || amount <= 0) return '0.00';
     return (amount * 0.025).toFixed(2);
-  };
-
-  const handleOpenPickerAndroid = () => {
-    setShowDatePicker(true);
-  };
-
-  const handleDateChangeIOS = (event, selectedDate) => {
-    if (selectedDate) {
-      setReminderDate(selectedDate);
-    }
   };
 
   const handleSetReminder = async () => {
@@ -96,6 +91,10 @@ const ZakatModal = ({ visible, onClose }) => {
     }
 
     try {
+      // Convert Hijri back to Gregorian for the notification
+      const gregorian = hc.toGregorian(hijriDate.hy, hijriDate.hm, hijriDate.hd);
+      const reminderDate = new Date(gregorian.gy, gregorian.gm - 1, gregorian.gd, 10, 0, 0); // 10:00 AM
+
       await Notifications.scheduleNotificationAsync({
         content: {
           title: t('zakat.title') || 'Zakat Reminder',
@@ -109,6 +108,7 @@ const ZakatModal = ({ visible, onClose }) => {
       });
 
       setHasSetReminder(true);
+      setShowPicker(false);
 
       Alert.alert(
         t('common.success') || 'Success',
@@ -124,7 +124,72 @@ const ZakatModal = ({ visible, onClose }) => {
   };
 
   const zakatDue = calculateZakat();
-  const categories = t('zakat.categories') || [];
+
+  const adjustHijriDate = (field, amount) => {
+    setHijriDate(prev => {
+      let newDate = { ...prev };
+      if (field === 'hd') {
+        newDate.hd += amount;
+        if (newDate.hd > 30) newDate.hd = 1;
+        if (newDate.hd < 1) newDate.hd = 30;
+      } else if (field === 'hm') {
+        newDate.hm += amount;
+        if (newDate.hm > 12) newDate.hm = 1;
+        if (newDate.hm < 1) newDate.hm = 12;
+      } else if (field === 'hy') {
+        newDate.hy += amount;
+        if (newDate.hy < 1440) newDate.hy = 1440;
+        if (newDate.hy > 1500) newDate.hy = 1500;
+      }
+      return newDate;
+    });
+  };
+
+  const renderHijriSelector = () => {
+    return (
+      <View style={[styles.hijriSelector, { backgroundColor: scheme === 'dark' ? '#374151' : '#ffffff', borderColor: scheme === 'dark' ? '#4b5563' : '#d1d5db' }]}>
+        
+        {/* Day */}
+        <View style={styles.pickerColumn}>
+          <TouchableOpacity onPress={() => adjustHijriDate('hd', 1)} style={styles.arrowBtn}>
+            <Ionicons name="chevron-up" size={ms(24)} color={theme.text} />
+          </TouchableOpacity>
+          <Text style={[styles.pickerText, { color: theme.text }]}>{hijriDate.hd}</Text>
+          <TouchableOpacity onPress={() => adjustHijriDate('hd', -1)} style={styles.arrowBtn}>
+            <Ionicons name="chevron-down" size={ms(24)} color={theme.text} />
+          </TouchableOpacity>
+          <Text style={[styles.pickerLabel, { color: theme.muted }]}>Day</Text>
+        </View>
+
+        {/* Month */}
+        <View style={[styles.pickerColumn, { flex: 1.5 }]}>
+          <TouchableOpacity onPress={() => adjustHijriDate('hm', 1)} style={styles.arrowBtn}>
+            <Ionicons name="chevron-up" size={ms(24)} color={theme.text} />
+          </TouchableOpacity>
+          <Text style={[styles.pickerText, { color: theme.text, fontSize: scaleFontSize(16) }]} numberOfLines={1}>
+            {HIJRI_MONTHS[hijriDate.hm - 1]}
+          </Text>
+          <TouchableOpacity onPress={() => adjustHijriDate('hm', -1)} style={styles.arrowBtn}>
+            <Ionicons name="chevron-down" size={ms(24)} color={theme.text} />
+          </TouchableOpacity>
+          <Text style={[styles.pickerLabel, { color: theme.muted }]}>Month</Text>
+        </View>
+
+        {/* Year */}
+        <View style={styles.pickerColumn}>
+          <TouchableOpacity onPress={() => adjustHijriDate('hy', 1)} style={styles.arrowBtn}>
+            <Ionicons name="chevron-up" size={ms(24)} color={theme.text} />
+          </TouchableOpacity>
+          <Text style={[styles.pickerText, { color: theme.text }]}>{hijriDate.hy}</Text>
+          <TouchableOpacity onPress={() => adjustHijriDate('hy', -1)} style={styles.arrowBtn}>
+            <Ionicons name="chevron-down" size={ms(24)} color={theme.text} />
+          </TouchableOpacity>
+          <Text style={[styles.pickerLabel, { color: theme.muted }]}>Year</Text>
+        </View>
+
+      </View>
+    );
+  };
 
   if (!visible) return null;
 
@@ -148,7 +213,7 @@ const ZakatModal = ({ visible, onClose }) => {
                 <Ionicons name="chevron-down" size={ms(26)} color={theme.primary} />
               </TouchableOpacity>
               <Text style={[styles.title, { color: theme.text }]}>
-                {t('zakat.title')}
+                {t('zakat.title') || 'Zakat Calculator'}
               </Text>
               <View style={styles.backBtn} />
             </View>
@@ -159,7 +224,7 @@ const ZakatModal = ({ visible, onClose }) => {
               showsVerticalScrollIndicator={false}
               keyboardShouldPersistTaps="handled"
             >
-              {/* HERO DASHBOARD: ZAKAT DUE */}
+              {/* HERO DASHBOARD */}
               <LinearGradient
                 colors={[theme.primary, theme.primary + 'CC']}
                 style={styles.heroCard}
@@ -167,7 +232,7 @@ const ZakatModal = ({ visible, onClose }) => {
                 end={{ x: 1, y: 1 }}
               >
                 <Ionicons name="wallet-outline" size={ms(32)} color="#fff" style={styles.heroIcon} />
-                <Text style={styles.heroLabel}>{t('zakat.zakatDue')}</Text>
+                <Text style={styles.heroLabel}>{t('zakat.zakatDue') || 'Zakat Due (2.5%)'}</Text>
                 <Text style={styles.heroAmount}>{zakatDue}</Text>
               </LinearGradient>
 
@@ -200,46 +265,28 @@ const ZakatModal = ({ visible, onClose }) => {
               {/* REMINDER SECTION */}
               <View style={[styles.card, { backgroundColor: scheme === 'dark' ? '#1f2937' : '#f9fafb' }]}>
                 <Text style={[styles.cardTitle, { color: theme.text }]}>
-                  {t('zakat.setReminder')}
+                  {t('zakat.setReminder') || 'Set Hijri Reminder'}
                 </Text>
 
-                {Platform.OS === 'android' ? (
-                  <TouchableOpacity
-                    style={[styles.inputWrapper, { paddingVertical: ms(16), marginBottom: ms(16), backgroundColor: scheme === 'dark' ? '#374151' : '#ffffff', borderColor: scheme === 'dark' ? '#4b5563' : '#d1d5db' }]}
-                    onPress={handleOpenPickerAndroid}
-                  >
-                    <Ionicons name="calendar-outline" size={ms(20)} color={theme.primary} style={{ marginRight: ms(8) }} />
-                    <Text style={{ color: theme.text, fontSize: scaleFontSize(16), fontWeight: '600' }}>
-                      {reminderDate.toLocaleDateString()}
-                    </Text>
-                  </TouchableOpacity>
-                ) : (
-                  <DateTimePicker
-                    value={reminderDate}
-                    mode="date"
-                    display="inline"
-                    minimumDate={minDate}
-                    maximumDate={maxDate}
-                    onChange={handleDateChangeIOS}
-                    themeVariant={scheme}
-                    style={{ marginBottom: ms(16) }}
-                  />
-                )}
+                <TouchableOpacity
+                  style={[
+                    styles.inputWrapper, 
+                    { paddingVertical: ms(16), marginBottom: showPicker ? ms(10) : ms(16), backgroundColor: scheme === 'dark' ? '#374151' : '#ffffff', borderColor: scheme === 'dark' ? '#4b5563' : '#d1d5db' }
+                  ]}
+                  onPress={() => {
+                    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                    setShowPicker(!showPicker);
+                  }}
+                >
+                  <Ionicons name="moon-outline" size={ms(20)} color={theme.primary} style={{ marginRight: ms(8) }} />
+                  <Text style={{ color: theme.text, fontSize: scaleFontSize(16), fontWeight: '600' }}>
+                    {`${hijriDate.hd} ${HIJRI_MONTHS[hijriDate.hm - 1]} ${hijriDate.hy}`}
+                  </Text>
+                  <View style={{ flex: 1 }} />
+                  <Ionicons name={showPicker ? "chevron-up" : "chevron-down"} size={ms(20)} color={theme.muted} />
+                </TouchableOpacity>
 
-                {showDatePicker && Platform.OS === 'android' && (
-                  <DateTimePicker
-                    value={reminderDate}
-                    mode="date"
-                    display="default"
-                    minimumDate={minDate}
-                    maximumDate={maxDate}
-                    onChange={(event, selectedDate) => {
-                      setShowDatePicker(false);
-                      if (event.type === 'dismissed') return;
-                      if (selectedDate) setReminderDate(selectedDate);
-                    }}
-                  />
-                )}
+                {showPicker && renderHijriSelector()}
 
                 <TouchableOpacity
                   style={[styles.reminderButton, { backgroundColor: theme.primary, borderColor: theme.primary, marginBottom: 0 }]}
@@ -260,9 +307,9 @@ const ZakatModal = ({ visible, onClose }) => {
                     {t('zakat.selectedDate') || 'Saved Reminder Date'}
                   </Text>
                   <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Ionicons name="calendar" size={ms(24)} color={theme.primary} style={{ marginRight: ms(10) }} />
+                    <Ionicons name="moon" size={ms(24)} color={theme.primary} style={{ marginRight: ms(10) }} />
                     <Text style={{ color: theme.text, fontSize: scaleFontSize(18), fontWeight: '600' }}>
-                      {reminderDate.toLocaleDateString()}
+                      {`${hijriDate.hd} ${HIJRI_MONTHS[hijriDate.hm - 1]} ${hijriDate.hy}`}
                     </Text>
                   </View>
                 </View>
@@ -276,12 +323,8 @@ const ZakatModal = ({ visible, onClose }) => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-  },
+  safeArea: { flex: 1 },
+  container: { flex: 1 },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -307,9 +350,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     flex: 1,
   },
-  content: {
-    flex: 1,
-  },
+  content: { flex: 1 },
   contentContainer: {
     padding: ms(20),
     paddingBottom: ms(40),
@@ -325,10 +366,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
-  heroIcon: {
-    marginBottom: ms(8),
-    opacity: 0.9,
-  },
+  heroIcon: { marginBottom: ms(8), opacity: 0.9 },
   heroLabel: {
     color: '#fff',
     fontSize: scaleFontSize(16),
@@ -376,7 +414,7 @@ const styles = StyleSheet.create({
     padding: ms(14),
     borderRadius: ms(16),
     borderWidth: 1.5,
-    marginBottom: ms(24),
+    marginTop: ms(16),
     justifyContent: 'center',
   },
   reminderText: {
@@ -384,31 +422,30 @@ const styles = StyleSheet.create({
     fontSize: scaleFontSize(16),
     fontWeight: '600',
   },
-  categoryItem: {
+  hijriSelector: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    justifyContent: 'space-between',
     padding: ms(12),
     borderRadius: ms(12),
-    marginBottom: ms(10),
-    borderWidth: 1,
+    borderWidth: 1.5,
+    marginBottom: ms(16),
   },
-  categoryDot: {
-    width: ms(8),
-    height: ms(8),
-    borderRadius: ms(4),
-    marginTop: ms(5),
-    marginRight: ms(10),
-    flexShrink: 0,
+  pickerColumn: {
+    flex: 1,
+    alignItems: 'center',
   },
-  categoryTitle: {
-    fontSize: scaleFontSize(14),
+  arrowBtn: {
+    padding: ms(6),
+  },
+  pickerText: {
+    fontSize: scaleFontSize(18),
     fontWeight: '700',
-    marginBottom: ms(2),
+    marginVertical: ms(4),
   },
-  categoryDesc: {
-    fontSize: scaleFontSize(13),
-    lineHeight: scaleFontSize(20),
-  },
+  pickerLabel: {
+    fontSize: scaleFontSize(12),
+    marginTop: ms(2),
+  }
 });
 
 export default ZakatModal;
