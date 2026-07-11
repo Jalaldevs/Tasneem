@@ -30,6 +30,10 @@ const useRevenueCatOfferings = () => {
 
   useEffect(() => {
     const fetchOfferings = async () => {
+      if (Platform.OS === 'android') {
+        setLoading(false);
+        return;
+      }
       try {
         const offerings = await Purchases.getOfferings();
         setOfferings(offerings);
