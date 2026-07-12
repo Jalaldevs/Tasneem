@@ -80,7 +80,7 @@ const SearchModal = ({ visible, onClose, isNested = false }) => {
   const { sunnahIndex, isLoading: isSunnahLoading, isReady: isSunnahReady, hasStartedLoading, loadIndex } = useSunnahIndex(language);
 
   // Search limit tracking
-  const DAILY_SEARCH_LIMIT = 6;
+  const DAILY_SEARCH_LIMIT = 5;
   const SEARCH_COUNT_KEY = '@search:daily_count';
   const SEARCH_TIMESTAMP_KEY = '@search:first_search_timestamp';
 

@@ -41,8 +41,7 @@ import { SUNNAH_EDITION_ASSET_MAP } from '../constants/sunnahEditionAssetMap';
 import useAppTranslation from '../hooks/useAppTranslation';
 import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { saveBookmark, getBookmarks, removeBookmark } from '../constants/bookmarks';
-import ReferenceModal from '../components/ReferenceModal';
-import SunnahLanguageModal from '../components/SunnahLanguageModal';
+import ReferenceModal, { SunnahLanguageSheet } from '../components/ReferenceModal';
 import { RTL_LANGS, LANG_LABELS, APP_LANG_TO_SUNNAH } from '../constants/sunnahTranslations';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
@@ -505,9 +504,11 @@ export default function Sunnah() {
               style={styles.iconButton}
               onPress={() => {
                 const translatedText = selectedTranslationLang && selectedTranslationLang !== 'none' ? getTranslatedText(item.hadithnumber) : null;
+                const translationLabel = selectedTranslationLang && selectedTranslationLang !== 'none' ? LANG_LABELS[selectedTranslationLang] || 'Translation' : '';
+                
                 shareHadith({
                   arabicText: cleanHadithText(item.text),
-                  translationText: translatedText,
+                  translationText: translatedText ? `[${translationLabel}]\n${translatedText}` : null,
                   grades: item.grades,
                   bookName: getBookName(selectedBook)
                     .replace(/\s*\([^)]*\)\s*/g, '')
@@ -678,13 +679,18 @@ export default function Sunnah() {
               isDarkMode={scheme === 'dark'}
             />
 
-            {/* ── SunnahLanguageModal ── */}
-            <SunnahLanguageModal
+            {/* ── Translation Selection Modal ── */}
+            <SunnahLanguageSheet
               visible={translationModalVisible}
               onClose={() => setTranslationModalVisible(false)}
-              selectedBook={selectedBook}
-              selectedLanguage={selectedTranslationLang}
-              onSelectLanguage={setSelectedTranslationLang}
+              bookKey={selectedBook}
+              selectedLang={selectedTranslationLang === 'none' ? null : selectedTranslationLang}
+              onSelect={(val) => setSelectedTranslationLang(val || 'none')}
+              isDarkMode={scheme === 'dark'}
+              accentColor="#3b82f6"
+              textColor={theme.text}
+              mutedColor={theme.muted}
+              t={t}
             />
           </>
         )}

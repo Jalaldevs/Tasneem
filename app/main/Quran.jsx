@@ -607,6 +607,11 @@ const Quran = () => {
         quranSurahId={selectedSurah.id}
         quranAyah={referenceModalAyah}
         quranAyahsList={ayahs}
+        // Quran-mode Tafseer Sync props
+        quranIsTafseerExpanded={isTafseerExpanded}
+        quranActiveTafseers={activeTafseers}
+        onQuranSetTafseerExpanded={handleSetTafseerExpanded}
+        onQuranToggleTafseer={handleToggleTafseer}
       />
 
       <TafseerSelectionModal

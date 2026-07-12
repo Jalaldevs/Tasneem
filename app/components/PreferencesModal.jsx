@@ -132,7 +132,7 @@ const PreferencesModal = ({ visible, onClose, theme, isDarkMode }) => {
             {/* Location Toggle */}
             <View style={[styles.preferenceRow, { borderBottomColor: theme.border + '20' }]}>
               <View style={styles.preferenceInfo}>
-                <Ionicons name="location" size={ms(22)} color={theme.dontKnow} style={styles.preferenceIcon} />
+                <Ionicons name="location" size={ms(22)} color="#3b82f6" style={styles.preferenceIcon} />
                 <View style={styles.preferenceTextContainer}>
                   <Text style={[styles.preferenceTitle, { color: theme.text }]}>
                     {t('onboarding.permissions.location.title') || 'Location Services'}
@@ -153,7 +153,7 @@ const PreferencesModal = ({ visible, onClose, theme, isDarkMode }) => {
             {/* Notifications Toggle */}
             <View style={[styles.preferenceRow, { borderBottomColor: theme.border + '20' }]}>
               <View style={styles.preferenceInfo}>
-                <Ionicons name="notifications" size={ms(22)} color={theme.dontKnow} style={styles.preferenceIcon} />
+                <Ionicons name="notifications" size={ms(22)} color="#3b82f6" style={styles.preferenceIcon} />
                 <View style={styles.preferenceTextContainer}>
                   <Text style={[styles.preferenceTitle, { color: theme.text }]}>
                     {t('onboarding.permissions.notifications.title') || 'Push Notifications'}

@@ -6,7 +6,7 @@ import { moderateScale as ms, scaleFontSize } from '../utils/responsive';
 import Colors from '../constants/Colors';
 import { useNavigationContext } from './NavigationContext';
 
-export default function InlineTafseer({ surahId, ayahId, activeTafseers, language }) {
+export default function InlineTafseer({ surahId, ayahId, activeTafseers, language, asCard = false }) {
   const { colorScheme: scheme } = useNavigationContext();
   const theme = Colors[scheme] || Colors.light;
   const isDarkMode = scheme === 'dark';
@@ -70,8 +70,24 @@ export default function InlineTafseer({ surahId, ayahId, activeTafseers, languag
     return null;
   }
 
+  const cardBg = isDarkMode ? 'rgba(30,41,59,0.9)' : 'rgba(255,255,255,0.95)';
+  const cardBorder = isDarkMode ? 'rgba(96,165,250,0.18)' : 'rgba(25,118,210,0.12)';
+
+  if (asCard) {
+    return (
+      <View>
+        {tafseerData.map((td, idx) => (
+          <View key={td.key} style={[styles.cardContainer, { backgroundColor: cardBg, borderColor: cardBorder, shadowOpacity: isDarkMode ? 0.3 : 0.05 }]}>
+            <Text style={[styles.tafseerTitle, { color: '#3b82f6' }]}>{td.name}</Text>
+            <Text style={[styles.tafseerText, { color: theme.text }]}>{td.text}</Text>
+          </View>
+        ))}
+      </View>
+    );
+  }
+
   return (
-    <View style={styles.container}>
+    <View style={styles.defaultContainer}>
       {tafseerData.map((td, idx) => (
         <View key={td.key} style={[styles.tafseerBlock, idx > 0 && { borderTopWidth: 1, borderTopColor: theme.border, paddingTop: ms(12), marginTop: ms(12) }]}>
           <Text style={[styles.tafseerTitle, { color: '#3b82f6' }]}>{td.name}</Text>
@@ -83,11 +99,21 @@ export default function InlineTafseer({ surahId, ayahId, activeTafseers, languag
 }
 
 const styles = StyleSheet.create({
-  container: {
+  defaultContainer: {
     marginTop: ms(12),
     paddingTop: ms(12),
     borderTopWidth: 1,
     borderTopColor: 'rgba(150, 150, 150, 0.2)',
+  },
+  cardContainer: {
+    padding: ms(16),
+    borderRadius: ms(12),
+    borderWidth: 1,
+    marginBottom: ms(14),
+    elevation: 2,
+    shadowColor: '#000',
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
   },
   loadingContainer: {
     marginTop: ms(12),

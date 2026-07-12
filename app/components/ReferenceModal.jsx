@@ -26,6 +26,8 @@ import { useFonts } from 'expo-font';
 import useAppTranslation from '../hooks/useAppTranslation';
 import usePremium from '../hooks/usePremium';
 import SearchModal from './search/SearchModal';
+import InlineTafseer from './InlineTafseer';
+import TafseerSelectionModal from './TafseerSelectionModal';
 import { getTafseerText, getMultipleTafseerTexts } from '../utils/tafseerDb';
 import {
   getAvailableTranslations,
@@ -88,6 +90,7 @@ import {
   FREE_TAFSEER_KEYS,
   TAFSEER_LANGUAGES,
   isMatchingLang,
+  getLanguageByCode,
 } from '../constants/tafseer';
 
 // ─── Sunnah language selector (View overlay, NOT a Modal — safe inside Modal) ──
@@ -355,353 +358,7 @@ function TafseerPickerSheet({ visible, onClose, onOpenSearch, onSelect, isDarkMo
   );
 }
 
-// ─── Tafseer content sheet (View overlay — safe inside Modal) ─────────────────
-// Comparative reader: stacked cards, one per selected tafseer edition.
-function TafseerContentSheet({
-  visible, onClose, onAddTafseer, onRemoveTafseer,
-  tafseerContents, tafseerLoading,
-  surahName, ayahId,
-  onPrev, onNext, hasPrev, hasNext,
-  isDarkMode, accentColor, textColor, mutedColor,
-  isPremium, requirePremium, language, t,
-}) {
-  const sheetBg = isDarkMode ? '#1e293b' : '#ffffff';
-  const cardBg = isDarkMode ? 'rgba(15,23,42,0.7)' : 'rgba(248,250,255,0.95)';
-  const cardBorder = isDarkMode ? 'rgba(96,165,250,0.14)' : 'rgba(25,118,210,0.1)';
-  const labelColor = isDarkMode ? '#60a5fa' : '#1976d2';
 
-  const [addingPosition, setAddingPosition] = React.useState(null); // 'top', 'bottom', or null
-  const [collapsedTafseers, setCollapsedTafseers] = React.useState(new Set());
-  const [isManaging, setIsManaging] = React.useState(false);
-  const flatListRef = React.useRef(null);
-
-  // Reset states if sheet closes
-  React.useEffect(() => {
-    if (!visible) {
-      setAddingPosition(null);
-      setIsManaging(false);
-    }
-    else if (tafseerContents.length === 0 && !tafseerLoading) {
-      setAddingPosition('top');
-      setIsManaging(false);
-    }
-  }, [visible, tafseerContents.length, tafseerLoading]);
-
-  const availableTafseers = React.useMemo(() => {
-    const currentKeys = new Set(tafseerContents.map(tc => tc.key));
-    const available = TAFSEER_LIST.filter(tf => !currentKeys.has(tf.key));
-    return available.sort((a, b) => {
-      const aFree = FREE_TAFSEER_KEYS.has(a.key);
-      const bFree = FREE_TAFSEER_KEYS.has(b.key);
-      if (aFree && !bFree) return -1;
-      if (!aFree && bFree) return 1;
-      if (aFree && bFree) return FREE_TAFSEERS_ORDER.indexOf(a.key) - FREE_TAFSEERS_ORDER.indexOf(b.key);
-      
-      const aMatch = isMatchingLang(a.key, language);
-      const bMatch = isMatchingLang(b.key, language);
-      if (aMatch && !bMatch) return -1;
-      if (!aMatch && bMatch) return 1;
-      
-      if (a.rank !== b.rank) return a.rank - b.rank;
-      return 0;
-    });
-  }, [tafseerContents, language]);
-
-  if (!visible) return null;
-
-  const title = tafseerContents.length > 1
-    ? `${tafseerContents.length} Tafseers`
-    : (tafseerContents[0]?.label || 'Tafseer');
-
-  return (
-    <View style={sheetStyles.overlay} pointerEvents="box-none">
-      <TouchableOpacity style={sheetStyles.backdrop} activeOpacity={1} onPress={onClose} />
-      <View style={[tafseerSheetStyles.sheet, { backgroundColor: sheetBg }]}>
-        {/* Header */}
-        <View style={[tafseerSheetStyles.header, { borderBottomColor: isDarkMode ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)' }]}>
-          <View style={{ flex: 1, marginRight: ms(8) }}>
-            <Text style={[tafseerSheetStyles.title, { color: textColor }]} numberOfLines={1}>{title}</Text>
-            {ayahId != null && (
-              <Text style={{ color: mutedColor, fontSize: scaleFontSize(13), marginTop: 2 }}>
-                {surahName} — Ayah {ayahId}
-              </Text>
-            )}
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: ms(8) }}>
-            {/* Manage active tafaseer button — commented out
-            {tafseerContents.length > 0 && (
-              <TouchableOpacity
-                onPress={() => setIsManaging(true)}
-                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                style={{
-                  padding: ms(4),
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Ionicons name="layers-outline" size={ms(30)} color={accentColor} />
-              </TouchableOpacity>
-            )}
-            */}
-            
-            {availableTafseers.length > 0 && (
-              <TouchableOpacity
-                onPress={() => {
-                  setCollapsedTafseers(new Set(tafseerContents.map(tf => tf.key)));
-                  setAddingPosition('top');
-                  setTimeout(() => {
-                    flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
-                  }, 150);
-                }}
-                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                style={{
-                  backgroundColor: isDarkMode ? 'rgba(96,165,250,0.15)' : 'rgba(25,118,210,0.1)',
-                  borderRadius: ms(20),
-                  marginRight: ms(4),
-                  width: ms(32),
-                  height: ms(32),
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Ionicons name="add" size={ms(28)} color={accentColor} />
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity onPress={onClose} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-              <Ionicons name="close-outline" size={ms(30)} color={textColor} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Stacked tafseer cards using FlatList for performance */}
-        {tafseerLoading ? (
-          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <ActivityIndicator size="large" color={accentColor} />
-          </View>
-        ) : (
-          <FlatList
-            ref={flatListRef}
-            data={(() => {
-              const items = [];
-              
-              if (addingPosition === 'top') {
-                items.push({ type: 'add_menu', key: 'add_menu_top' });
-              }
-
-              tafseerContents.forEach((tf) => {
-                const isCollapsed = collapsedTafseers.has(tf.key);
-                items.push({ type: 'header', key: `header-${tf.key}`, tfKey: tf.key, label: tf.label, isCollapsed });
-                
-                if (!isCollapsed) {
-                  const paragraphs = tf.text.split(/\n+/).filter(p => p.trim());
-                  const tfLang = TAFSEER_LANGUAGES[tf.key] || 'arabic';
-                  paragraphs.forEach((p, idx) => {
-                    items.push({ type: 'paragraph', key: `para-${tf.key}-${idx}`, text: p, lang: tfLang });
-                  });
-                  items.push({ type: 'footer', key: `footer-${tf.key}` }); // For padding/border bottom
-                }
-              });
-              
-              if (addingPosition === 'bottom') {
-                items.push({ type: 'add_menu', key: 'add_menu_bottom' });
-              }
-
-              return items;
-            })()}
-            keyExtractor={(item) => item.key}
-            contentContainerStyle={{ padding: ms(14), paddingBottom: ms(24) }}
-            showsVerticalScrollIndicator={false}
-            removeClippedSubviews={true}
-            initialNumToRender={10}
-            maxToRenderPerBatch={10}
-            windowSize={5}
-            renderItem={({ item }) => {
-              if (item.type === 'header') {
-                return (
-                  <View style={{
-                    backgroundColor: cardBg, borderColor: cardBorder, borderWidth: 1, borderBottomWidth: item.isCollapsed ? 1 : 0,
-                    borderTopLeftRadius: ms(14), borderTopRightRadius: ms(14),
-                    borderBottomLeftRadius: item.isCollapsed ? ms(14) : 0, borderBottomRightRadius: item.isCollapsed ? ms(14) : 0,
-                    padding: ms(14), paddingBottom: item.isCollapsed ? ms(14) : ms(4),
-                    marginBottom: item.isCollapsed ? ms(12) : 0
-                  }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <Text style={{ color: labelColor, fontWeight: '700', fontSize: scaleFontSize(12.5), letterSpacing: 0.3, flex: 1, paddingRight: ms(8) }}>
-                        {item.label}
-                      </Text>
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: ms(16) }}>
-                        <TouchableOpacity
-                          onPress={() => {
-                            setCollapsedTafseers(prev => {
-                              const next = new Set(prev);
-                              if (next.has(item.tfKey)) next.delete(item.tfKey);
-                              else next.add(item.tfKey);
-                              return next;
-                            });
-                          }}
-                          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-                        >
-                          <Ionicons name={item.isCollapsed ? "chevron-down" : "chevron-up"} size={ms(20)} color={mutedColor} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => onRemoveTafseer(item.tfKey)} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}>
-                          <Ionicons name="close-circle-outline" size={ms(20)} color={mutedColor} />
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  </View>
-                );
-              }
-              if (item.type === 'paragraph') {
-                const isArabicLang = item.lang === 'arabic';
-                const isRTL = ['arabic', 'persian', 'urdu', 'pashto', 'kurdish'].includes(item.lang);
-                
-                return (
-                  <View style={{
-                    backgroundColor: cardBg, borderColor: cardBorder, borderLeftWidth: 1, borderRightWidth: 1,
-                    paddingHorizontal: ms(14)
-                  }}>
-                    <Text style={{ 
-                      fontSize: isRTL ? scaleFontSize(20) : scaleFontSize(15.5), 
-                      lineHeight: isRTL ? scaleFontSize(34) : scaleFontSize(26), 
-                      color: textColor, 
-                      marginBottom: ms(10), 
-                      textAlign: isRTL ? 'right' : 'left',
-                      fontFamily: isArabicLang ? 'KFGQPCUthmanTahaNaskh' : undefined,
-                      writingDirection: isRTL ? 'rtl' : 'ltr'
-                    }}>
-                      {item.text}
-                    </Text>
-                  </View>
-                );
-              }
-              if (item.type === 'footer') {
-                return (
-                  <View style={{
-                    backgroundColor: cardBg, borderColor: cardBorder, borderWidth: 1, borderTopWidth: 0,
-                    borderBottomLeftRadius: ms(14), borderBottomRightRadius: ms(14), height: ms(10), marginBottom: ms(12)
-                  }} />
-                );
-              }
-
-              if (item.type === 'add_menu') {
-                return (
-                  <View style={{ marginBottom: ms(12), backgroundColor: isDarkMode ? '#1e293b' : '#f8fafc', borderRadius: ms(14), padding: ms(12), borderWidth: 1, borderColor: cardBorder }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: ms(12) }}>
-                      <Text style={{ color: textColor, fontWeight: '700', fontSize: scaleFontSize(14) }}>Select to Add</Text>
-                      <TouchableOpacity
-                        onPress={() => {
-                          setAddingPosition(null);
-                          setCollapsedTafseers(new Set()); // Unwrap everything if they cancel
-                        }}
-                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                      >
-                        <Ionicons name="close-outline" size={ms(20)} color={mutedColor} />
-                      </TouchableOpacity>
-                    </View>
-                    <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -ms(4) }}>
-                      {availableTafseers.map((tf) => {
-                        const isFree = FREE_TAFSEER_KEYS.has(tf.key);
-                        const isDisabled = !isFree && !isPremium;
-                        const matchesAppLang = isMatchingLang(tf.key, language);
-                        return (
-                          <TouchableOpacity
-                            key={tf.key}
-                            style={[
-                              sheetStyles.item,
-                              {
-                                width: '46%', margin: '2%', alignItems: 'center', justifyContent: 'center',
-                                height: ms(50), paddingVertical: 0,
-                                backgroundColor: isDarkMode ? '#374151' : '#f1f5f9',
-                              },
-                              matchesAppLang && { borderWidth: 1.5, borderColor: '#3b82f6' },
-                              isDisabled && { opacity: 0.45 },
-                            ]}
-                            onPress={() => {
-                              const proceed = () => {
-                                onAddTafseer(tf.key);
-                                setAddingPosition(null);
-                                setCollapsedTafseers(new Set()); // Unwrap everything when added
-                              };
-                              if (!isFree && !isPremium) requirePremium(proceed);
-                              else proceed();
-                            }}
-                          >
-                            <View style={{ alignItems: 'center', width: '100%', paddingHorizontal: ms(4) }}>
-                              <Text style={[sheetStyles.itemLabel, { color: textColor, textAlign: 'center', fontSize: scaleFontSize(12), marginBottom: ms(2) }]} numberOfLines={1}>
-                                {tf.name}
-                              </Text>
-                              <Text style={{ color: isDarkMode ? '#9ca3af' : '#64748b', fontSize: scaleFontSize(10.5), textAlign: 'center', fontWeight: '600' }} numberOfLines={1}>
-                                {tf.langNative}
-                              </Text>
-                              {isDisabled && (
-                                <Ionicons name="lock-closed" size={ms(10)} color={isDarkMode ? '#94a3b8' : '#9ca3af'} style={{ position: 'absolute', top: 0, right: 0 }} />
-                              )}
-                            </View>
-                          </TouchableOpacity>
-                        );
-                      })}
-                    </View>
-                  </View>
-                );
-              }
-              return null;
-            }}
-          />
-        )}
-
-
-        {/* Navigation row */}
-        <View style={[tafseerSheetStyles.navRow, { borderTopColor: isDarkMode ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)' }]}>
-          <TouchableOpacity onPress={onPrev} disabled={!hasPrev} style={[tafseerSheetStyles.navBtn, !hasPrev && { opacity: 0.35 }]}>
-            <Ionicons name="chevron-back" size={ms(22)} color={!hasPrev ? mutedColor : accentColor} />
-          </TouchableOpacity>
-          <Text style={{ color: mutedColor, fontSize: scaleFontSize(13), fontWeight: '500' }}>{ayahId ?? ''}</Text>
-          <TouchableOpacity onPress={onNext} disabled={!hasNext} style={[tafseerSheetStyles.navBtn, !hasNext && { opacity: 0.35 }]}>
-            <Ionicons name="chevron-forward" size={ms(22)} color={!hasNext ? mutedColor : accentColor} />
-          </TouchableOpacity>
-        </View>
-
-        {/* Manager Overlay */}
-        {isManaging && (
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: isDarkMode ? 'rgba(15,23,42,0.85)' : 'rgba(248,250,255,0.9)', justifyContent: 'center', padding: ms(20) }]}>
-            <View style={{ backgroundColor: sheetBg, borderRadius: ms(16), padding: ms(16), borderWidth: 1, borderColor: cardBorder, elevation: 5, shadowOpacity: 0.1, shadowRadius: 10 }}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: ms(16) }}>
-                <Text style={{ color: textColor, fontWeight: '700', fontSize: scaleFontSize(16) }}>Manage Active Tafseers</Text>
-                <TouchableOpacity onPress={() => setIsManaging(false)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                  <Ionicons name="close-outline" size={ms(24)} color={mutedColor} />
-                </TouchableOpacity>
-              </View>
-              {tafseerContents.map(tf => (
-                <View key={tf.key} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: ms(12), borderBottomWidth: 1, borderBottomColor: isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)' }}>
-                  <Text style={{ color: textColor, fontSize: scaleFontSize(14), flex: 1, paddingRight: ms(10) }}>{tf.label}</Text>
-                  <TouchableOpacity onPress={() => onRemoveTafseer(tf.key)} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
-                    <Ionicons name="trash-outline" size={ms(20)} color="#ef4444" />
-                  </TouchableOpacity>
-                </View>
-              ))}
-              {tafseerContents.length === 0 && (
-                <Text style={{ color: mutedColor, textAlign: 'center', paddingVertical: ms(12) }}>No active tafseers.</Text>
-              )}
-            </View>
-          </View>
-        )}
-      </View>
-    </View>
-  );
-}
-
-const tafseerSheetStyles = StyleSheet.create({
-  sheet: {
-    borderTopLeftRadius: ms(24), borderTopRightRadius: ms(24),
-    paddingTop: ms(20), maxHeight: SCREEN_HEIGHT * 0.75,
-    elevation: 20, shadowColor: '#000', shadowOpacity: 0.25, shadowRadius: 16, shadowOffset: { width: 0, height: -4 },
-  },
-  header: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: ms(20), paddingBottom: ms(14), borderBottomWidth: 0.5 },
-  title: { fontSize: scaleFontSize(17), fontWeight: '700' },
-  navRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: ms(16), paddingVertical: ms(12), borderTopWidth: 0.5 },
-  navBtn: { flexDirection: 'row', alignItems: 'center', gap: ms(4), paddingVertical: ms(6), paddingHorizontal: ms(10) },
-  navText: { fontSize: scaleFontSize(14), fontWeight: '600' },
-});
 
 // ─── Main ReferenceModal ───────────────────────────────────────────────────────
 const ReferenceModal = ({
@@ -739,6 +396,11 @@ const ReferenceModal = ({
   quranSurahId,               // number
   quranAyah,                  // the full ayah object for tafseer { id, isBasmala }
   quranAyahsList,             // full ayahs array for prev/next tafseer navigation
+  // Quran-mode Tafseer Sync props
+  quranIsTafseerExpanded,
+  quranActiveTafseers,
+  onQuranSetTafseerExpanded,
+  onQuranToggleTafseer,
 }) => {
   const { t, language } = useAppTranslation();
   const { requirePremium, isPremium } = usePremium();
@@ -788,12 +450,9 @@ const ReferenceModal = ({
   const [searchModalVisible, setSearchModalVisible] = useState(false);
 
   // ── Tafseer state ───────────────────────────────────────────────────────────
-  const [tafseerPickerVisible, setTafseerPickerVisible] = useState(false);
-  const [tafseerContentVisible, setTafseerContentVisible] = useState(false);
-  const [selectedTafseerKeys, setSelectedTafseerKeys] = useState([]);
-  const [activeTafseerAyah, setActiveTafseerAyah] = useState(null);
-  const [tafseerContents, setTafseerContents] = useState([]);
-  const [tafseerLoading, setTafseerLoading] = useState(false);
+  const activeTafseers = quranActiveTafseers || [];
+  const isTafseerExpanded = quranIsTafseerExpanded || false;
+  const [tafseerSheetVisible, setTafseerSheetVisible] = useState(false);
 
   // ── Persisted state loading ────────────────────────────────────────────────
   useEffect(() => {
@@ -804,17 +463,6 @@ const ReferenceModal = ({
       setSelectedSunnahLang(null);
     }
   }, [language, hadithBookKey]);
-
-  useEffect(() => {
-    AsyncStorage.getItem('@reference_tafseer_keys').then(val => {
-      if (val) {
-        try {
-          const parsed = JSON.parse(val);
-          if (Array.isArray(parsed)) setSelectedTafseerKeys(parsed);
-        } catch (e) {}
-      }
-    }).catch(() => {});
-  }, []);
 
   const isSunnahMode = Boolean(hadithBookKey) && !ayahRef;
   const isQuranMode = Boolean(ayahRef);
@@ -849,84 +497,24 @@ const ReferenceModal = ({
 
   useEffect(() => { setSunnahTransEdition(null); setSunnahTransError(null); }, [hadithBookKey]);
 
-  // ── Tafseer helpers ─────────────────────────────────────────────────────────
-  const loadTafseers = useCallback(async (keys, surahId, ayahId) => {
-    if (!keys || keys.length === 0) {
-      setTafseerContents([]);
-      return;
-    }
-    setTafseerLoading(true);
-    setTafseerContents([]);
-    try {
-      const results = await getMultipleTafseerTexts(keys, surahId, ayahId);
-      // Map results back with their display labels from TAFSEER_LIST
-      const mappedContents = results.map(res => {
-        const tfDef = TAFSEER_LIST.find(t => t.key === res.key);
-        return {
-          key: res.key,
-          label: tfDef ? tfDef.name : res.key,
-          text: (res.text || '').replace(/[\n\r]+/g, '\n\n').trim(),
-        };
-      });
-      setTafseerContents(mappedContents);
-    } catch {
-      setTafseerContents([]);
-    } finally {
-      setTafseerLoading(false);
-    }
+  // ── Tafseer handlers ─────────────────────────────────────────────────────────
+  const handleSetTafseerExpanded = useCallback((expanded) => {
+    setIsTafseerExpanded(expanded);
+    AsyncStorage.setItem('@is_tafseer_expanded', expanded ? 'true' : 'false').catch(console.error);
   }, []);
 
-  const handleOpenTafseer = useCallback((ayah) => {
-    setActiveTafseerAyah(ayah);
-    if (selectedTafseerKeys.length > 0) {
-      loadTafseers(selectedTafseerKeys, quranSurahId, ayah.id);
-    }
-    setTafseerContentVisible(true);
-  }, [selectedTafseerKeys, quranSurahId, loadTafseers]);
-
-  const getAyahList = useCallback(() =>
-    (quranAyahsList || []).filter((a) => !a.isBasmala),
-    [quranAyahsList]);
-
-  const hasTafseerPrev = activeTafseerAyah
-    ? getAyahList().findIndex((a) => a.id === activeTafseerAyah.id) > 0
-    : false;
-
-  const hasTafseerNext = activeTafseerAyah
-    ? (() => { const list = getAyahList(); const idx = list.findIndex((a) => a.id === activeTafseerAyah.id); return idx !== -1 && idx < list.length - 1; })()
-    : false;
-
-  const handleTafseerPrev = useCallback(() => {
-    if (!activeTafseerAyah || selectedTafseerKeys.length === 0) return;
-    const list = getAyahList();
-    const idx = list.findIndex((a) => a.id === activeTafseerAyah.id);
-    if (idx <= 0) return;
-    if (onPrevious) onPrevious();
-  }, [activeTafseerAyah, selectedTafseerKeys, getAyahList, onPrevious]);
-
-  const handleTafseerNext = useCallback(() => {
-    if (!activeTafseerAyah || selectedTafseerKeys.length === 0) return;
-    const list = getAyahList();
-    const idx = list.findIndex((a) => a.id === activeTafseerAyah.id);
-    if (idx === -1 || idx >= list.length - 1) return;
-    if (onNext) onNext();
-  }, [activeTafseerAyah, selectedTafseerKeys, getAyahList, onNext]);
-
-  const tafseerStateRef = useRef({ visible: false, keys: [] });
-  useEffect(() => {
-    tafseerStateRef.current = { visible: tafseerContentVisible, keys: selectedTafseerKeys };
-  }, [tafseerContentVisible, selectedTafseerKeys]);
-
-  // Keep activeTafseerAyah in sync when the parent ayah changes (e.g. pager swipe)
-  useEffect(() => {
-    if (quranAyah) {
-      setActiveTafseerAyah(quranAyah);
-      const state = tafseerStateRef.current;
-      if (state.visible && state.keys.length > 0) {
-        loadTafseers(state.keys, quranSurahId, quranAyah.id);
+  const handleToggleTafseer = useCallback(async (key) => {
+    setActiveTafseers(prev => {
+      let next;
+      if (prev.includes(key)) {
+        next = prev.filter(k => k !== key);
+      } else {
+        next = [...prev, key];
       }
-    }
-  }, [quranAyah?.id, quranSurahId, loadTafseers]);
+      AsyncStorage.setItem('@reference_tafseer_keys', JSON.stringify(next)).catch(console.error);
+      return next;
+    });
+  }, []);
 
   // ── Ids / labels ───────────────────────────────────────────────────────────
   const referenceId = ayahRef
@@ -1121,15 +709,34 @@ const ReferenceModal = ({
 
         {/* Tafseer button — Quran mode only, not basmalah */}
         {isQuranMode && quranAyah && !quranAyah.isBasmala && (
-          <TouchableOpacity
-            style={[styles.tafseerBtn, { borderColor: tafseerBtnBorder }]}
-            onPress={() => handleOpenTafseer(quranAyah)}
-            activeOpacity={0.75}
-          >
-            <Ionicons name="book-outline" size={ms(17)} color={accentColor} />
-            <Text style={[styles.tafseerBtnText, { color: accentColor }]}>{t('quranUI.showTafsir')}</Text>
-            <Ionicons name="chevron-forward-outline" size={ms(16)} color={accentColor} />
-          </TouchableOpacity>
+          <>
+            {isTafseerExpanded && (
+              <InlineTafseer
+                surahId={quranSurahId}
+                ayahId={quranAyah.id}
+                activeTafseers={activeTafseers}
+                language={language}
+                asCard={true}
+              />
+            )}
+            <TouchableOpacity
+              style={[styles.tafseerBtn, { borderColor: tafseerBtnBorder }]}
+              onPress={() => {
+                if (isTafseerExpanded) {
+                  onQuranSetTafseerExpanded?.(false);
+                } else {
+                  setTafseerSheetVisible(true);
+                }
+              }}
+              activeOpacity={0.75}
+            >
+              <Ionicons name="book-outline" size={ms(17)} color={accentColor} />
+              <Text style={[styles.tafseerBtnText, { color: accentColor }]}>
+                {isTafseerExpanded ? (t('quranUI.hideTafsir') || 'Hide Tafsir') : t('quranUI.showTafsir')}
+              </Text>
+              <Ionicons name={isTafseerExpanded ? "chevron-up-outline" : "chevron-down-outline"} size={ms(16)} color={accentColor} />
+            </TouchableOpacity>
+          </>
         )}
 
 
@@ -1309,45 +916,19 @@ const ReferenceModal = ({
 
 
 
-        {/* Tafseer content sheet */}
+        {/* Tafseer Selection Modal */}
         {isQuranMode && (
-          <TafseerContentSheet
-            visible={tafseerContentVisible}
-            onClose={() => setTafseerContentVisible(false)}
-            onAddTafseer={(newKey) => {
-              if (!selectedTafseerKeys.includes(newKey)) {
-                const newKeys = [...selectedTafseerKeys, newKey];
-                setSelectedTafseerKeys(newKeys);
-                AsyncStorage.setItem('@reference_tafseer_keys', JSON.stringify(newKeys)).catch(()=>{});
-                if (activeTafseerAyah) {
-                  loadTafseers(newKeys, quranSurahId, activeTafseerAyah.id);
-                }
+          <TafseerSelectionModal
+            visible={tafseerSheetVisible}
+            onClose={() => {
+              setTafseerSheetVisible(false);
+              // Auto-expand if they selected something
+              if (activeTafseers.length > 0) {
+                onQuranSetTafseerExpanded?.(true);
               }
             }}
-            onRemoveTafseer={(keyToRemove) => {
-              const newKeys = selectedTafseerKeys.filter(k => k !== keyToRemove);
-              setSelectedTafseerKeys(newKeys);
-              AsyncStorage.setItem('@reference_tafseer_keys', JSON.stringify(newKeys)).catch(()=>{});
-              if (activeTafseerAyah) {
-                loadTafseers(newKeys, quranSurahId, activeTafseerAyah.id);
-              }
-            }}
-            tafseerContents={tafseerContents}
-            tafseerLoading={tafseerLoading}
-            surahName={quranSurahName}
-            ayahId={activeTafseerAyah?.id}
-            onPrev={handleTafseerPrev}
-            onNext={handleTafseerNext}
-            hasPrev={hasTafseerPrev}
-            hasNext={hasTafseerNext}
-            isDarkMode={isDarkMode}
-            accentColor={accentColor}
-            textColor={textColor}
-            mutedColor={mutedColor}
-            isPremium={isPremium}
-            requirePremium={requirePremium}
-            language={language}
-            t={t}
+            activeTafseers={activeTafseers}
+            onToggleTafseer={onQuranToggleTafseer || (() => {})}
           />
         )}
 
