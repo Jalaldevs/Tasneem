@@ -39,9 +39,11 @@ import {
 import { SUNNAH_EDITION_ASSET_MAP } from '../constants/sunnahEditionAssetMap';
 
 import useAppTranslation from '../hooks/useAppTranslation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { saveBookmark, getBookmarks, removeBookmark } from '../constants/bookmarks';
 import ReferenceModal from '../components/ReferenceModal';
+import SunnahLanguageModal from '../components/SunnahLanguageModal';
+import { RTL_LANGS, LANG_LABELS, APP_LANG_TO_SUNNAH } from '../constants/sunnahTranslations';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
 
@@ -59,6 +61,7 @@ const cleanHadithText = (text) => {
 
 const STORAGE_BOOK_KEY = '@sunnah:selectedBook';
 const STORAGE_COLLECTION_KEY = '@sunnah:selectedCollection';
+const STORAGE_TRANSLATION_KEY = '@sunnah:selectedTranslationLang';
 const MODERATE_FACTOR = 0.35;
 const ms = (size) => moderateScale(size, MODERATE_FACTOR);
 
@@ -67,7 +70,7 @@ const HAS_AUTO_LAYOUT_VIEW = Boolean(UIManager.getViewManagerConfig?.('AutoLayou
 
 
 export default function Sunnah() {
-  const { t } = useAppTranslation();
+  const { t, language } = useAppTranslation();
   const { colorScheme, prayerAlertVisible, bookmarkUpdateTrigger, triggerBookmarkUpdate } = useNavigationContext();
   const scheme = colorScheme;
   const theme = scheme === 'dark' ? Colors.dark : Colors.light;
@@ -115,6 +118,8 @@ export default function Sunnah() {
 
   const [selectedBook, setSelectedBook] = useState('bukhari');
   const [selectedSection, setSelectedSection] = useState(null);
+  const [selectedTranslationLang, setSelectedTranslationLang] = useState(null);
+  const [translationModalVisible, setTranslationModalVisible] = useState(false);
   const [isSelectionHydrated, setIsSelectionHydrated] = useState(false);
   const [referenceModalVisible, setReferenceModalVisible] = useState(false);
   const [referenceModalData, setReferenceModalData] = useState(null);
@@ -152,15 +157,23 @@ export default function Sunnah() {
         const fetchPromise = Promise.all([
           AsyncStorage.getItem(STORAGE_BOOK_KEY),
           AsyncStorage.getItem(STORAGE_COLLECTION_KEY),
+          AsyncStorage.getItem(STORAGE_TRANSLATION_KEY),
         ]);
         const timeoutPromise = new Promise((resolve) => {
-          timeoutId = setTimeout(() => resolve([null, null]), 2000);
+          timeoutId = setTimeout(() => resolve([null, null, null]), 2000);
         });
 
-        const [savedBook, savedCollection] = await Promise.race([fetchPromise, timeoutPromise]);
+        const [savedBook, savedCollection, savedTranslation] = await Promise.race([fetchPromise, timeoutPromise]);
 
         if (!requestedBookParam && savedBook && BOOKS.includes(savedBook)) setSelectedBook(savedBook);
         if (savedCollection) setSelectedSection(String(savedCollection));
+        
+        if (savedTranslation) {
+          setSelectedTranslationLang(savedTranslation);
+        } else {
+          const mappedLang = APP_LANG_TO_SUNNAH[language];
+          setSelectedTranslationLang(mappedLang || 'none');
+        }
       } catch (e) {
         console.error('Failed to load saved sunnah selection', e);
       } finally {
@@ -181,6 +194,22 @@ export default function Sunnah() {
     if (!isSelectionHydrated || !selectedSection) return;
     AsyncStorage.setItem(STORAGE_COLLECTION_KEY, String(selectedSection)).catch(console.error);
   }, [isSelectionHydrated, selectedSection]);
+
+  useEffect(() => {
+    if (!isSelectionHydrated) return;
+    if (selectedTranslationLang) {
+      AsyncStorage.setItem(STORAGE_TRANSLATION_KEY, selectedTranslationLang).catch(console.error);
+    }
+  }, [isSelectionHydrated, selectedTranslationLang]);
+
+  useEffect(() => {
+    if (!isSelectionHydrated) return;
+    const mappedLang = APP_LANG_TO_SUNNAH[language];
+    const syncedTranslation = mappedLang || 'none';
+    if (syncedTranslation === selectedTranslationLang) return;
+    setSelectedTranslationLang(syncedTranslation);
+    AsyncStorage.setItem(STORAGE_TRANSLATION_KEY, syncedTranslation).catch(console.error);
+  }, [isSelectionHydrated, language]);
 
   const hasSearchedHadithTarget = useMemo(() => {
     if (requestedHadithNumber == null) return false;
@@ -247,7 +276,45 @@ export default function Sunnah() {
     retry: 6,
     retryDelay: (attempt) => Math.min(1000 * (attempt + 1), 3000),
     refetchOnMount: true,
+    placeholderData: keepPreviousData,
   });
+
+  const translationBookQuery = useQuery({
+    queryKey: ['sunnah', 'translation-book', selectedTranslationLang, selectedBook],
+    enabled: isSelectionHydrated && Boolean(selectedBook) && Boolean(selectedTranslationLang) && selectedTranslationLang !== 'none',
+    queryFn: async () => {
+      if (!selectedTranslationLang || selectedTranslationLang === 'none') return null;
+      const editionKey = `${selectedTranslationLang}-${selectedBook}`;
+      const bundledGetter = SUNNAH_EDITION_ASSET_MAP[editionKey];
+      if (bundledGetter) {
+        const data = bundledGetter();
+        if (data && typeof data === 'object' && data.hadiths) return data;
+      }
+      let transData = null;
+      let retries = 0;
+      while (!transData && retries < 15) {
+        transData = await readOfflineSunnahEdition(editionKey);
+        if (transData) break;
+        await new Promise(resolve => setTimeout(resolve, 800));
+        retries++;
+      }
+      if (!transData) throw new Error(`Translation data for ${editionKey} not available yet`);
+      return transData;
+    },
+    staleTime: 1000 * 60 * 10,
+    retry: 6,
+    retryDelay: (attempt) => Math.min(1000 * (attempt + 1), 3000),
+    refetchOnMount: true,
+    placeholderData: keepPreviousData,
+  });
+
+  const getTranslatedText = useCallback((hadithNumber) => {
+    if (!translationBookQuery.data?.hadiths) return null;
+    const target = parseFloat(hadithNumber);
+    const found = translationBookQuery.data.hadiths.find((h) => parseFloat(h.hadithnumber) === target);
+    if (!found?.text) return null;
+    return cleanHadithText(found.text);
+  }, [translationBookQuery.data]);
 
   const { metadata, hadiths, sections } = useMemo(() => {
     if (!arabicBookQuery.data) return { metadata: null, hadiths: [], sections: [] };
@@ -276,15 +343,27 @@ export default function Sunnah() {
 
   const shareHadith = async ({
     arabicText,
+    translationText,
+    grades,
     bookName,
     hadithNumber,
   }) => {
     try {
-      const message = [
-        arabicText,
-        `\n\n📚 ${bookName}`,
-        `\nHadith ${hadithNumber}`,
-      ].join('');
+      const parts = [arabicText];
+      
+      if (translationText) {
+        parts.push(`\n\n${translationText}`);
+      }
+      
+      if (grades && grades.length > 0) {
+        const gradeStr = grades.map(g => `${g.grade} (${g.name})`).join(', ');
+        parts.push(`\n\nGrade: ${gradeStr}`);
+      }
+      
+      parts.push(`\n\n📚 ${bookName}`);
+      parts.push(`\nHadith ${hadithNumber}`);
+      
+      const message = parts.join('');
 
       await Share.share({ message });
     } catch (error) {
@@ -424,21 +503,30 @@ export default function Sunnah() {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.iconButton}
-              onPress={() =>
+              onPress={() => {
+                const translatedText = selectedTranslationLang && selectedTranslationLang !== 'none' ? getTranslatedText(item.hadithnumber) : null;
                 shareHadith({
                   arabicText: cleanHadithText(item.text),
+                  translationText: translatedText,
+                  grades: item.grades,
                   bookName: getBookName(selectedBook)
                     .replace(/\s*\([^)]*\)\s*/g, '')
                     .trim(),
                   hadithNumber: item.hadithnumber,
-                })
-              }
+                });
+              }}
             >
               <Ionicons
                 name="share-social-outline"
                 size={ms(26)}
                 color="#3b82f6"
               />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.iconButton}
+              onPress={() => setTranslationModalVisible(true)}
+            >
+              <Ionicons name="earth-outline" size={ms(24)} color="#3b82f6" />
             </TouchableOpacity>
           </View>
         </View>
@@ -458,6 +546,12 @@ export default function Sunnah() {
           </ArabicTextWithFontForSharing>
         )}
 
+        {selectedTranslationLang && selectedTranslationLang !== 'none' && translationBookQuery.data && (
+           <Text style={[styles.translatedText, RTL_LANGS.has(selectedTranslationLang) && { textAlign: 'right' }, { color: theme.text }]}>
+             {getTranslatedText(item.hadithnumber) || 'Translation not found.'}
+           </Text>
+        )}
+
         {item.grades && item.grades.length > 0 && (
           <View style={styles.gradesContainer}>
             {item.grades.map((g, i) => (
@@ -465,17 +559,9 @@ export default function Sunnah() {
             ))}
           </View>
         )}
-
-        <TouchableOpacity
-          style={[styles.tafseerButton, { borderColor: scheme === 'dark' ? '#374151' : '#e5e7eb' }]}
-          onPress={() => { setReferenceModalData({ arabicText: cleanHadithText(item.text), hadith: item }); setReferenceModalVisible(true); }}
-        >
-          <Text style={[styles.tafseerButtonText, { color: scheme === 'dark' ? '#60a5fa' : theme.primary }]}>{t('sunnahUI.showTranslations')}</Text>
-          <Ionicons name="chevron-down-outline" size={ms(23)} color={scheme === 'dark' ? '#60a5fa' : theme.primary} />
-        </TouchableOpacity>
       </View>
     );
-  }, [scheme, theme, handleToggleBookmark, bookmarkedHadiths, getBookName, selectedBook]);
+  }, [scheme, theme, handleToggleBookmark, bookmarkedHadiths, getBookName, selectedBook, selectedTranslationLang, translationBookQuery.data, getTranslatedText, t]);
 
   const renderBookItem = useCallback(({ item, index }) => {
     const active = selectedBook === item;
@@ -548,6 +634,13 @@ export default function Sunnah() {
           <View style={styles.loadingContainer}><ActivityIndicator size="large" color={theme.primary} /></View>
         ) : (
           <>
+            {arabicBookQuery.isFetching && !arabicBookQuery.isLoading && (
+              <View style={{ position: 'absolute', top: 12, left: 0, right: 0, zIndex: 10, alignItems: 'center' }}>
+                <View style={{ backgroundColor: theme.surface, padding: 6, borderRadius: 20, elevation: 4, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 4 }}>
+                  <ActivityIndicator size="small" color={theme.primary} />
+                </View>
+              </View>
+            )}
             <HadithListComponent
               ref={flatListRef}
               data={activeHadiths}
@@ -583,6 +676,15 @@ export default function Sunnah() {
               nextArabicText={(() => { const idx = hadiths.findIndex(h => h.hadithnumber === referenceModalData?.hadith?.hadithnumber); return idx !== -1 && idx < hadiths.length - 1 ? cleanHadithText(hadiths[idx + 1].text) : null; })()}
               theme={theme}
               isDarkMode={scheme === 'dark'}
+            />
+
+            {/* ── SunnahLanguageModal ── */}
+            <SunnahLanguageModal
+              visible={translationModalVisible}
+              onClose={() => setTranslationModalVisible(false)}
+              selectedBook={selectedBook}
+              selectedLanguage={selectedTranslationLang}
+              onSelectLanguage={setSelectedTranslationLang}
             />
           </>
         )}
@@ -629,4 +731,5 @@ const styles = StyleSheet.create({
   infoModalBody: { fontSize: scaleFontSize(15), lineHeight: scaleFontSize(23), textAlign: 'center', paddingHorizontal: ms(12) },
   tafseerButton: { flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', marginTop: moderateScale(18), paddingVertical: moderateScale(5), paddingHorizontal: moderateScale(10), borderRadius: moderateScale(10), borderWidth: 1, gap: moderateScale(4) },
   tafseerButtonText: { fontSize: scaleFontSize(14), fontWeight: '600' },
+  translatedText: { fontSize: scaleFontSize(16), lineHeight: scaleFontSize(26), marginTop: moderateScale(16), paddingHorizontal: moderateScale(12) },
 });

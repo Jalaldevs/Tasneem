@@ -136,24 +136,33 @@ export const resetDatabase = async () => {
   }
 };
 
+let dbInstancePromise = null;
+
 /**
  * Retrieves a singleton SQLite connection to the downloaded database
  */
 export const getDBConnection = async () => {
   if (dbInstance) return dbInstance;
+  if (dbInstancePromise) return dbInstancePromise;
   
-  try {
-    const ready = await isDatabaseReady();
-    if (!ready) {
-      console.warn('Cannot open DB connection: Database is not ready.');
+  dbInstancePromise = (async () => {
+    try {
+      const ready = await isDatabaseReady();
+      if (!ready) {
+        console.warn('Cannot open DB connection: Database is not ready.');
+        return null;
+      }
+      
+      // openDatabaseAsync opens the file in the default SQLite directory
+      dbInstance = await SQLite.openDatabaseAsync('tasneem_data.db');
+      return dbInstance;
+    } catch (error) {
+      console.error('Failed to open database connection:', error);
       return null;
+    } finally {
+      dbInstancePromise = null;
     }
-    
-    // openDatabaseAsync opens the file in the default SQLite directory
-    dbInstance = await SQLite.openDatabaseAsync('tasneem_data.db');
-    return dbInstance;
-  } catch (error) {
-    console.error('Failed to open database connection:', error);
-    return null;
-  }
+  })();
+
+  return dbInstancePromise;
 };

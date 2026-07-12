@@ -199,6 +199,8 @@ const english = {
   },
   quranUI: {
     showTafsir: "Show Tafsir",
+    hideTafsir: "Hide Tafsir",
+    selectTafsir: "Select Tafsir",
     accessToTafseer: "Access to all Tafaseer",
     failedToLoadSurah: "Failed to load surah",
     saveBookmarkTitle: "Save Quran Bookmark",
@@ -875,6 +877,8 @@ const arabic = {
   },
   quranUI: {
     showTafsir: "عرض التفسير",
+    hideTafsir: "إخفاء التفسير",
+    selectTafsir: "اختر تفسير",
     accessToTafseer: "الوصول إلى جميع التفاسير",
     failedToLoadSurah: "فشل في تحميل السورة",
     saveBookmarkTitle: "حفظ إشارة مرجعية في القرآن",
@@ -1536,6 +1540,8 @@ const chinese = {
   quranUI: {
     accessToTafseer: "访问所有Tafaseer",
     showTafsir: "显示Tafsir (解释)",
+    hideTafsir: "隐藏经注",
+    selectTafsir: "选择经注",
     failedToLoadSurah: "加载章节失败",
     saveBookmarkTitle: "保存古兰经书签",
     surahLabel: "章节",
@@ -2194,6 +2200,8 @@ const hindi = {
   quranUI: {
     accessToTafseer: "सभी तफ़ासीर तक पहुँच",
     showTafsir: "तफ़सीर दिखाएं",
+    hideTafsir: "तफ़सीर छिपाएं",
+    selectTafsir: "तफ़सीर चुनें",
     failedToLoadSurah: "सूरह लोड करने में विफल",
     saveBookmarkTitle: "कुरान बुकमार्क सहेजें",
     surahLabel: "सूरह",
@@ -2867,6 +2875,8 @@ const spanish = {
   quranUI: {
     accessToTafseer: "Acceso a todos los Tafaseer",
     showTafsir: "Mostrar Tafsir",
+    hideTafsir: "Ocultar Tafsir",
+    selectTafsir: "Seleccionar Tafsir",
     failedToLoadSurah: "Error al cargar la sura",
     saveBookmarkTitle: "Guardar Marcador del Corán",
     surahLabel: "Surah",
@@ -3547,6 +3557,8 @@ const french = {
   quranUI: {
     accessToTafseer: "Accès à tous les Tafaseer",
     showTafsir: "Afficher le Tafsir",
+    hideTafsir: "Masquer le Tafsir",
+    selectTafsir: "Sélectionner le Tafsir",
     failedToLoadSurah: "Échec du chargement de la sourate",
     saveBookmarkTitle: "Enregistrer le signet du Coran",
     surahLabel: "Sourate",
@@ -4229,6 +4241,8 @@ const bengali = {
   quranUI: {
     accessToTafseer: "সকল তাফাসীরের অ্যাক্সেস",
     showTafsir: "তাফসির দেখান",
+    hideTafsir: "তাফসির লুকান",
+    selectTafsir: "তাফসির নির্বাচন করুন",
     failedToLoadSurah: "সূরা লোড করতে ব্যর্থ হয়েছে",
     saveBookmarkTitle: "কুরআন বুকমার্ক সংরক্ষণ করুন",
     surahLabel: "সূরা",
@@ -4904,6 +4918,8 @@ const portuguese = {
   quranUI: {
     accessToTafseer: "Acesso a todos os Tafaseer",
     showTafsir: "Mostrar Tafsir",
+    hideTafsir: "Ocultar Tafsir",
+    selectTafsir: "Selecionar Tafsir",
     failedToLoadSurah: "Falha ao carregar a surata",
     saveBookmarkTitle: "Salvar Marcador do Alcorão",
     surahLabel: "Surata",
@@ -5583,6 +5599,8 @@ const russian = {
   quranUI: {
     accessToTafseer: "Доступ ко всем Тафасирам",
     showTafsir: "Показать Тафсир",
+    hideTafsir: "Скрыть Тафсир",
+    selectTafsir: "Выбрать Тафсир",
     failedToLoadSurah: "Не удалось загрузить суру",
     saveBookmarkTitle: "Сохранить закладку Корана",
     surahLabel: "Сура",
@@ -6252,6 +6270,8 @@ const urdu = {
   quranUI: {
     accessToTafseer: "تمام تفاسیر تک رسائی",
     showTafsir: "تفسیر دکھائیں",
+    hideTafsir: "تفسیر چھپائیں",
+    selectTafsir: "تفسیر منتخب کریں",
     failedToLoadSurah: "سورہ لوڈ کرنے میں ناکامی",
     saveBookmarkTitle: "قرآن بک مارک محفوظ کریں",
     surahLabel: "سورہ",
@@ -6919,6 +6939,8 @@ const german = {
   quranUI: {
     accessToTafseer: "Zugang zu allen Tafaseer",
     showTafsir: "Tafsir Anzeigen",
+    hideTafsir: "Tafsir ausblenden",
+    selectTafsir: "Tafsir auswählen",
     failedToLoadSurah: "Sure konnte nicht geladen werden",
     saveBookmarkTitle: "Koran-Lesezeichen speichern",
     surahLabel: "Sure",
@@ -7604,6 +7626,8 @@ const japanese = {
   quranUI: {
     accessToTafseer: "すべてのタファシールへのアクセス",
     showTafsir: "タフスィールを表示",
+    hideTafsir: "タフスィールを隠す",
+    selectTafsir: "タフスィールを選択",
     failedToLoadSurah: "スーラの読み込みに失敗しました",
     saveBookmarkTitle: "コーランのブックマークを保存",
     surahLabel: "スーラ",
@@ -8279,6 +8303,8 @@ const italian = {
   quranUI: {
     accessToTafseer: "Accesso a tutti i Tafaseer",
     showTafsir: "Mostra Tafsir",
+    hideTafsir: "Nascondi Tafsir",
+    selectTafsir: "Seleziona Tafsir",
     failedToLoadSurah: "Impossibile caricare la sura",
     saveBookmarkTitle: "Salva Segnalibro del Corano",
     surahLabel: "Sura",
@@ -8951,6 +8977,8 @@ const korean = {
   quranUI: {
     accessToTafseer: "모든 타파시르 이용",
     showTafsir: "타프시르 보기",
+    hideTafsir: "타프시르 숨기기",
+    selectTafsir: "타프시르 선택",
     failedToLoadSurah: "수라를 로드하지 못했습니다",
     saveBookmarkTitle: "코란 책갈피 저장",
     surahLabel: "수라",
@@ -9605,6 +9633,8 @@ const kurdish = {
   quranUI: {
     accessToTafseer: "Gihiştina hemû Tefsîran",
     showTafsir: "Tefsîr Nîşan Bide",
+    hideTafsir: "تەفسیر بشارەوە",
+    selectTafsir: "تەفسیر هەڵبژێرە",
     failedToLoadSurah: "Sûre nehat barkirin",
     saveBookmarkTitle: "Bookmarka Quranê tomar bike",
     surahLabel: "Sûre",
@@ -10277,6 +10307,8 @@ const macedonian = {
   quranUI: {
     accessToTafseer: "Пристап до сите Тафасир",
     showTafsir: "Прикажи Тафсир",
+    hideTafsir: "Скриј Тафсир",
+    selectTafsir: "Избери Тафсир",
     failedToLoadSurah: "Неуспешно вчитување на сурата",
     saveBookmarkTitle: "Зачувај обележувач од Куран",
     surahLabel: "Сура",
@@ -10945,6 +10977,8 @@ const malay = {
   quranUI: {
     accessToTafseer: "Akses kepada semua Tafaseer",
     showTafsir: "Papar Tafsir",
+    hideTafsir: "Sembunyikan Tafsir",
+    selectTafsir: "Pilih Tafsir",
     failedToLoadSurah: "Gagal memuatkan surah",
     saveBookmarkTitle: "Simpan Tanda Buku al-Quran",
     surahLabel: "Surah",
@@ -11618,6 +11652,8 @@ const maltese = {
   quranUI: {
     accessToTafseer: "Aċċess għat-Tafaseer kollha",
     showTafsir: "Uri t-Tafsir",
+    hideTafsir: "Aħbi Tafsir",
+    selectTafsir: "Agħżel Tafsir",
     failedToLoadSurah: "Falli biex tagħbija s-sura",
     saveBookmarkTitle: "Salva Bookmark tal-Quran",
     surahLabel: "Sura",
@@ -12287,6 +12323,8 @@ const nepali = {
   quranUI: {
     accessToTafseer: "सबै तफासीरमा पहुँच",
     showTafsir: "तफसीर देखाउनुहोस्",
+    hideTafsir: "तफसीर लुकाउनुहोस्",
+    selectTafsir: "तफसीर चयन गर्नुहोस्",
     failedToLoadSurah: "सूरह लोड गर्न असफल",
     saveBookmarkTitle: "कुरान बुकमार्क सुरक्षित गर्नुहोस्",
     surahLabel: "सूरह",
@@ -12957,6 +12995,8 @@ const norwegian = {
   quranUI: {
     accessToTafseer: "Tilgang til all Tafaseer",
     showTafsir: "Vis Tafsir",
+    hideTafsir: "Skjul Tafsir",
+    selectTafsir: "Velg Tafsir",
     failedToLoadSurah: "Kunne ikke laste sura",
     saveBookmarkTitle: "Lagre Koran-bokmerke",
     surahLabel: "Sura",
@@ -13625,6 +13665,8 @@ const persian = {
   quranUI: {
     accessToTafseer: "دسترسی به همه تفاسیر",
     showTafsir: "نمایش تفسیر",
+    hideTafsir: "پنهان کردن تفسیر",
+    selectTafsir: "انتخاب تفسیر",
     failedToLoadSurah: "بارگذاری سوره انجام نشد",
     saveBookmarkTitle: "ذخیره نشانه قرآن",
     surahLabel: "سوره",
@@ -14295,6 +14337,8 @@ const polish = {
   quranUI: {
     accessToTafseer: "Dostęp do wszystkich Tafaseer",
     showTafsir: "Pokaż Tafsir",
+    hideTafsir: "Ukryj Tafsir",
+    selectTafsir: "Wybierz Tafsir",
     failedToLoadSurah: "Nie udało się załadować sury",
     saveBookmarkTitle: "Zapisz zakładkę Koranu",
     surahLabel: "Sura",
@@ -14973,6 +15017,8 @@ const filipino = {
   quranUI: {
     accessToTafseer: "Access sa lahat ng Tafaseer",
     showTafsir: "Ipakita ang Tafsir",
+    hideTafsir: "Itago ang Tafsir",
+    selectTafsir: "Piliin ang Tafsir",
     failedToLoadSurah: "Nabigong i-load ang surah",
     saveBookmarkTitle: "I-save ang Bookmark ng Quran",
     surahLabel: "Surah",
@@ -15655,6 +15701,8 @@ const romanian = {
   quranUI: {
     accessToTafseer: "Acces la toate Tafaseer",
     showTafsir: "Afișează Tafsir",
+    hideTafsir: "Ascunde Tafsir",
+    selectTafsir: "Selectează Tafsir",
     failedToLoadSurah: "Nu s-a putut încărca sura",
     saveBookmarkTitle: "Salvează Marcajul Coranului",
     surahLabel: "Sura",
@@ -16330,6 +16378,8 @@ const dutch = {
   quranUI: {
     accessToTafseer: "Toegang tot alle Tafaseer",
     showTafsir: "Toon Tafsir",
+    hideTafsir: "Verberg Tafsir",
+    selectTafsir: "Selecteer Tafsir",
     failedToLoadSurah: "Kon soera niet laden",
     saveBookmarkTitle: "Koranbladwijzer Opslaan",
     surahLabel: "Soera",
@@ -17004,6 +17054,8 @@ const slovak = {
   quranUI: {
     accessToTafseer: "Prístup ku všetkým Tafaseer",
     showTafsir: "Zobraziť Tafsír",
+    hideTafsir: "Skryť Tafsir",
+    selectTafsir: "Vybrať Tafsir",
     failedToLoadSurah: "Nepodarilo sa načítať súru",
     saveBookmarkTitle: "Uložiť záložku Koránu",
     surahLabel: "Súra",
@@ -17670,6 +17722,8 @@ const somali = {
   quranUI: {
     accessToTafseer: "Galaangalka dhammaan Tafasiirta",
     showTafsir: "Muuji Tafsiir",
+    hideTafsir: "Qari Tafsiirka",
+    selectTafsir: "Dooro Tafsiir",
     failedToLoadSurah: "Suuraddii lama soo shubi karin",
     saveBookmarkTitle: "Kaydi Calaamadeeyaha Qur'aanka",
     surahLabel: "Suurad",
@@ -18348,6 +18402,8 @@ const swedish = {
   quranUI: {
     accessToTafseer: "Tillgång till all Tafaseer",
     showTafsir: "Visa Tafsir",
+    hideTafsir: "Dölj Tafsir",
+    selectTafsir: "Välj Tafsir",
     failedToLoadSurah: "Kunde inte ladda sura",
     saveBookmarkTitle: "Spara Koranbokmärke",
     surahLabel: "Sura",
@@ -19018,6 +19074,8 @@ const turkish = {
   quranUI: {
     accessToTafseer: "Tüm Tefsirlere Erişim",
     showTafsir: "Tefsiri Göster",
+    hideTafsir: "Tefsiri Gizle",
+    selectTafsir: "Tefsir Seç",
     failedToLoadSurah: "Sure yüklenemedi",
     saveBookmarkTitle: "Kur'an Yer İşareti Kaydet",
     surahLabel: "Sure",
@@ -19695,6 +19753,8 @@ const uzbek = {
   quranUI: {
     accessToTafseer: "Barcha tafsirlarga kirish",
     showTafsir: "Tafsirni Ko'rsatish",
+    hideTafsir: "Tafsirni yashirish",
+    selectTafsir: "Tafsirni tanlang",
     failedToLoadSurah: "Surani yuklab bo'lmadi",
     saveBookmarkTitle: "Qur'on xatcho'pini saqlash",
     surahLabel: "Sura",
@@ -20368,6 +20428,8 @@ const finnish = {
   quranUI: {
     accessToTafseer: "Pääsy kaikkiin Tafaseereihin",
     showTafsir: "Näytä Tafsir",
+    hideTafsir: "Piilota Tafsir",
+    selectTafsir: "Valitse Tafsir",
     failedToLoadSurah: "Suran lataaminen epäonnistui",
     saveBookmarkTitle: "Tallenna Koraani-kirjanmerkki",
     surahLabel: "Sura",
@@ -21042,6 +21104,8 @@ const tamil = {
   quranUI: {
     accessToTafseer: "அனைத்து தபாசீர்களுக்கான அணுகல்",
     showTafsir: "தப்ஸீரைக் காட்டு",
+    hideTafsir: "தஃப்ஸீரை மறை",
+    selectTafsir: "தஃப்ஸீரைத் தேர்ந்தெடு",
     failedToLoadSurah: "ஸூராவை ஏற்றத் தவறியது",
     saveBookmarkTitle: "திருக்குர்ஆன் புக்மார்க்கைச் சேமி",
     surahLabel: "ஸூரா",

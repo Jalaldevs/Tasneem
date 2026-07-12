@@ -41,6 +41,8 @@ import ReferenceModal, { QuranLanguageSheet } from '../components/ReferenceModal
 import usePremium from '../hooks/usePremium';
 import { StatusBar } from 'expo-status-bar';
 import * as quranAudioSync from '../utils/quranAudioSync';
+import TafseerSelectionModal from '../components/TafseerSelectionModal';
+import InlineTafseer from '../components/InlineTafseer';
 
 const MODERATE_FACTOR = 0.35;
 const ms = (size) => moderateScale(size, MODERATE_FACTOR);
@@ -101,6 +103,13 @@ const Quran = () => {
   const [sound, setSound] = useState(null);
   const [bufferingAyahId, setBufferingAyahId] = useState(null);
   const [bookmarkedAyahs, setBookmarkedAyahs] = useState(new Set());
+  
+  // New Tafseer states
+  const [activeTafseers, setActiveTafseers] = useState([]);
+  const [isTafseerExpanded, setIsTafseerExpanded] = useState(false);
+  const [tafseerSheetVisible, setTafseerSheetVisible] = useState(false);
+  const [tafseerTriggerAyahId, setTafseerTriggerAyahId] = useState(null);
+
   const flatListRef = useRef(null);
   const surahListRef = useRef(null);
   const overlayTimeoutRef = useRef(null);
@@ -277,14 +286,46 @@ const Quran = () => {
   useEffect(() => {
     const hydrateSavedSelection = async () => {
       try {
-        const [savedSurahId, savedTranslation] = await Promise.all([AsyncStorage.getItem(STORAGE_SURAH_KEY), AsyncStorage.getItem(STORAGE_TRANSLATION_KEY)]);
+        const [savedSurahId, savedTranslation, savedTafseers, savedIsTafseerExpanded] = await Promise.all([
+          AsyncStorage.getItem(STORAGE_SURAH_KEY), 
+          AsyncStorage.getItem(STORAGE_TRANSLATION_KEY),
+          AsyncStorage.getItem('@reference_tafseer_keys'),
+          AsyncStorage.getItem('@is_tafseer_expanded')
+        ]);
         if (isValidQuranTranslationSelection(savedTranslation)) setSelectedTranslation(savedTranslation);
+        if (savedTafseers) {
+          try {
+            const parsed = JSON.parse(savedTafseers);
+            if (Array.isArray(parsed)) setActiveTafseers(parsed);
+          } catch(e){}
+        }
+        if (savedIsTafseerExpanded === 'true') {
+          setIsTafseerExpanded(true);
+        }
         if (!params.surahId && savedSurahId) { const parsedId = parseInt(savedSurahId, 10); const savedSurah = surahs.find((s) => s.id === parsedId); if (savedSurah) setSelectedSurah(savedSurah); }
       } catch (e) { console.error('Failed to hydrate quran selection', e); }
       finally { setIsSelectionHydrated(true); }
     };
     hydrateSavedSelection();
   }, [params.surahId]);
+
+  const handleSetTafseerExpanded = useCallback((expanded) => {
+    setIsTafseerExpanded(expanded);
+    AsyncStorage.setItem('@is_tafseer_expanded', expanded ? 'true' : 'false').catch(console.error);
+  }, []);
+
+  const handleToggleTafseer = useCallback(async (key) => {
+    setActiveTafseers(prev => {
+      let next;
+      if (prev.includes(key)) {
+        next = prev.filter(t => t !== key);
+      } else {
+        next = [...prev, key];
+      }
+      AsyncStorage.setItem('@reference_tafseer_keys', JSON.stringify(next)).catch(console.error);
+      return next;
+    });
+  }, []);
 
   useEffect(() => {
     const load = async () => {
@@ -435,18 +476,36 @@ const Quran = () => {
           <Text style={[styles.translationText, { color: theme.muted }]}>{item.translation}</Text>
         )}
 
+        {isTafseerExpanded && !item.isBasmala && (
+          <InlineTafseer
+            surahId={selectedSurah.id}
+            ayahId={item.id}
+            activeTafseers={activeTafseers}
+            language={language}
+          />
+        )}
+
         {!item.isBasmala && (
           <TouchableOpacity
             style={[styles.tafseerButton, { borderColor: scheme === 'dark' ? '#374151' : '#e5e7eb' }]}
-            onPress={() => { setReferenceModalAyah(item); setReferenceModalVisible(true); }}
+            onPress={() => {
+              if (isTafseerExpanded) {
+                handleSetTafseerExpanded(false);
+              } else {
+                setTafseerTriggerAyahId(item.id);
+                setTafseerSheetVisible(true);
+              }
+            }}
           >
-            <Text style={[styles.tafseerButtonText, { color: scheme === 'dark' ? '#3b82f6' : '#0f172a' }]}>{t('quranUI.showTafsir')}</Text>
-            <Ionicons name="chevron-down-outline" size={ms(23)} color={scheme === 'dark' ? '#3b82f6' : '#0f172a'} />
+            <Text style={[styles.tafseerButtonText, { color: scheme === 'dark' ? '#3b82f6' : '#0f172a' }]}>
+              {isTafseerExpanded ? (t('quranUI.hideTafsir') || 'Hide Tafsir') : t('quranUI.showTafsir')}
+            </Text>
+            <Ionicons name={isTafseerExpanded ? "chevron-up-outline" : "chevron-down-outline"} size={ms(23)} color={scheme === 'dark' ? '#3b82f6' : '#0f172a'} />
           </TouchableOpacity>
         )}
       </View>
     );
-  }, [playingAyahId, scheme, theme, isNoTranslationMode, handleToggleBookmark, bookmarkedAyahs, bufferingAyahId, selectedSurah.latin]);
+  }, [playingAyahId, scheme, theme, isNoTranslationMode, handleToggleBookmark, bookmarkedAyahs, bufferingAyahId, selectedSurah.latin, isTafseerExpanded, activeTafseers, language]);
 
   // ── Main render ────────────────────────────────────────────────────────────
   return (
@@ -494,6 +553,7 @@ const Quran = () => {
               keyExtractor={(item) => `${item.id}_${selectedTranslation}`}
               contentContainerStyle={{ paddingBottom: moderateScale(30) }}
               ItemSeparatorComponent={() => <View style={{ height: moderateScale(18) }} />}
+              extraData={{ playingAyahId, bookmarkedAyahs, bufferingAyahId, isTafseerExpanded, activeTafseers, language }}
               {...(HAS_AUTO_LAYOUT_VIEW
                 ? { estimatedItemSize: AYAH_ITEM_ESTIMATE }
                 : { onScrollToIndexFailed: onAyahScrollFail, initialNumToRender: 40, maxToRenderPerBatch: 32, windowSize: 35, removeClippedSubviews: false, updateCellsBatchingPeriod: 16 })}
@@ -547,6 +607,19 @@ const Quran = () => {
         quranSurahId={selectedSurah.id}
         quranAyah={referenceModalAyah}
         quranAyahsList={ayahs}
+      />
+
+      <TafseerSelectionModal
+        visible={tafseerSheetVisible}
+        onClose={() => {
+          setTafseerSheetVisible(false);
+          if (tafseerTriggerAyahId && activeTafseers.length > 0) {
+            handleSetTafseerExpanded(true);
+            setTafseerTriggerAyahId(null);
+          }
+        }}
+        activeTafseers={activeTafseers}
+        onToggleTafseer={handleToggleTafseer}
       />
 
       {translationsKeys && (

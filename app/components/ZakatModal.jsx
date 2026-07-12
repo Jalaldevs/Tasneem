@@ -22,6 +22,7 @@ import useAppTranslation from '../hooks/useAppTranslation';
 import { moderateScale, scaleFontSize } from '../utils/responsive';
 import { LinearGradient } from 'expo-linear-gradient';
 import hc from 'hijri-converter';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Enable LayoutAnimation for Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -46,18 +47,37 @@ const ZakatModal = ({ visible, onClose }) => {
   const [showPicker, setShowPicker] = useState(false);
   const [hasSetReminder, setHasSetReminder] = useState(false);
 
+  const setDefaultHijriDate = () => {
+    const today = new Date();
+    const currentHijri = hc.toHijri(today.getFullYear(), today.getMonth() + 1, today.getDate());
+    setHijriDate({ hd: currentHijri.hd, hm: currentHijri.hm, hy: currentHijri.hy + 1 });
+  };
+
   useEffect(() => {
     if (visible) {
-      // Set to 1 Hijri year from today by default
-      const today = new Date();
-      const currentHijri = hc.toHijri(today.getFullYear(), today.getMonth() + 1, today.getDate());
-      setHijriDate({ hd: currentHijri.hd, hm: currentHijri.hm, hy: currentHijri.hy + 1 });
+      AsyncStorage.getItem('@zakat_hijri_date').then(val => {
+        if (val) {
+          try {
+            setHijriDate(JSON.parse(val));
+          } catch(e) {
+            setDefaultHijriDate();
+          }
+        } else {
+          setDefaultHijriDate();
+        }
+      }).catch(() => setDefaultHijriDate());
     } else {
       setWealth('');
       setShowPicker(false);
       setHasSetReminder(false);
     }
   }, [visible]);
+
+  useEffect(() => {
+    if (visible && hijriDate) {
+      AsyncStorage.setItem('@zakat_hijri_date', JSON.stringify(hijriDate)).catch(() => {});
+    }
+  }, [hijriDate, visible]);
 
   const calculateZakat = () => {
     const amount = parseFloat(wealth);

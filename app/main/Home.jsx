@@ -101,6 +101,24 @@ const calculatePrayerTimes = (latitude, longitude, date = new Date(), method = '
     }
   }
 
+  const yesterday = new Date(date);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const ptYesterday = new PrayerTimes(coords, yesterday, params);
+  for (const [cap, low] of Object.entries(keys)) {
+    if (offsets[cap]) {
+      ptYesterday[low] = new Date(ptYesterday[low].getTime() + offsets[cap] * 60000);
+    }
+  }
+
+  const tomorrow = new Date(date);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const ptTomorrow = new PrayerTimes(coords, tomorrow, params);
+  for (const [cap, low] of Object.entries(keys)) {
+    if (offsets[cap]) {
+      ptTomorrow[low] = new Date(ptTomorrow[low].getTime() + offsets[cap] * 60000);
+    }
+  }
+
   const sunnah = new SunnahTimes(pt);
 
   const { HijriDay: hijriDay, HijriMonth: hijriMonth, HijriYear: hijriYear } = getHijriForPrayerTimes(date);
@@ -112,6 +130,8 @@ const calculatePrayerTimes = (latitude, longitude, date = new Date(), method = '
     Qiyam: fmt(sunnah.lastThirdOfTheNight),
     HijriDay: hijriDay, HijriMonth: hijriMonth, HijriYear: hijriYear,
     _raw: pt,
+    _rawYesterday: ptYesterday,
+    _rawTomorrow: ptTomorrow,
   };
 };
 
@@ -209,22 +229,7 @@ const Home = () => {
       setUserCity(parsed.city || '');
       setLocationGranted(true);
 
-      let savedMethod = calculationMethod;
-      try {
-        const storedMethod = await AsyncStorage.getItem(CALCULATION_METHOD_KEY);
-        if (storedMethod) savedMethod = storedMethod;
-      } catch (e) { }
-
-      let savedOffsets = prayerOffsets;
-      try {
-        const storedOffsets = await AsyncStorage.getItem(OFFSETS_KEY);
-        if (storedOffsets) {
-          savedOffsets = JSON.parse(storedOffsets);
-          setPrayerOffsets(savedOffsets);
-        }
-      } catch (e) { }
-
-      setPrayerTimes(calculatePrayerTimes(lat, lon, new Date(), savedMethod, savedOffsets));
+      setPrayerTimes(calculatePrayerTimes(lat, lon, new Date(), calculationMethod, prayerOffsets));
       return true;
     } catch { return false; }
   };
@@ -414,19 +419,34 @@ const Home = () => {
     }
   };
 
-  const scheduleAllNotifications = async (raw) => {
-    if (!raw) return;
+  const scheduleAllNotifications = async () => {
+    if (!prayerTimes._raw) return;
     try {
       await Notifications.cancelAllScheduledNotificationsAsync();
-      const prayerMap = {
-        Fajr: raw.fajr, Sunrise: raw.sunrise, Dhuhr: raw.dhuhr,
-        Asr: raw.asr, Maghrib: raw.maghrib, Isha: raw.isha,
-      };
-      await Promise.all(Object.entries(prayerMap).map(async ([name, date]) => {
-        if (!notifications[name]) return;
+      
+      const getNextPrayerDate = (lowName) => {
         const now = new Date();
-        let triggerDate = new Date(date);
-        if (triggerDate <= now) triggerDate.setDate(triggerDate.getDate() + 1);
+        const yesterdayDate = prayerTimes._rawYesterday?.[lowName];
+        if (yesterdayDate && yesterdayDate > now) return yesterdayDate;
+        const todayDate = prayerTimes._raw?.[lowName];
+        if (todayDate && todayDate > now) return todayDate;
+        const tomorrowDate = prayerTimes._rawTomorrow?.[lowName];
+        if (tomorrowDate && tomorrowDate > now) return tomorrowDate;
+        
+        // Fallback
+        const d = new Date(todayDate || Date.now());
+        if (d <= now) d.setDate(d.getDate() + 1);
+        return d;
+      };
+
+      const prayersToSchedule = {
+        Fajr: 'fajr', Sunrise: 'sunrise', Dhuhr: 'dhuhr',
+        Asr: 'asr', Maghrib: 'maghrib', Isha: 'isha'
+      };
+
+      await Promise.all(Object.entries(prayersToSchedule).map(async ([name, lowName]) => {
+        if (!notifications[name]) return;
+        const triggerDate = getNextPrayerDate(lowName);
 
         const isFajr = name === 'Fajr';
         const isSunrise = name === 'Sunrise';
@@ -456,9 +476,24 @@ const Home = () => {
 
   const updateCountdown = () => {
     if (prayerTimes.Fajr === '--' || !prayerTimes._raw) return;
+    
+    const now = new Date();
+
+    // 1. Check if yesterday's Isha is STILL in the future (after midnight)
+    if (prayerTimes._rawYesterday && prayerTimes._rawYesterday.isha && prayerTimes._rawYesterday.isha > now) {
+      const diff = prayerTimes._rawYesterday.isha - now;
+      setNextPrayer({ name: 'Isha', time: fmt(prayerTimes._rawYesterday.isha) });
+      setCurrentPrayer({ name: 'Maghrib', time: fmt(prayerTimes._rawYesterday.maghrib) });
+      setCountdown(
+        `${String(Math.floor(diff / 3600000)).padStart(2, '0')}:` +
+        `${String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0')}:` +
+        `${String(Math.floor((diff % 60000) / 1000)).padStart(2, '0')}`
+      );
+      return;
+    }
+
     const order = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
     const lowerOrder = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
-    const now = new Date();
 
     let currentFound = null;
     let nextFound = null;
@@ -480,7 +515,8 @@ const Home = () => {
           break;
         }
         if (!currentFound) {
-          currentFound = { name: 'Isha', time: prayerTimes.Isha };
+          // If Fajr is next, the current prayer is Isha (from yesterday)
+          currentFound = { name: 'Isha', time: prayerTimes._rawYesterday ? fmt(prayerTimes._rawYesterday.isha) : prayerTimes.Isha };
         }
         break;
       }
@@ -497,11 +533,10 @@ const Home = () => {
       );
     } else {
       // All today's prayers passed, next is Fajr tomorrow
-      const dFajr = new Date(prayerTimes._raw.fajr);
-      dFajr.setDate(dFajr.getDate() + 1);
+      const dFajr = prayerTimes._rawTomorrow ? prayerTimes._rawTomorrow.fajr : new Date(prayerTimes._raw.fajr.getTime() + 86400000);
       const diff = dFajr - now;
       
-      setNextPrayer({ name: 'Fajr', time: prayerTimes.Fajr });
+      setNextPrayer({ name: 'Fajr', time: fmt(dFajr) });
       setCurrentPrayer({ name: 'Isha', time: prayerTimes.Isha });
       setCountdown(
         `${String(Math.floor(diff / 3600000)).padStart(2, '0')}:` +
@@ -535,22 +570,27 @@ const Home = () => {
 
   useEffect(() => { updateGregorianDate(); }, [language]);
 
-  // ── Load stored calculation method ─────────────────────────────
+  // ── Load stored preferences (Method & Offsets) ─────────────────
   useEffect(() => {
-    const loadCalculationMethod = async () => {
+    const loadPreferences = async () => {
       try {
-        const stored = await AsyncStorage.getItem(CALCULATION_METHOD_KEY);
-        if (stored) {
-          setCalculationMethod(stored);
-        }
+        const storedMethod = await AsyncStorage.getItem(CALCULATION_METHOD_KEY);
+        if (storedMethod) setCalculationMethod(storedMethod);
       } catch (error) {
         console.error('Failed to load calculation method:', error);
       }
+
+      try {
+        const storedOffsets = await AsyncStorage.getItem(OFFSETS_KEY);
+        if (storedOffsets) setPrayerOffsets(JSON.parse(storedOffsets));
+      } catch (error) {
+        console.error('Failed to load prayer offsets:', error);
+      }
     };
-    loadCalculationMethod();
+    loadPreferences();
   }, []);
 
-  // ── Recalculate when calculation method changes ────────────────
+  // ── Recalculate when calculation method or offsets change ────────────────
   useEffect(() => {
     if (coordsRef.current) {
       setPrayerTimes(calculatePrayerTimes(
@@ -561,7 +601,7 @@ const Home = () => {
         prayerOffsets
       ));
     }
-  }, [calculationMethod]);
+  }, [calculationMethod, prayerOffsets]);
 
   // ── Midnight recalculation ─────────────────────────────────────
   useEffect(() => {
@@ -590,7 +630,7 @@ const Home = () => {
   useEffect(() => {
     if (prayerTimes.Fajr === '--') return;
     updateCountdown();
-    scheduleAllNotifications(prayerTimes._raw);
+    scheduleAllNotifications();
     const timer = setInterval(updateCountdown, 1000);
     return () => clearInterval(timer);
   }, [prayerTimes, notifications]);
@@ -679,11 +719,11 @@ const Home = () => {
             <View style={styles.prayersHeader}>
               <Text style={[styles.cardTitle, { color: theme.title }]} numberOfLines={1} ellipsizeMode="tail">{t('home.prayerTimes')}</Text>
               <View style={styles.prayersHeaderIcons}>
-                <TouchableOpacity onPress={() => setShowQiblahModal(true)}>
-                  <Ionicons name="compass-outline" size={22} color={'#3b82f6'} />
+                <TouchableOpacity onPress={() => setShowQiblahModal(true)} hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
+                  <Ionicons name="compass-outline" size={24} color={'#3b82f6'} />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setShowOffsetsModal(true)}>
-                  <Ionicons name="timer-outline" size={22} color={'#3b82f6'} />
+                <TouchableOpacity onPress={() => setShowOffsetsModal(true)} hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }} style={{ marginLeft: 8 }}>
+                  <Ionicons name="timer-outline" size={24} color={'#3b82f6'} />
                 </TouchableOpacity>
               </View>
             </View>

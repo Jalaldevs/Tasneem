@@ -80,7 +80,7 @@ const SearchModal = ({ visible, onClose, isNested = false }) => {
   const { sunnahIndex, isLoading: isSunnahLoading, isReady: isSunnahReady, hasStartedLoading, loadIndex } = useSunnahIndex(language);
 
   // Search limit tracking
-  const DAILY_SEARCH_LIMIT = 7;
+  const DAILY_SEARCH_LIMIT = 5;
   const SEARCH_COUNT_KEY = '@search:daily_count';
   const SEARCH_TIMESTAMP_KEY = '@search:first_search_timestamp';
 
@@ -123,7 +123,7 @@ const SearchModal = ({ visible, onClose, isNested = false }) => {
     try {
       const firstSearchTimestamp = await storageGet(SEARCH_TIMESTAMP_KEY);
       const now = Date.now();
-      const HOURS_24 = 24 * 60 * 60 * 1000;
+      const HOURS_16 = 16 * 60 * 60 * 1000;
 
       if (!firstSearchTimestamp) {
         console.log('[SearchModal] No previous searches found. Count is 0.');
@@ -133,16 +133,16 @@ const SearchModal = ({ visible, onClose, isNested = false }) => {
 
       const firstSearchTime = parseInt(firstSearchTimestamp, 10);
 
-      // Check if 24 hours have passed since first search
-      if (now - firstSearchTime > HOURS_24) {
-        console.log('[SearchModal] 24 hours passed since first search. Resetting search count.');
+      // Check if 16 hours have passed since first search
+      if (now - firstSearchTime > HOURS_16) {
+        console.log('[SearchModal] 16 hours passed since first search. Resetting search count.');
         await storageSet(SEARCH_COUNT_KEY, '0');
         await storageRemove(SEARCH_TIMESTAMP_KEY);
         setAvailableTime(null);
         return 0;
       }
 
-      const availableAt = firstSearchTime + HOURS_24;
+      const availableAt = firstSearchTime + HOURS_16;
       setAvailableTime(availableAt);
 
       const count = await storageGet(SEARCH_COUNT_KEY);
@@ -207,9 +207,9 @@ const SearchModal = ({ visible, onClose, isNested = false }) => {
     loadRemainingSearches();
   }, [canSearch]);
 
-  // Update available time display every second when limit is reached
+  // Update available time display every second
   useEffect(() => {
-    if (!searchLimitReached || !availableTime || isPremium) return;
+    if (!availableTime || isPremium) return;
 
     const interval = setInterval(() => {
       const now = Date.now();
@@ -526,70 +526,70 @@ const SearchModal = ({ visible, onClose, isNested = false }) => {
         },
       ]}
     >
-        <View style={[styles.searchSheet, { backgroundColor: theme.surface }]}>
+      <View style={[styles.searchSheet, { backgroundColor: theme.surface }]}>
 
-          {/* Search input */}
-          <View style={[styles.searchHeader, { borderBottomColor: theme.border }]}>
-            <Ionicons name="search-outline" size={ms(22)} color={theme.icon} />
-            <TextInput
-              ref={inputRef}
-              autoFocus
-              placeholder={
-                searchSource === 'quran'
-                  ? t('search.quranPlaceholder')
-                  : t('search.sunnahPlaceholder')
-              }
-              placeholderTextColor={theme.muted}
-              value={searchValue}
-              onChangeText={setSearchValue}
-              style={[styles.input, { color: theme.text }]}
-            />
-            <TouchableOpacity onPress={handleClose}>
-              <Ionicons name="close-outline" size={ms(30)} color={theme.icon} />
-            </TouchableOpacity>
-          </View>
+        {/* Search input */}
+        <View style={[styles.searchHeader, { borderBottomColor: theme.border }]}>
+          <Ionicons name="search-outline" size={ms(22)} color={theme.icon} />
+          <TextInput
+            ref={inputRef}
+            autoFocus
+            placeholder={
+              searchSource === 'quran'
+                ? t('search.quranPlaceholder')
+                : t('search.sunnahPlaceholder')
+            }
+            placeholderTextColor={theme.muted}
+            value={searchValue}
+            onChangeText={setSearchValue}
+            style={[styles.input, { color: theme.text }]}
+          />
+          <TouchableOpacity onPress={handleClose}>
+            <Ionicons name="close-outline" size={ms(30)} color={theme.icon} />
+          </TouchableOpacity>
+        </View>
 
-          {/* Source selector + Advanced Search toggle */}
-          <View style={styles.sourceSelector}>
-            {['quran', 'sunnah'].map((src) => (
-              <Pressable
-                key={src}
-                onPress={() => {
-                  setSearchSource(src);
-                  setSearchValue('');
+        {/* Source selector + Advanced Search toggle */}
+        <View style={styles.sourceSelector}>
+          {['quran', 'sunnah'].map((src) => (
+            <Pressable
+              key={src}
+              onPress={() => {
+                setSearchSource(src);
+                setSearchValue('');
+              }}
+              style={({ pressed }) => [
+                styles.sourceButton,
+                {
+                  transform: [{ scale: pressed ? 0.96 : 1 }],
+                  borderColor: isDarkMode ? '#4b5563' : '#ccc',
+                  backgroundColor:
+                    isDarkMode && searchSource !== src
+                      ? '#1e293b'
+                      : 'transparent',
+                },
+                searchSource === src && {
+                  borderColor: '#1976d2',
+                  backgroundColor: isDarkMode ? '#1e3a8a' : '#e3f2fd',
+                },
+              ]}
+            >
+              <Text
+                style={{
+                  color:
+                    searchSource === src
+                      ? isDarkMode ? '#fff' : '#000'
+                      : theme.text,
+                  fontWeight: '600',
                 }}
-                style={({ pressed }) => [
-                  styles.sourceButton,
-                  {
-                    transform: [{ scale: pressed ? 0.96 : 1 }],
-                    borderColor: isDarkMode ? '#4b5563' : '#ccc',
-                    backgroundColor:
-                      isDarkMode && searchSource !== src
-                        ? '#1e293b'
-                        : 'transparent',
-                  },
-                  searchSource === src && {
-                    borderColor: '#1976d2',
-                    backgroundColor: isDarkMode ? '#1e3a8a' : '#e3f2fd',
-                  },
-                ]}
               >
-                <Text
-                  style={{
-                    color:
-                      searchSource === src
-                        ? isDarkMode ? '#fff' : '#000'
-                        : theme.text,
-                    fontWeight: '600',
-                  }}
-                >
-                  {src === 'quran' ? t('bookmarks.quran') : t('bookmarks.sunnah')}
-                </Text>
-              </Pressable>
-            ))}
+                {src === 'quran' ? t('bookmarks.quran') : t('bookmarks.sunnah')}
+              </Text>
+            </Pressable>
+          ))}
 
-            {/* ── Filter toggle (premium) ── */}
-            {/* 
+          {/* ── Filter toggle (premium) ── */}
+          {/* 
             {searchSource === 'sunnah' && (
               <Pressable
                 onPress={handleToggleFilters}
@@ -623,10 +623,10 @@ const SearchModal = ({ visible, onClose, isNested = false }) => {
               </Pressable>
             )}
             */}
-          </View>
+        </View>
 
-          {/* Filter Panel */}
-          {/* 
+        {/* Filter Panel */}
+        {/* 
           {showFilters && isPremium && (
             <View style={[styles.filterPanel, { borderBottomColor: theme.border }]}>
               <View style={styles.filterHeader}>
@@ -694,171 +694,156 @@ const SearchModal = ({ visible, onClose, isNested = false }) => {
           )}
           */}
 
-          {/* Verse ref hint pill */}
-          {showVerseHint && (
-            <View style={styles.verseHintRow}>
-              <View
+        {/* Verse ref hint pill */}
+        {showVerseHint && (
+          <View style={styles.verseHintRow}>
+            <View
+              style={[
+                styles.verseHintPill,
+                {
+                  backgroundColor: isDarkMode
+                    ? 'rgba(25,118,210,0.15)'
+                    : 'rgba(25,118,210,0.08)',
+                  borderColor: isDarkMode
+                    ? 'rgba(144,202,249,0.3)'
+                    : 'rgba(25,118,210,0.2)',
+                },
+              ]}
+            >
+              <Ionicons
+                name="information-circle-outline"
+                size={ms(14)}
+                color={isDarkMode ? '#90caf9' : '#1976d2'}
+                style={{ marginRight: ms(5) }}
+              />
+              <Text
                 style={[
-                  styles.verseHintPill,
-                  {
-                    backgroundColor: isDarkMode
-                      ? 'rgba(25,118,210,0.15)'
-                      : 'rgba(25,118,210,0.08)',
-                    borderColor: isDarkMode
-                      ? 'rgba(144,202,249,0.3)'
-                      : 'rgba(25,118,210,0.2)',
-                  },
+                  styles.verseHintText,
+                  { color: isDarkMode ? '#90caf9' : '#1976d2' },
                 ]}
               >
-                <Ionicons
-                  name="information-circle-outline"
-                  size={ms(14)}
-                  color={isDarkMode ? '#90caf9' : '#1976d2'}
-                  style={{ marginRight: ms(5) }}
-                />
-                <Text
-                  style={[
-                    styles.verseHintText,
-                    { color: isDarkMode ? '#90caf9' : '#1976d2' },
-                  ]}
-                >
-                  {t('search.verseJumpTip')}
+                {t('search.verseJumpTip')}
+              </Text>
+            </View>
+          </View>
+        )}
+
+        {/* Results / recents */}
+        <View style={{ flex: 1, paddingTop: ms(14) }}>
+          {/* Info banner for free users - always visible */}
+          {!isPremium && (
+            <View style={[styles.warningBanner, {
+              backgroundColor: isDarkMode ? 'rgba(59, 130, 246, 0.15)' : '#dbeafe',
+              borderLeftColor: '#3b82f6',
+            }]}>
+              <Ionicons
+                name="information-circle"
+                size={ms(18)}
+                color="#3b82f6"
+                style={{ marginTop: ms(2) }}
+              />
+              <View style={{ flex: 1 }}>
+                <Text style={[styles.warningText, { color: isDarkMode ? '#60a5fa' : '#1e40af' }]}>
+                  {Platform.OS === 'android' ? (t('search.androidFree') || "Unlimited Free Searches") : `${remainingSearches} free ${remainingSearches === 1 ? 'view' : 'views'} remaining today`}
+                </Text>
+                <Text style={[styles.warningSubtext, { color: isDarkMode ? '#93c5fd' : '#1e3a8a' }]}>
+                  {t('search.upgradeForUnlimited') || 'Upgrade to Premium for unlimited views'}
+                  {(!isAndroid && availableTime) && ` • ${t('search.availableIn') || 'Available in'} ${formatAvailableTime(availableTime)}`}
                 </Text>
               </View>
+              <TouchableOpacity
+                onPress={() => requirePremium()}
+                style={[styles.warningUpgradeButton, { backgroundColor: '#3b82f6' }]}
+              >
+                <Text style={styles.warningUpgradeButtonText}>
+                  {t('search.upgrade') || 'Upgrade'}
+                </Text>
+              </TouchableOpacity>
             </View>
           )}
 
-          {/* Results / recents */}
-          <View style={{ flex: 1, paddingTop: ms(14) }}>
-            {/* Info banner for free users - always visible */}
-            {!isPremium && searchValue.length > 0 && (
-              <View style={[styles.warningBanner, {
-                backgroundColor: isDarkMode ? 'rgba(59, 130, 246, 0.15)' : '#dbeafe',
-                borderLeftColor: '#3b82f6',
-              }]}>
-                <Ionicons
-                  name="information-circle"
-                  size={ms(18)}
-                  color="#3b82f6"
-                  style={{ marginTop: ms(2) }}
-                />
-                <View style={{ flex: 1 }}>
-                  {searchLimitReached ? (
-                    // Limit exceeded - show warning with countdown
-                    <>
-                      <Text style={[styles.warningText, { color: isDarkMode ? '#60a5fa' : '#1e40af' }]}>
-                        {Platform.OS === 'android' ? (t('search.androidPremiumLocked') || "Quran Reference Searching is a Premium Feature.") : (t('search.limitReached') || "You have used all your free result views today.")}
-                      </Text>
-                      <Text style={[styles.warningSubtext, { color: isDarkMode ? '#93c5fd' : '#1e3a8a' }]}>
-                        {t('search.upgradeForUnlimited') || 'Upgrade to Premium for unlimited views'}
-                        {(!isAndroid && availableTime) && ` • ${t('search.availableIn') || 'Available in'} ${formatAvailableTime(availableTime)}`}
-                      </Text>
-                    </>
-                  ) : (
-                    // Within limit - show info
-                    <>
-                      <Text style={[styles.warningText, { color: isDarkMode ? '#60a5fa' : '#1e40af' }]}>
-                        {Platform.OS === 'android' ? (t('search.androidFree') || "Unlimited Free Searches") : `${remainingSearches} free ${remainingSearches === 1 ? 'view' : 'views'} remaining today`}
-                      </Text>
-                      <Text style={[styles.warningSubtext, { color: isDarkMode ? '#93c5fd' : '#1e3a8a' }]}>
-                        {t('search.upgradeForUnlimited') || 'Upgrade to Premium for unlimited views'}
-                      </Text>
-                    </>
-                  )}
-                </View>
-                <TouchableOpacity
-                  onPress={() => requirePremium()}
-                  style={[styles.warningUpgradeButton, { backgroundColor: '#3b82f6' }]}
-                >
-                  <Text style={styles.warningUpgradeButtonText}>
-                    {t('search.upgrade') || 'Upgrade'}
+          {searchSource === 'sunnah' && isSunnahLoading && searchValue.includes(' ') ? (
+            <View style={{ marginTop: ms(36), alignItems: 'center', paddingHorizontal: ms(20) }}>
+              <ActivityIndicator size="large" color={theme.primary} />
+              <Text style={[styles.noResults, { color: theme.muted, marginTop: ms(12), textAlign: 'center' }]}>
+                {t('search.loadingSunnah') || 'Loading Sunnah collection...'}
+              </Text>
+            </View>
+          ) : searchValue.length > 0 ? (
+            <>
+              {searchSource === 'sunnah' && currentResults?.some(r => r.book === 'muslim') && (
+                <View style={[styles.warningBanner, { backgroundColor: isDarkMode ? '#451a03' : '#fef3c7', borderLeftColor: '#f59e0b' }]}>
+                  <Ionicons name="warning" size={20} color="#f59e0b" style={{ marginTop: 2 }} />
+                  <Text style={[styles.warningText, { color: isDarkMode ? '#fde68a' : '#92400e' }]}>
+                    {t('home.warning1')}
                   </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-
-            {searchSource === 'sunnah' && isSunnahLoading && searchValue.includes(' ') ? (
-              <View style={{ marginTop: ms(36), alignItems: 'center', paddingHorizontal: ms(20) }}>
-                <ActivityIndicator size="large" color={theme.primary} />
-                <Text style={[styles.noResults, { color: theme.muted, marginTop: ms(12), textAlign: 'center' }]}>
-                  {t('search.loadingSunnah') || 'Loading Sunnah collection...'}
-                </Text>
-              </View>
-            ) : searchValue.length > 0 ? (
-              <>
-                {searchSource === 'sunnah' && currentResults?.some(r => r.book === 'muslim') && (
-                  <View style={[styles.warningBanner, { backgroundColor: isDarkMode ? '#451a03' : '#fef3c7', borderLeftColor: '#f59e0b' }]}>
-                    <Ionicons name="warning" size={20} color="#f59e0b" style={{ marginTop: 2 }} />
-                    <Text style={[styles.warningText, { color: isDarkMode ? '#fde68a' : '#92400e' }]}>
-                      {t('home.warning1')}
-                    </Text>
-                  </View>
-                )}
-                <FlatList
-                  data={currentResults}
+                </View>
+              )}
+              <FlatList
+                data={currentResults}
                 keyExtractor={(item, index) =>
                   `${searchSource}-${item.matchType}-${item.surahId || item.book || ''}-${item.ayahId || item.hadithnumber || ''}-${index}`
                 }
                 renderItem={currentRenderer}
               />
-              </>
-            ) : (
-              <View style={styles.examplesContainer}>
+            </>
+          ) : (
+            <View style={styles.examplesContainer}>
 
 
-                <Text
+              <Text
+                style={[
+                  styles.examplesHint,
+                  {
+                    color: theme.muted,
+                    marginBottom: ms(10),
+                    fontStyle: 'normal',
+                    fontWeight: '700',
+                    textAlign: language === 'arabic' ? 'right' : 'left'
+                  },
+                ]}
+              >
+                {t('search.tipsLabel') || 'Search Examples:'}
+              </Text>
+
+              <View style={[styles.tipsGrid, { alignItems: language === 'arabic' ? 'flex-end' : 'flex-start' }]}>
+                <View
                   style={[
-                    styles.examplesHint,
+                    styles.tipItem,
                     {
-                      color: theme.muted,
-                      marginBottom: ms(10),
-                      fontStyle: 'normal',
-                      fontWeight: '700',
-                      textAlign: language === 'arabic' ? 'right' : 'left'
-                    },
+                      backgroundColor: isDarkMode ? '#1e293b' : '#f8fafc',
+                      borderColor: theme.border,
+                      flexDirection: language === 'arabic' ? 'row-reverse' : 'row'
+                    }
                   ]}
                 >
-                  {t('search.tipsLabel') || 'Search Examples:'}
-                </Text>
+                  <Ionicons name="flash-outline" size={ms(14)} color={isDarkMode ? '#90caf9' : '#1976d2'} />
+                  <Text style={[styles.tipText, { color: theme.text, textAlign: language === 'arabic' ? 'right' : 'left' }]}>
+                    {searchSource === 'quran' ? t('search.exampleQuranRef') : t('search.exampleSunnahRef')}
+                  </Text>
+                </View>
 
-                <View style={[styles.tipsGrid, { alignItems: language === 'arabic' ? 'flex-end' : 'flex-start' }]}>
-                  <View
-                    style={[
-                      styles.tipItem,
-                      {
-                        backgroundColor: isDarkMode ? '#1e293b' : '#f8fafc',
-                        borderColor: theme.border,
-                        flexDirection: language === 'arabic' ? 'row-reverse' : 'row'
-                      }
-                    ]}
-                  >
-                    <Ionicons name="flash-outline" size={ms(14)} color={isDarkMode ? '#90caf9' : '#1976d2'} />
-                    <Text style={[styles.tipText, { color: theme.text, textAlign: language === 'arabic' ? 'right' : 'left' }]}>
-                      {searchSource === 'quran' ? t('search.exampleQuranRef') : t('search.exampleSunnahRef')}
-                    </Text>
-                  </View>
-
-                  <View
-                    style={[
-                      styles.tipItem,
-                      {
-                        backgroundColor: isDarkMode ? '#1e293b' : '#f8fafc',
-                        borderColor: theme.border,
-                        flexDirection: language === 'arabic' ? 'row-reverse' : 'row'
-                      }
-                    ]}
-                  >
-                    <Ionicons name="search-outline" size={ms(14)} color={isDarkMode ? '#90caf9' : '#1976d2'} />
-                    <Text style={[styles.tipText, { color: theme.text, textAlign: language === 'arabic' ? 'right' : 'left' }]}>
-                      {searchSource === 'quran' ? 'Al-Baqarah' : 'Malik 645'}
-                    </Text>
-                  </View>
+                <View
+                  style={[
+                    styles.tipItem,
+                    {
+                      backgroundColor: isDarkMode ? '#1e293b' : '#f8fafc',
+                      borderColor: theme.border,
+                      flexDirection: language === 'arabic' ? 'row-reverse' : 'row'
+                    }
+                  ]}
+                >
+                  <Ionicons name="search-outline" size={ms(14)} color={isDarkMode ? '#90caf9' : '#1976d2'} />
+                  <Text style={[styles.tipText, { color: theme.text, textAlign: language === 'arabic' ? 'right' : 'left' }]}>
+                    {searchSource === 'quran' ? 'Al-Baqarah' : 'Malik 645'}
+                  </Text>
                 </View>
               </View>
-            )}
-          </View>
+            </View>
+          )}
         </View>
-      </ThemedView>
+      </View>
+    </ThemedView>
   );
 
   if (isNested) {

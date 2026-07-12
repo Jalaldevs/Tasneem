@@ -23,6 +23,17 @@ export const LANG_LABELS = {
 /** lang codes whose text is RTL */
 export const RTL_LANGS = new Set(['urd']);
 
+export const APP_LANG_TO_SUNNAH = {
+  english: 'eng',
+  french: 'fra',
+  indonesian: 'ind',
+  bengali: 'ben',
+  turkish: 'tur',
+  urdu: 'urd',
+  russian: 'rus',
+  tamil: 'tam',
+};
+
 /**
  * For each book, list the language codes that have a translation file.
  * Derived from the repository file listing (Arabic & Dehlawi excluded).
