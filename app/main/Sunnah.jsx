@@ -679,22 +679,30 @@ export default function Sunnah() {
               isDarkMode={scheme === 'dark'}
             />
 
-            {/* ── Translation Selection Modal ── */}
-            <SunnahLanguageSheet
-              visible={translationModalVisible}
-              onClose={() => setTranslationModalVisible(false)}
-              bookKey={selectedBook}
-              selectedLang={selectedTranslationLang === 'none' ? null : selectedTranslationLang}
-              onSelect={(val) => setSelectedTranslationLang(val || 'none')}
-              isDarkMode={scheme === 'dark'}
-              accentColor="#3b82f6"
-              textColor={theme.text}
-              mutedColor={theme.muted}
-              t={t}
-            />
           </>
         )}
       </ThemedCard>
+
+      {/* ── Translation Selection Modal ── */}
+      <Modal
+        visible={translationModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setTranslationModalVisible(false)}
+      >
+        <SunnahLanguageSheet
+          visible={translationModalVisible}
+          onClose={() => setTranslationModalVisible(false)}
+          bookKey={selectedBook}
+          selectedLang={selectedTranslationLang === 'none' ? null : selectedTranslationLang}
+          onSelect={(val) => setSelectedTranslationLang(val || 'none')}
+          isDarkMode={scheme === 'dark'}
+          accentColor="#3b82f6"
+          textColor={theme.text}
+          mutedColor={theme.muted}
+          t={t}
+        />
+      </Modal>
     </ThemedView>
   );
 }

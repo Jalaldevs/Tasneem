@@ -159,13 +159,23 @@ export function SunnahLanguageSheet({ visible, onClose, bookKey, selectedLang, o
             const available = item.available;
             return (
               <TouchableOpacity
-                onPress={() => { onSelect(item.code); onClose(); }}
-                activeOpacity={available ? 0.75 : 1}
+                onPress={() => {
+                  if (available === false) {
+                    Alert.alert(
+                      t('sunnahUI.notAvailable') || "Not Available",
+                      t('sunnahUI.notAvailableDesc') || "This translation is not available for this specific book yet."
+                    );
+                    return;
+                  }
+                  onSelect(item.code);
+                  onClose();
+                }}
+                activeOpacity={available !== false ? 0.75 : 1}
                 style={[
                   sheetStyles.item,
                   { flex: 1, margin: ms(4), borderColor: active ? itemBorder : 'transparent', borderWidth: 1 },
                   active && { backgroundColor: itemActiveBg },
-                  !available && { opacity: 0.45 }
+                  available === false && { opacity: 0.45 }
                 ]}
               >
                 <View style={sheetStyles.itemInner}>
