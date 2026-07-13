@@ -80,17 +80,16 @@ const DailyInsightModal = ({ visible, onClose }) => {
   const [hadithTranslation, setHadithTranslation] = useState('');
   const [hadithTransLoading, setHadithTransLoading] = useState(false);
 
-  // ── Countdown to midnight ────────────────────────────────────────────────────
+  // ── Countdown to next 16-hour period ─────────────────────────────────────────
   const [countdown, setCountdown] = useState('');
+  
+  const PERIOD_MS = 16 * 60 * 60 * 1000; // 16 hours
+  const timeStr = `16h_${Math.floor(Date.now() / PERIOD_MS)}`;
+
   useEffect(() => {
     const calcCountdown = () => {
-      const now = new Date();
-      const target = new Date();
-      if (now.getHours() < 12) {
-        target.setHours(12, 0, 0, 0);
-      } else {
-        target.setHours(24, 0, 0, 0);
-      }
+      const now = Date.now();
+      const target = (Math.floor(now / PERIOD_MS) + 1) * PERIOD_MS;
       const diff = target - now;
       const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
       const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
@@ -101,11 +100,6 @@ const DailyInsightModal = ({ visible, onClose }) => {
     const timer = setInterval(calcCountdown, 1000);
     return () => clearInterval(timer);
   }, []);
-
-  const nowDate = new Date();
-  const datePart = nowDate.toISOString().split('T')[0];
-  const halfPart = nowDate.getHours() < 12 ? 'AM' : 'PM';
-  const timeStr = `${datePart}_${halfPart}`;
 
   useEffect(() => {
     if (!visible) return;
@@ -136,13 +130,13 @@ const DailyInsightModal = ({ visible, onClose }) => {
           const randomSurahId = Math.floor(Math.random() * 114) + 1;
           const surahArabicData = quranArabicMap[randomSurahId];
           const verses = surahArabicData?.verses || [];
-          const totalVerses = verses.length || 1;
-          const randomAyahId = Math.floor(Math.random() * totalVerses) + 1;
-          ayahKey = `${randomSurahId}:${randomAyahId}`;
+          const unseenVerses = verses.filter(v => !seenAyahs.includes(`${randomSurahId}:${v.id}`));
           
-          if (!seenAyahs.includes(ayahKey)) {
+          if (unseenVerses.length > 0) {
+            const randomV = unseenVerses[Math.floor(Math.random() * unseenVerses.length)];
+            ayahKey = `${randomSurahId}:${randomV.id}`;
             const surahName = surahArabicData?.transliteration || surahArabicData?.name || ('Surah ' + randomSurahId);
-            ayahObj = { surahId: randomSurahId, ayahId: randomAyahId, surahName, verses };
+            ayahObj = { surahId: randomSurahId, ayahId: randomV.id, surahName, verses };
             break;
           }
         }
@@ -161,11 +155,12 @@ const DailyInsightModal = ({ visible, onClose }) => {
           
           const arabicEdition = await readOfflineSunnahEdition(`ara-${bookKey}`);
           if (arabicEdition && arabicEdition.hadiths && arabicEdition.hadiths.length > 0) {
-            const max = arabicEdition.hadiths.length;
-            const randomH = arabicEdition.hadiths[Math.floor(Math.random() * max)];
-            hadithKey = `${bookKey}:${randomH.hadithnumber}`;
+            const unseenHadiths = arabicEdition.hadiths.filter(h => !seenHadiths.includes(`${bookKey}:${h.hadithnumber}`));
             
-            if (!seenHadiths.includes(hadithKey)) {
+            if (unseenHadiths.length > 0) {
+              const randomH = unseenHadiths[Math.floor(Math.random() * unseenHadiths.length)];
+              hadithKey = `${bookKey}:${randomH.hadithnumber}`;
+              
               let hadithArabicText = randomH.text || '';
               if (hadithArabicText) {
                 hadithArabicText = hadithArabicText
@@ -175,7 +170,8 @@ const DailyInsightModal = ({ visible, onClose }) => {
                   .replace(/(<([^>]+)>)/gi, '')
                   .replace(/&nbsp;/gi, ' ')
                   .replace(/ـ/g, '')
-                  .replace(/\s+/g, ' ')
+                  .replace(/[ \t]+/g, ' ')
+                  .replace(/\n\s*\n/g, '\n\n') // Normalize multiple newlines
                   .trim();
               }
               hadithObj = { 
@@ -251,7 +247,8 @@ const DailyInsightModal = ({ visible, onClose }) => {
         .replace(/(<([^>]+)>)/gi, '')
         .replace(/&nbsp;/gi, ' ')
         .replace(/ـ/g, '')
-        .replace(/\s+/g, ' ')
+        .replace(/[ \t]+/g, ' ')
+        .replace(/\n\s*\n/g, '\n\n')
         .trim();
       if (isMounted) { setHadithTranslation(text ? cleanHtml(text) : ''); setHadithTransLoading(false); }
     };
@@ -438,7 +435,15 @@ const DailyInsightModal = ({ visible, onClose }) => {
                       ) : !!hadithTranslation ? (
                         <Text style={[styles.translationText, { color: isDarkMode ? '#cbd5e1' : '#334155' }]} selectable>"{hadithTranslation}"</Text>
                       ) : (
-                        <Text style={[styles.translationText, { color: theme.muted, fontStyle: 'italic' }]}>{t('dailyInsight.tapToChooseTrans')}</Text>
+                        <Text style={[styles.translationText, { color: theme.muted, fontStyle: 'italic' }]} selectable={false}>{t('dailyInsight.tapToChooseTrans')}</Text>
+                      )}
+
+                      {dailyHadith.grades && dailyHadith.grades.length > 0 && (
+                        <View style={styles.gradesContainer}>
+                          {dailyHadith.grades.map((g, i) => (
+                            <Text key={i} style={[styles.gradeText, { color: theme.muted }]}>{g.name}: {g.grade}</Text>
+                          ))}
+                        </View>
                       )}
 
                       <View style={[styles.cardFooter, { borderTopColor: isDarkMode ? '#334155' : 'rgba(0,0,0,0.07)' }]}>
@@ -570,6 +575,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     lineHeight: scaleFontSize(16),
   },
+  gradesContainer: { flexDirection: 'column', gap: ms(4), marginTop: ms(4), marginBottom: ms(16) },
+  gradeText: { fontSize: scaleFontSize(12), fontWeight: '600' },
 });
 
 export default DailyInsightModal;

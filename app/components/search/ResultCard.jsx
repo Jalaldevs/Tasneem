@@ -182,13 +182,7 @@ const ResultCard = ({
         <Text style={[styles.surahLabel, { color: theme.muted }]} numberOfLines={1}>
           {item.bookDisplayName}
         </Text>
-        {gradeTier !== 'unknown' && (
-          <View style={[styles.gradePill, { backgroundColor: gradeStyle.bg, borderColor: gradeStyle.border }]}>
-            <Text style={[styles.gradeText, { color: gradeStyle.text }]}>
-              {getGradeLabel(gradeTier)}
-            </Text>
-          </View>
-        )}
+
       </View>
       {Boolean(arabicDisplay) && (
         <Text
@@ -259,16 +253,6 @@ const styles = StyleSheet.create({
   surahLabel: {
     fontSize: scaleFontSize(12),
     flex: 1,
-  },
-  gradePill: {
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 8,
-    borderWidth: 1,
-  },
-  gradeText: {
-    fontSize: scaleFontSize(10),
-    fontWeight: '700',
   },
   arabicText: {
     fontSize: scaleFontSize(18),

@@ -52,9 +52,11 @@ const cleanHadithText = (text) => {
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/p>/gi, '\n')
     .replace(/<p>/gi, '')
+    .replace(/(<([^>]+)>)/gi, '')
     .replace(/&nbsp;/gi, ' ')
     .replace(/ـ/g, '')
-    .replace(/\s+/g, ' ')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n\s*\n/g, '\n\n')
     .trim();
 };
 
