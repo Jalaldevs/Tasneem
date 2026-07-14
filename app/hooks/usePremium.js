@@ -31,7 +31,7 @@ import GetStarted from '../components/GetStarted';
 // ── EXPO GO MOCK FLAG ─────────────────────────────────────────────────────────
 // Set to TRUE when developing in Expo Go.
 // Set to FALSE when building for Production (Development Build / EAS Build).
-export const USE_MOCK_PREMIUM = true;
+export const USE_MOCK_PREMIUM = false;
 
 // ── RevenueCat config ─────────────────────────────────────────────────────────
 // Replace with your actual API keys from app.revenuecat.com:
