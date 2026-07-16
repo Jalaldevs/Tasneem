@@ -23,10 +23,11 @@ import React, {
   useMemo,
 } from 'react';
 import { Platform, Modal, Alert, View, Text, TouchableOpacity } from 'react-native';
-import Purchases from 'react-native-purchases';
+// import Purchases from 'react-native-purchases'; // Deferred to prevent Expo Go crash
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { isDatabaseReady } from '../utils/databaseManager';
 import GetStarted from '../components/GetStarted';
+import useAppTranslation from './useAppTranslation';
 
 // ── EXPO GO MOCK FLAG ─────────────────────────────────────────────────────────
 // Set to TRUE when developing in Expo Go.
@@ -56,6 +57,7 @@ const PremiumContext = createContext(null);
 // Safe: always returns false on error, never throws.
 const checkActivePurchase = async () => {
   try {
+    const Purchases = require('react-native-purchases').default;
     const customerInfo = await Purchases.getCustomerInfo();
     return customerInfo.entitlements.active[ENTITLEMENT_ID] !== undefined;
   } catch (e) {
@@ -218,6 +220,7 @@ export const PremiumProvider = ({ children }) => {
   const [paywallVisible, setPaywallVisible] = useState(false);
   const [iapLoading, setIapLoading] = useState(false);
 
+  const { t } = useAppTranslation();
   const pendingActionRef = useRef(null);
 
   // ── Init RevenueCat + restore subscription on mount ───────────────────────
@@ -226,6 +229,7 @@ export const PremiumProvider = ({ children }) => {
 
     const initRC = async () => {
       try {
+        const Purchases = require('react-native-purchases').default;
         // Configure RevenueCat — only needs to happen once
         Purchases.configure({ apiKey: REVENUECAT_API_KEY });
 
@@ -322,6 +326,7 @@ export const PremiumProvider = ({ children }) => {
 
       setIapLoading(true);
       try {
+        const Purchases = require('react-native-purchases').default;
         const offerings = await Purchases.getOfferings();
         const monthlyPackage = offerings.current?.monthly;
 
@@ -365,26 +370,28 @@ export const PremiumProvider = ({ children }) => {
   const restorePurchases = useCallback(async () => {
     setIapLoading(true);
     try {
+      const Purchases = require('react-native-purchases').default;
       const customerInfo = await Purchases.restorePurchases();
       const hasActive = customerInfo.entitlements.active[ENTITLEMENT_ID] !== undefined;
       setIsPremiumState(hasActive);
       if (hasActive) {
         Alert.alert(
-          'Restore Success',
-          'Your premium subscription has been successfully restored.'
+          t('premium.restoreSuccessTitle', 'Restore Success'),
+          t('premium.restoreSuccessBody', 'Your premium subscription has been successfully restored.')
         );
         setPaywallVisible(false);
       } else {
         Alert.alert(
-          'Restore Purchases',
-          'No active premium subscription was found on this App Store account.'
+          t('premium.noSubTitle', 'No Subscription Found'),
+          t('premium.noSubBody', 'We could not find an active subscription linked to your account. If you believe this is a mistake, make sure you are signed in with the same App Store account you used to subscribe.')
         );
       }
     } catch (e) {
       console.warn('[RC] restore failed:', e);
+      // Don't expose RevenueCat's raw error to the user
       Alert.alert(
-        'Restore Failed',
-        e?.message || 'An error occurred while trying to restore your purchases.'
+        t('premium.noSubTitle', 'No Subscription Found'),
+        t('premium.noSubBody', 'We could not find an active subscription linked to your account. If you believe this is a mistake, make sure you are signed in with the same App Store account you used to subscribe.')
       );
     } finally {
       setIapLoading(false);

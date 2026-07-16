@@ -6,7 +6,6 @@ import * as SplashScreen from 'expo-splash-screen';
 import { NavigationProvider, useNavigationContext } from "./components/NavigationContext";
 import { PremiumProvider } from './hooks/usePremium';
 import { isOnboardingCompleted } from './utils/offlineContent';
-import { isDatabaseReady } from './utils/databaseManager';
 import { initializeSunnahPad } from './utils/sunnahPad';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import usePremium from './hooks/usePremium';
@@ -70,7 +69,6 @@ export default function RootLayout() {
   const pathname = usePathname();
   const [checkingOnboarding, setCheckingOnboarding] = useState(true);
   const [completed, setCompleted] = useState(false);
-  const [dbReady, setDbReady] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -78,10 +76,8 @@ export default function RootLayout() {
     const check = async () => {
       try {
         const done = await isOnboardingCompleted();
-        const ready = await isDatabaseReady();
         if (mounted) {
           setCompleted(done);
-          setDbReady(ready);
         }
       } finally {
         if (mounted) {
@@ -111,10 +107,8 @@ export default function RootLayout() {
 
     const syncCompletion = async () => {
       const done = await isOnboardingCompleted();
-      const ready = await isDatabaseReady();
       if (mounted) {
         setCompleted(done);
-        setDbReady(ready);
       }
     };
 
@@ -130,17 +124,16 @@ export default function RootLayout() {
 
     const onOnboardingRoute = pathname === '/onboarding';
     const onCalculationMethodRoute = pathname === '/calculationMethodSelection';
-    const onDownloadRoute = pathname === '/download';
 
     if (!completed && !onOnboardingRoute && !onCalculationMethodRoute) {
       router.replace('/onboarding');
       return;
     }
 
-    if (completed && (onOnboardingRoute || onDownloadRoute || onCalculationMethodRoute)) {
+    if (completed && (onOnboardingRoute || onCalculationMethodRoute)) {
       router.replace('/main/Home');
     }
-  }, [checkingOnboarding, completed, dbReady, pathname, router]);
+  }, [checkingOnboarding, completed, pathname, router]);
 
   if (checkingOnboarding) {
     return null;

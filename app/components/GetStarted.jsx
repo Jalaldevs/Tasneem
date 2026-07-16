@@ -72,6 +72,7 @@ export const LegalModal = ({ visible, onClose }) => {
     { body: t('termsModal.intro') },
     { heading: t('termsModal.iapTitle'), body: t('termsModal.iapBody') },
     { heading: t('termsModal.importantTitle'), body: t('termsModal.importantBody') },
+    { heading: t('termsModal.restoreTitle'), body: t('termsModal.restoreBody') },
 
     { isMainHeading: true, heading: t('privacyModal.title') },
     { body: t('privacyModal.intro') },
@@ -152,6 +153,7 @@ const PremiumPaywall = ({ onClose, onSubscribe, productPrice = '$3.99', onRestor
   const [accepted, setAccepted] = useState(false);
   const [legalVisible, setLegalVisible] = useState(false);
   const [hasReadLegal, setHasReadLegal] = useState(false);
+  const [showWaitAlert, setShowWaitAlert] = useState(false);
 
   const handleCheckboxPress = () => {
     if (accepted) {
@@ -217,16 +219,16 @@ const PremiumPaywall = ({ onClose, onSubscribe, productPrice = '$3.99', onRestor
 
     return (
       <Text style={paywallStyles.legal}>
+        {segments[2]}
+        {' · '}
+        <Text style={paywallStyles.legalLink} onPress={() => (!dbReady || isDownloading) ? setShowWaitAlert(true) : onRestore()}>
+          👈 {segments[3]}
+        </Text>
+        {' · '}
         {segments[0]}
         {' · '}
         <Text style={paywallStyles.legalLink} onPress={handleCancelAnytime}>
           {segments[1]}
-        </Text>
-        {' · '}
-        {segments[2]}
-        {' · '}
-        <Text style={paywallStyles.legalLink} onPress={onRestore}>
-          {segments[3]}
         </Text>
       </Text>
     );
@@ -378,6 +380,30 @@ const PremiumPaywall = ({ onClose, onSubscribe, productPrice = '$3.99', onRestor
         visible={legalVisible}
         onClose={() => setLegalVisible(false)}
       />
+
+      {/* Download Wait Alert Modal */}
+      <Modal visible={showWaitAlert} transparent animationType="fade">
+        <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center' }}>
+          <View style={{ backgroundColor: '#fff', width: '80%', borderRadius: 16, padding: 24, alignItems: 'center' }}>
+            <Ionicons name="cloud-download-outline" size={48} color="#1b83de" style={{ marginBottom: 16 }} />
+            <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#1f2937', marginBottom: 8, textAlign: 'center' }}>
+              {t('downloading.title', 'Downloading Assets...')}
+            </Text>
+            <Text style={{ fontSize: 14, color: '#4b5563', textAlign: 'center', marginBottom: 20 }}>
+              {t('downloading.subtitle', 'Please have patience because this app was built with love.')}
+            </Text>
+            
+            <View style={{ width: '100%', height: 8, backgroundColor: '#e5e7eb', borderRadius: 4, marginBottom: 8, overflow: 'hidden' }}>
+              <View style={{ width: `${(progress * 100)}%`, height: '100%', backgroundColor: '#1b83de', borderRadius: 4 }} />
+            </View>
+            <Text style={{ fontSize: 12, color: '#6b7280', marginBottom: 24 }}>{`${Math.round(progress * 100)}%`}</Text>
+            
+            <TouchableOpacity onPress={() => setShowWaitAlert(false)} style={{ backgroundColor: '#f3f4f6', paddingVertical: 10, paddingHorizontal: 24, borderRadius: 8 }}>
+              <Text style={{ fontSize: 16, color: '#1f2937', fontWeight: '600' }}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </>
   );
 };

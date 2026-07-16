@@ -433,11 +433,11 @@ const FlashIconWithHint = ({ onPress, style, showHint }) => {
       <Ionicons name="flash" size={ms(23.6)} color="#3b82f6" />
       {showHint && (
         <View style={{
-          position: 'absolute', bottom: -6, right: -6,
+          position: 'absolute', bottom: -6, left: -6,
           backgroundColor: '#3b82f6', borderRadius: 8, width: 16, height: 16,
           alignItems: 'center', justifyContent: 'center',
         }}>
-          <Text style={{ fontSize: 9, color: '#fff' }}>👆</Text>
+          <Text style={{ fontSize: 9, color: '#fff' }}>👉</Text>
         </View>
       )}
     </TouchableOpacity>
@@ -651,7 +651,7 @@ const Header = ({
       id: 'legal', title: t('settings.options.terms.title'), icon: 'shield-alt', color: '#118ab2', iconLibrary: FontAwesome5, isModal: true, modalType: 'legal'
     },
     { id: 'language', title: t('settings.options.language.title'), icon: 'earth', color: '#38BDF8', iconLibrary: Ionicons, isModal: true, modalType: 'language' }, USE_MOCK_PREMIUM && { id: 'mockPremium', title: `Dev IAP: ${isPremium ? 'Premium' : 'Free'}`, icon: 'shield-half-sharp', color: isPremium ? '#22c55e' : '#ef4444', iconLibrary: Ionicons, isMockPremiumToggle: true },
-    { id: 'calculationMethod', title: `${t('calculationMethod.title') || 'Calculation Method'}\n(${getMethodDisplayName(calculationMethod)})`, icon: 'time', color: '#8b5cf6', iconLibrary: Ionicons, isModal: true, modalType: 'calculationMethod' },
+    { id: 'calculationMethod', title: t('calculationMethod.title') || 'Calculation Method', icon: 'time', color: '#8b5cf6', iconLibrary: Ionicons, isModal: true, modalType: 'calculationMethod' },
     // { id: 'testAthan', title: 'TEST ATHAN MODAL', icon: 'alarm', color: '#ff0000', iconLibrary: Ionicons, isTestAthan: true },
   ].filter(Boolean);
 

@@ -1,4 +1,10 @@
 const english = {
+  downloading: {
+    title: "Downloading Sunnah And Tafseer Assets...",
+    subtitle: "If you have an active subscription, you will be able to restore your purchases once the download is complete.",
+    error: "Download failed. Please check your internet connection.",
+    retry: "Retry Download"
+  },
   prayerOffsets: {
     title: "Adjust Prayer Times",
     infoText: "Add or subtract minutes manually",
@@ -22,12 +28,14 @@ const english = {
     intro: "These Terms apply to the Tasneem application by JalalDevs.",
     iapTitle: "In-App Purchases & Subscriptions",
     iapBody:
-      "The App offers auto-renewable subscriptions. All payments are processed securely. Subscriptions are managed entirely by the Apple App Store or Google Play Console / Store, depending on your platform. You can manage or cancel your subscription at any time through your Apple or Google Play account settings.",
+      "The App offers auto-renewable subscriptions. All payments are processed securely. Subscriptions are managed entirely by the Apple App Store Console / Store, depending on your platform. You can manage or cancel your subscription at any time through your Apple account settings.",
     importantTitle: "Important Condition",
     importantBody:
       "By subscribing, you understand and agree that you are paying for a MONTHLY subscription with TasneemApp. You also agree that the developer reserves the right to make the app completely free in the future, or to increase or decrease the search limits at any time, without prior notice. If the app is removed from the store, you can continue renewing your subscription and being charged, but if you uninstall it even mid-subscription you will not be able to install it again.",
     legalUseBody:
       "You agree not to misuse, exploit, reverse-engineer, or alter the source code of the app to bypass payment walls or limitations. Attempting to cheat the system is strictly prohibited and is considered a personal offense, a breach of trust, and a violation of these terms.",
+    restoreTitle: "Restoring Purchases",
+    restoreBody: "If you had an active subscription and changed devices or deleted the app while the subscription was active, please press the 'Restore Purchases' button located in the flash icon menu to regain access.",
     platformDifferencesBody:
       "Please note that premium features and limitations may vary between Android and iOS (iPhone) devices. For example, Android users receive unlimited free access to general and Sunnah searches, while all Quran searches are strictly exclusive to Premium. Conversely, iOS users have a global daily free limit for all search types, and Premium removes this limit entirely. These differences exist due to the distinct technical architectures of each operating system, and the development team has intentionally designed the app this way to provide the best possible experience on each platform.",
   },
@@ -461,12 +469,16 @@ const english = {
     trialCta: "Try Free for 7 Days",
     trialCtaSub: "then $3.99 / month",
     legal:
-      "7-day free trial · Cancel anytime · Billed Via App Store or Google Play · Restore purchases",
+      "7-day free trial · Cancel anytime · Billed Via App Store · Restore purchases",
     agreeTerms: "I agree to the",
     termsLink: "Terms of Service",
     privacyLink: "Privacy Policy",
     overviewTitle: "Premium Features",
     overviewSubtitle: "Honest overview before you decide",
+    noSubTitle: "No Subscription Found",
+    noSubBody: "We could not find an active subscription linked to your account. If you believe this is a mistake, make sure you are signed in with the same App Store account you used to subscribe.",
+    restoreSuccessTitle: "Restore Success",
+    restoreSuccessBody: "Your premium subscription has been successfully restored.",
     getStartedCta: "Get Started",
     getStartedSub: "Explore all premium features",
   },
@@ -680,6 +692,12 @@ const english = {
 };
 
 const arabic = {
+  downloading: {
+    title: "جاري تنزيل أصول السنة والتفسير...",
+    subtitle: "إذا كان لديك اشتراك نشط، ستتمكن من استعادة مشترياتك بمجرد اكتمال التنزيل.",
+    error: "فشل التنزيل. يرجى التحقق من اتصالك بالإنترنت.",
+    retry: "إعادة المحاولة"
+  },
   prayerOffsets: {
     title: "تعديل أوقات الصلاة",
     infoText: "إضافة أو طرح دقائق يدوياً",
@@ -708,6 +726,8 @@ const arabic = {
       "بالاشتراك، أنت تفهم وتوافق على أنك تدفع مقابل اشتراك شهري مع تطبيق TasneemApp. كما توافق على أن المطور يحتفظ بالحق في جعل التطبيق مجانيًا بالكامل في المستقبل، أو زيادة أو تقليل حدود البحث في أي وقت دون إشعار مسبق. إذا تمت إزالة التطبيق من المتجر، يمكنك الاستمرار في تجديد اشتراكك، ولكن إذا قمت بإلغاء تثبيته فلن تتمكن من تثبيته مرة أخرى.",
     legalUseBody:
       "أنت توافق على عدم إساءة استخدام التطبيق أو استغلاله أو إجراء هندسة عكسية أو تغيير الكود المصدري لتجاوز القيود أو بوابات الدفع. محاولة الغش ممنوعة منعاً باتاً وتعتبر إساءة شخصية وخرقاً للثقة وانتهاكاً لهذه الشروط.",
+    restoreTitle: "استعادة المشتريات",
+    restoreBody: "إذا كان لديك اشتراك نشط وقمت بتغيير الجهاز أو حذف التطبيق أثناء تنشيط الاشتراك، يرجى الضغط على زر 'استعادة المشتريات' الموجود في قائمة أيقونة الفلاش لاستعادة الوصول.",
     platformDifferencesBody:
       "يرجى ملاحظة أن الميزات المميزة والقيود قد تختلف بين أجهزة Android و iOS (iPhone). على سبيل المثال، يحصل مستخدمو Android على وصول مجاني غير محدود لعمليات البحث العامة والسنّة، بينما عمليات بحث القرآن حصرية بالكامل للاشتراك المميز. بالمقابل، يمتلك مستخدمو iOS حدًا يوميًا مجانيًا لجميع أنواع البحث، والاشتراك المميز يزيل هذا الحد تمامًا. توجد هذه الاختلافات بسبب البنى التقنية المختلفة لكل نظام تشغيل.",
   },
@@ -1117,6 +1137,10 @@ const arabic = {
     privacyLink: "سياسة الخصوصية",
     overviewTitle: "الميزات المميزة",
     overviewSubtitle: "نظرة عامة صادقة قبل أن تقرر",
+    noSubTitle: "لم يتم العثور على اشتراك",
+    noSubBody: "لم نتمكن من العثور على اشتراك نشط مرتبط بحسابك. إذا كنت تعتقد أن هذا خطأ، تأكد من تسجيل الدخول بنفس حساب App Store الذي استخدمته للاشتراك.",
+    restoreSuccessTitle: "تمت الاستعادة",
+    restoreSuccessBody: "تمت استعادة اشتراكك المميز بنجاح.",
     getStartedCta: "ابدأ",
     getStartedSub: "استكشف جميع الميزات المميزة",
   },
@@ -1348,6 +1372,12 @@ const arabic = {
 };
 
 const chinese = {
+  downloading: {
+    title: "正在下载圣训和塔夫斯尔资源...",
+    subtitle: "如果您有有效的订阅，下载完成后您将能够恢复购买。",
+    error: "下载失败。请检查您的网络连接。",
+    retry: "重试下载"
+  },
   prayerOffsets: {
     title: "调整祈祷时间",
     infoText: "手动添加或减去分钟",
@@ -1375,6 +1405,8 @@ const chinese = {
       "订阅即表示您了解并同意您正在支付 TasneemApp 的包月订阅费用。您还同意开发者保留在未来将应用完全免费的权利，或随时增加或减少搜索限制，恕不另行通知。如果应用从商店下架，您可以继续续订，但如果您卸载它，将无法再次安装。",
     legalUseBody:
       "您同意不滥用、利用、进行逆向工程或更改应用的源代码以绕过付费墙或限制。严禁尝试作弊，这被视为个人冒犯、违反信任以及违反这些条款。",
+    restoreTitle: "恢复购买",
+    restoreBody: "如果您有有效的订阅，并在订阅有效期间更换了设备或删除了应用程序，请按闪电图标菜单中的“恢复购买”按钮以重新获取访问权限。",
     platformDifferencesBody:
       "请注意，Android 和 iOS (iPhone) 设备的高级功能和限制可能有所不同。例如，Android 用户可以无限制地免费进行一般和圣训搜索，而所有古兰经搜索则严格仅限于高级订阅。相反，iOS 用户对所有搜索类型都有全球每日免费限制，高级订阅会完全取消此限制。由于每个操作系统的技术架构不同，开发团队有意这样设计应用，以提供最佳体验。",
   },
@@ -1768,6 +1800,10 @@ const chinese = {
     privacyLink: "隐私政策",
     overviewTitle: "高级功能",
     overviewSubtitle: "在您决定前的诚实概述",
+    noSubTitle: "未找到订阅",
+    noSubBody: "我们无法找到与您账户关联的有效订阅。如果您认为这是错误，请确保您使用了订阅时使用的同一个 App Store 账户登录。",
+    restoreSuccessTitle: "恢复成功",
+    restoreSuccessBody: "您的高级订阅已成功恢复。",
     getStartedCta: "开始",
     getStartedSub: "探索所有高级功能",
   },
@@ -1996,6 +2032,12 @@ const chinese = {
 };
 
 const hindi = {
+  downloading: {
+    title: "सुन्नत और तफसीर एसेट्स डाउनलोड हो रहे हैं...",
+    subtitle: "यदि आपके पास एक सक्रिय सदस्यता है, तो डाउनलोड पूरा होने के बाद आप अपनी खरीदारी पुनर्स्थापित कर पाएंगे।",
+    error: "डाउनलोड विफल। कृपया अपना इंटरनेट कनेक्शन जांचें।",
+    retry: "पुनः प्रयास करें"
+  },
   prayerOffsets: {
     title: "प्रार्थना का समय समायोजित करें",
     infoText: "मैन्युअल रूप से मिनट जोड़ें या घटाएं",
@@ -2028,6 +2070,8 @@ const hindi = {
       "सदस्यता लेकर, आप समझते हैं और सहमत हैं कि आप TasneemApp के साथ मासिक सदस्यता के लिए भुगतान कर रहे हैं। आप यह भी सहमत हैं कि डेवलपर को भविष्य में ऐप को पूरी तरह से मुफ्त बनाने, या किसी भी समय बिना पूर्व सूचना के खोज सीमा बढ़ाने या घटाने का अधिकार सुरक्षित है।",
     legalUseBody:
       "आप भुगतान दीवारों या सीमाओं को बायपास करने के लिए ऐप के स्रोत कोड का दुरुपयोग, शोषण, रिवर्स-इंजीनियर या परिवर्तन न करने के लिए सहमत हैं। सिस्टम को धोखा देने का प्रयास सख्त वर्जित है और इसे एक व्यक्तिगत अपराध, विश्वास का उल्लंघन और इन शर्तों का उल्लंघन माना जाता है।",
+    restoreTitle: "खरीदारी पुनर्स्थापित करें",
+    restoreBody: "यदि आपके पास एक सक्रिय सदस्यता थी और सदस्यता सक्रिय होने के दौरान आपने डिवाइस बदल दिया है या ऐप हटा दिया है, तो पहुंच पुनः प्राप्त करने के लिए कृपया फ्लैश आइकन मेनू में स्थित 'खरीदारी पुनर्स्थापित करें' बटन दबाएं।",
     platformDifferencesBody:
       "कृपया ध्यान दें कि Android और iOS (iPhone) उपकरणों के बीच प्रीमियम सुविधाएँ और सीमाएँ भिन्न हो सकती हैं। उदाहरण के लिए, Android उपयोगकर्ताओं को सामान्य और सुन्नत खोजों के लिए असीमित मुफ्त पहुँच मिलती है, जबकि सभी कुरान खोजें पूरी तरह से प्रीमियम के लिए विशेष हैं। इसके विपरीत, iOS उपयोगकर्ताओं के पास सभी खोज प्रकारों के लिए एक वैश्विक दैनिक मुफ्त सीमा है। ये अंतर तकनीकी वास्तुकला के कारण हैं।",
   },
@@ -2438,6 +2482,10 @@ const hindi = {
     privacyLink: "गोपनीयता नीति",
     overviewTitle: "प्रीमियम सुविधाएँ",
     overviewSubtitle: "निर्णय लेने से पहले ईमानदार अवलोकन",
+    noSubTitle: "कोई सदस्यता नहीं मिली",
+    noSubBody: "हम आपके खाते से जुड़ी कोई सक्रिय सदस्यता नहीं ढूंढ सके। यदि आपको लगता है कि यह गलती है, तो सुनिश्चित करें कि आप उसी App Store खाते से साइन इन हैं जिससे आपने सदस्यता ली थी।",
+    restoreSuccessTitle: "पुनर्स्थापना सफल",
+    restoreSuccessBody: "आपकी प्रीमियम सदस्यता सफलतापूर्वक पुनर्स्थापित कर दी गई है।",
     getStartedCta: "शुरू करें",
     getStartedSub: "सभी प्रीमियम सुविधाओं का अन्वेषण करें",
   },
@@ -2669,6 +2717,12 @@ const hindi = {
 };
 
 const spanish = {
+  downloading: {
+    title: "Descargando recursos de Sunnah y Tafseer...",
+    subtitle: "Si tienes una suscripción activa, podrás restaurar tus compras una vez que la descarga esté completa.",
+    error: "Descarga fallida. Por favor verifica tu conexión a internet.",
+    retry: "Reintentar descarga"
+  },
   prayerOffsets: {
     title: "Ajustar Tiempos de Oración",
     infoText: "Agrega o resta minutos manualmente",
@@ -2695,12 +2749,14 @@ const spanish = {
       "Estos Términos se aplican a la aplicación Tasneem proporcionada por JalalDevs.",
     iapTitle: "Compras y Suscripciones",
     iapBody:
-      "La App ofrece suscripciones auto-renovables. Los pagos se procesan de forma segura. Las suscripciones son gestionadas enteramente por Apple App Store o Google Play Console / Store. Puedes gestionar o cancelar tu suscripción en cualquier momento.",
+      "La App ofrece suscripciones auto-renovables. Los pagos se procesan de forma segura. Las suscripciones son gestionadas enteramente por Apple App Store Console / Store. Puedes gestionar o cancelar tu suscripción en cualquier momento.",
     importantTitle: "Condición Importante",
     importantBody:
       "Al suscribirte, entiendes y aceptas que estás pagando por una suscripción MENSUAL. También aceptas que el desarrollador se reserva el derecho de hacer la app completamente gratuita en el futuro, o de aumentar o disminuir los límites de búsqueda en cualquier momento sin previo aviso.",
     legalUseBody:
       "Aceptas no hacer un mal uso, explotar, aplicar ingeniería inversa o alterar el código fuente de la app para eludir los muros de pago o limitaciones. Intentar hacer trampa está estrictamente prohibido y se considera una ofensa personal y una violación de la confianza.",
+    restoreTitle: "Restaurar compras",
+    restoreBody: "Si tenías una suscripción activa y cambiaste de dispositivo o eliminaste la aplicación mientras la suscripción estaba activa, presiona el botón 'Restaurar compras' ubicado en el menú del ícono de rayo para recuperar el acceso.",
     platformDifferencesBody:
       "Ten en cuenta que las funciones premium y limitaciones pueden variar entre Android e iOS. Por ejemplo, los usuarios de Android reciben acceso gratuito e ilimitado a búsquedas generales y de la Sunnah, mientras que las búsquedas del Corán son exclusivas del Premium. Por el contrario, los usuarios de iOS tienen un límite diario global. Estas diferencias existen por las distintas arquitecturas técnicas de cada sistema.",
   },
@@ -3116,6 +3172,10 @@ const spanish = {
     privacyLink: "Política de Privacidad",
     overviewTitle: "Características Premium",
     overviewSubtitle: "Descripción general honesta antes de que decidas",
+    noSubTitle: "No se encontró suscripción",
+    noSubBody: "No pudimos encontrar una suscripción activa vinculada a tu cuenta. Si crees que es un error, asegúrate de haber iniciado sesión con la misma cuenta de App Store que usaste para suscribirte.",
+    restoreSuccessTitle: "Restauración exitosa",
+    restoreSuccessBody: "Tu suscripción premium ha sido restaurada exitosamente.",
     getStartedCta: "Comenzar",
     getStartedSub: "Explora todas las funciones premium",
   },
@@ -3351,6 +3411,12 @@ const spanish = {
 };
 
 const french = {
+  downloading: {
+    title: "Téléchargement des ressources Sunnah et Tafseer...",
+    subtitle: "Si vous avez un abonnement actif, vous pourrez restaurer vos achats une fois le téléchargement terminé.",
+    error: "Échec du téléchargement. Veuillez vérifier votre connexion Internet.",
+    retry: "Réessayer"
+  },
   prayerOffsets: {
     title: "Ajuster les heures de prière",
     infoText: "Ajouter ou soustraire des minutes manuellement",
@@ -3376,12 +3442,14 @@ const french = {
       "Ces conditions s'appliquent à l'application Tasneem fournie par JalalDevs.",
     iapTitle: "Achats et Abonnements",
     iapBody:
-      "L'application propose des abonnements auto-renouvelables. Les paiements sont traités en toute sécurité. Les abonnements sont gérés par l'Apple App Store ou Google Play Console / Store. Vous pouvez gérer ou annuler votre abonnement à tout moment.",
+      "L'application propose des abonnements auto-renouvelables. Les paiements sont traités en toute sécurité. Les abonnements sont gérés par l'Apple App Store Console / Store. Vous pouvez gérer ou annuler votre abonnement à tout moment.",
     importantTitle: "Condition Importante",
     importantBody:
       "En vous abonnant, vous comprenez et acceptez de payer un abonnement MENSUEL. Vous acceptez également que le développeur se réserve le droit de rendre l'application entièrement gratuite à l'avenir, ou de modifier les limites de recherche à tout moment sans préavis.",
     legalUseBody:
       "Vous acceptez de ne pas faire de mauvaise utilisation, exploiter, effectuer de l'ingénierie inverse ou modifier le code source pour contourner les limitations. Tenter de tricher est strictement interdit et considéré comme une offense personnelle et une violation de ces conditions.",
+    restoreTitle: "Restaurer les achats",
+    restoreBody: "Si vous aviez un abonnement actif et que vous avez changé d'appareil ou supprimé l'application pendant que l'abonnement était actif, veuillez appuyer sur le bouton « Restaurer les achats » situé dans le menu de l'icône éclair pour retrouver l'accès.",
     platformDifferencesBody:
       "Veuillez noter que les fonctionnalités premium et les limitations peuvent varier entre Android et iOS. Par exemple, les utilisateurs Android bénéficient d'un accès gratuit et illimité aux recherches générales et de la Sunna, tandis que les recherches dans le Coran sont exclusives au Premium. À l'inverse, les utilisateurs iOS ont une limite quotidienne globale. Ces différences sont dues aux architectures techniques distinctes.",
   },
@@ -3800,6 +3868,10 @@ const french = {
     privacyLink: "Politique de confidentialité",
     overviewTitle: "Fonctionnalités premium",
     overviewSubtitle: "Aperçu honnête avant de décider",
+    noSubTitle: "Aucun abonnement trouvé",
+    noSubBody: "Nous n'avons pas trouvé d'abonnement actif associé à votre compte. Si vous pensez qu'il s'agit d'une erreur, assurez-vous d'être connecté avec le même compte App Store utilisé lors de l'abonnement.",
+    restoreSuccessTitle: "Restauration réussie",
+    restoreSuccessBody: "Votre abonnement premium a été restauré avec succès.",
     getStartedCta: "Commencer",
     getStartedSub: "Explorez toutes les fonctionnalités premium",
   },
@@ -4038,6 +4110,12 @@ const french = {
 };
 
 const bengali = {
+  downloading: {
+    title: "সুন্নাহ এবং তাফসির সম্পদ ডাউনলোড করা হচ্ছে...",
+    subtitle: "আপনার যদি একটি সক্রিয় সাবস্ক্রিপশন থাকে, তাহলে ডাউনলোড সম্পন্ন হলে আপনি আপনার ক্রয় পুনরুদ্ধার করতে পারবেন।",
+    error: "ডাউনলোড ব্যর্থ হয়েছে। অনুগ্রহ করে আপনার ইন্টারনেট সংযোগ পরীক্ষা করুন।",
+    retry: "পুনরায় চেষ্টা করুন"
+  },
   prayerOffsets: {
     title: "নামাজের সময় সামঞ্জস্য করুন",
     infoText: "ম্যানুয়ালি মিনিট যোগ বা বিয়োগ করুন",
@@ -4069,6 +4147,8 @@ const bengali = {
       "সাবস্ক্রাইব করার মাধ্যমে, আপনি বুঝতে এবং সম্মত হন যে আপনি একটি মাসিক সাবস্ক্রিপশনের জন্য অর্থ প্রদান করছেন। আপনি আরও সম্মত হন যে বিকাশকারী ভবিষ্যতে অ্যাপটি সম্পূর্ণ বিনামূল্যে করার, বা যেকোনো সময় পূর্ব বিজ্ঞপ্তি ছাড়াই অনুসন্ধান সীমা পরিবর্তন করার অধিকার সংরক্ষণ করেন।",
     legalUseBody:
       "আপনি অর্থপ্রদানের বাধা এড়াতে অ্যাপটির উত্স কোড অপব্যবহার, শোষণ, বিপরীত-প্রকৌশল বা পরিবর্তন না করতে সম্মত হন। প্রতারণা করার চেষ্টা কঠোরভাবে নিষিদ্ধ।",
+    restoreTitle: "ক্রয় পুনরুদ্ধার করুন",
+    restoreBody: "আপনার যদি একটি সক্রিয় সাবস্ক্রিপশন থাকে এবং সাবস্ক্রিপশন চলাকালীন ডিভাইস পরিবর্তন করে থাকেন বা অ্যাপটি মুছে ফেলে থাকেন, তবে অ্যাক্সেস ফিরে পেতে অনুগ্রহ করে ফ্ল্যাশ আইকন মেনুতে থাকা 'ক্রয় পুনরুদ্ধার করুন' বোতামটি চাপুন।",
     platformDifferencesBody:
       "অনুগ্রহ করে মনে রাখবেন যে অ্যান্ড্রয়েড এবং আইওএস ডিভাইসের মধ্যে প্রিমিয়াম বৈশিষ্ট্য এবং সীমাবদ্ধতা ভিন্ন হতে পারে। উদাহরণস্বরূপ, অ্যান্ড্রয়েড ব্যবহারকারীরা সাধারণ এবং সুন্নাহ অনুসন্ধানে সীমাহীন বিনামূল্যে অ্যাক্সেস পান, যেখানে কুরআন অনুসন্ধান শুধুমাত্র প্রিমিয়ামের জন্য একচেটিয়া।",
   },
@@ -4482,6 +4562,10 @@ const bengali = {
     privacyLink: "গোপনীয়তা নীতি",
     overviewTitle: "প্রিমিয়াম বৈশিষ্ট্য",
     overviewSubtitle: "আপনি সিদ্ধান্ত নেওয়ার আগে সৎ ওভারভিউ",
+    noSubTitle: "কোনো সাবস্ক্রিপশন পাওয়া যায়নি",
+    noSubBody: "আমরা আপনার অ্যাকাউন্টের সাথে সংযুক্ত কোনো সক্রিয় সাবস্ক্রিপশন খুঁজে পাইনি। যদি আপনি মনে করেন এটি ভুল, নিশ্চিত করুন যে আপনি সেই App Store অ্যাকাউন্ট দিয়ে সাইন ইন করেছেন যা দিয়ে সাবস্ক্রাইব করেছিলেন।",
+    restoreSuccessTitle: "পুনরুদ্ধার সফল",
+    restoreSuccessBody: "আপনার প্রিমিয়াম সাবস্ক্রিপশন সফলভাবে পুনরুদ্ধার করা হয়েছে।",
     getStartedCta: "শুরু করুন",
     getStartedSub: "সমস্ত প্রিমিয়াম বৈশিষ্ট্য অন্বেষণ করুন",
   },
@@ -4714,6 +4798,12 @@ const bengali = {
 };
 
 const portuguese = {
+  downloading: {
+    title: "Baixando recursos da Sunnah e Tafseer...",
+    subtitle: "Se você tem uma assinatura ativa, poderá restaurar suas compras assim que o download for concluído.",
+    error: "Falha no download. Verifique sua conexão com a internet.",
+    retry: "Tentar novamente"
+  },
   prayerOffsets: {
     title: "Ajustar Horários de Oração",
     infoText: "Adicione ou subtraia minutos manualmente",
@@ -4739,12 +4829,14 @@ const portuguese = {
       "Estes Termos se aplicam ao aplicativo Tasneem fornecido por JalalDevs.",
     iapTitle: "Compras e Assinaturas",
     iapBody:
-      "O aplicativo oferece assinaturas auto-renováveis. Todos os pagamentos são processados com segurança. As assinaturas são gerenciadas pelo Apple App Store ou Google Play Console / Store. Você pode cancelar a qualquer momento.",
+      "O aplicativo oferece assinaturas auto-renováveis. Todos os pagamentos são processados com segurança. As assinaturas são gerenciadas pelo Apple App Store Console / Store. Você pode cancelar a qualquer momento.",
     importantTitle: "Condição Importante",
     importantBody:
       "Ao assinar, você entende e concorda que está pagando por uma assinatura MENSAL. Você também concorda que o desenvolvedor reserva o direito de tornar o aplicativo totalmente gratuito no futuro ou alterar os limites de busca sem aviso prévio.",
     legalUseBody:
       "Você concorda em não fazer mau uso, explorar, fazer engenharia reversa ou alterar o código-fonte para contornar limites. Tentar trapacear o sistema é estritamente proibido.",
+    restoreTitle: "Restaurar Compras",
+    restoreBody: "Se você tinha uma assinatura ativa e mudou de dispositivo ou excluiu o aplicativo enquanto a assinatura estava ativa, pressione o botão 'Restaurar Compras' localizado no menu do ícone de raio para recuperar o acesso.",
     platformDifferencesBody:
       "Observe que os recursos premium e limitações podem variar entre Android e iOS. Por exemplo, os usuários do Android têm acesso gratuito ilimitado a buscas gerais e Sunnah, enquanto as buscas no Alcorão são exclusivas do Premium. Por outro lado, os usuários do iOS têm um limite diário global.",
   },
@@ -5161,6 +5253,10 @@ const portuguese = {
     privacyLink: "Política de Privacidade",
     overviewTitle: "Recursos Premium",
     overviewSubtitle: "Visão geral honesta antes de você decidir",
+    noSubTitle: "Nenhuma assinatura encontrada",
+    noSubBody: "Não conseguimos encontrar uma assinatura ativa vinculada à sua conta. Se acredita que é um erro, certifique-se de estar conectado com a mesma conta da App Store usada para assinar.",
+    restoreSuccessTitle: "Restauração bem-sucedida",
+    restoreSuccessBody: "Sua assinatura premium foi restaurada com sucesso.",
     getStartedCta: "Começar",
     getStartedSub: "Explore todos os recursos premium",
   },
@@ -5396,6 +5492,12 @@ const portuguese = {
 };
 
 const russian = {
+  downloading: {
+    title: "Загрузка ресурсов Сунны и Тафсира...",
+    subtitle: "Если у вас есть активная подписка, вы сможете восстановить покупки после завершения загрузки.",
+    error: "Ошибка загрузки. Пожалуйста, проверьте подключение к интернету.",
+    retry: "Повторить загрузку"
+  },
   prayerOffsets: {
     title: "Корректировка времени молитвы",
     infoText: "Вручную добавьте или убавьте минуты",
@@ -5426,6 +5528,8 @@ const russian = {
       "Оформляя подписку, вы соглашаетесь с тем, что оплачиваете ЕЖЕМЕСЯЧНУЮ подписку. Вы также соглашаетесь, что разработчик может сделать приложение бесплатным в будущем или изменить лимиты поиска без уведомления.",
     legalUseBody:
       "Вы соглашаетесь не злоупотреблять, не эксплуатировать, не выполнять обратную разработку и не изменять исходный код для обхода ограничений. Попытки обмана строго запрещены.",
+    restoreTitle: "Восстановить покупки",
+    restoreBody: "Если у вас была активная подписка, и вы сменили устройство или удалили приложение, пока подписка была активна, пожалуйста, нажмите кнопку «Восстановить покупки», расположенную в меню со значком молнии, чтобы восстановить доступ.",
     platformDifferencesBody:
       "Обратите внимание, что премиум-функции и ограничения могут различаться на Android и iOS. Например, пользователи Android получают неограниченный бесплатный доступ к общим поискам и Сунне, тогда как поиск по Корану доступен только в Premium. Пользователи iOS имеют общий дневной лимит.",
   },
@@ -5842,6 +5946,10 @@ const russian = {
     privacyLink: "Политикой конфиденциальности",
     overviewTitle: "Премиум-функции",
     overviewSubtitle: "Честный обзор, прежде чем вы решите",
+    noSubTitle: "Подписка не найдена",
+    noSubBody: "Нам не удалось найти активную подписку, привязанную к вашему аккаунту. Если вы считаете, что это ошибка, убедитесь, что вы вошли с тем же аккаунтом App Store, который использовали при оформлении подписки.",
+    restoreSuccessTitle: "Восстановление выполнено",
+    restoreSuccessBody: "Ваша премиум-подписка была успешно восстановлена.",
     getStartedCta: "Начать",
     getStartedSub: "Изучите все премиум-функции",
   },
@@ -6076,6 +6184,12 @@ const russian = {
 };
 
 const urdu = {
+  downloading: {
+    title: "سنت اور تفسیر کے اثاثے ڈاؤن لوڈ ہو رہے ہیں...",
+    subtitle: "اگر آپ کے پاس ایک فعال سبسکرپشن ہے، تو ڈاؤن لوڈ مکمل ہونے کے بعد آپ اپنی خریداری بحال کر سکیں گے۔",
+    error: "ڈاؤن لوڈ ناکام ہو گیا۔ براہ کرم اپنا انٹرنیٹ کنکشن چیک کریں۔",
+    retry: "دوبارہ کوشش کریں"
+  },
   prayerOffsets: {
     title: "نماز کے اوقات کو ایڈجسٹ کریں",
     infoText: "دستی طور پر منٹ شامل کریں یا کم کریں",
@@ -6107,6 +6221,8 @@ const urdu = {
       "سبسکرائب کر کے، آپ اتفاق کرتے ہیں کہ آپ ماہانہ سبسکرپشن کی ادائیگی کر رہے ہیں۔ آپ یہ بھی اتفاق کرتے ہیں کہ ڈیولپر کو مستقبل میں ایپ کو بالکل مفت کرنے یا تلاش کی حد تبدیل کرنے کا حق حاصل ہے۔",
     legalUseBody:
       "آپ اتفاق کرتے ہیں کہ ادائیگی کی حدود کو عبور کرنے کے لیے ایپ کے سورس کوڈ کا غلط استعمال، استحصال، ریورس انجینئر یا تبدیل نہیں کریں گے۔ دھوکہ دہی کی کوشش سختی سے منع ہے۔",
+    restoreTitle: "خریداری بحال کریں",
+    restoreBody: "اگر آپ کے پاس ایک فعال سبسکرپشن تھی اور آپ نے ڈیوائس تبدیل کر لی ہے یا ایپ کو حذف کر دیا ہے جبکہ سبسکرپشن فعال تھی، تو براہ کرم دوبارہ رسائی حاصل کرنے کے لیے فلیش آئیکن مینو میں موجود 'خریداری بحال کریں' بٹن کو دبائیں۔",
     platformDifferencesBody:
       "براہ کرم نوٹ کریں کہ Android اور iOS ڈیوائسز کے درمیان پریمیم فیچرز اور حدود مختلف ہو سکتی ہیں۔ مثال کے طور پر، Android صارفین کو عام اور سنت کی تلاش تک لامحدود مفت رسائی حاصل ہے، جبکہ قرآن کی تلاش سختی سے پریمیم کے لیے مخصوص ہے۔",
   },
@@ -6507,6 +6623,10 @@ const urdu = {
     privacyLink: "رازداری کی پالیسی",
     overviewTitle: "پریمیم خصوصیات",
     overviewSubtitle: "فیصلہ کرنے سے پہلے ایماندارانہ جائزہ",
+    noSubTitle: "کوئی سبسکرپشن نہیں ملی",
+    noSubBody: "ہم آپ کے اکاؤنٹ سے منسلک کوئی فعال سبسکرپشن نہیں ڈھونڈ سکے۔ اگر آپ کو لگتا ہے کہ یہ غلطی ہے، تو یقینی بنائیں کہ آپ اسی App Store اکاؤنٹ سے سائن ان ہیں جس سے آپ نے سبسکرپشن لی تھی۔",
+    restoreSuccessTitle: "بحالی کامیاب رہی",
+    restoreSuccessBody: "آپ کی پریمیم سبسکرپشن کامیابی سے بحال کر دی گئی ہے۔",
     getStartedCta: "شروع کریں",
     getStartedSub: "تمام پریمیم خصوصیات دریافت کریں",
   },
@@ -6739,6 +6859,12 @@ const urdu = {
 };
 
 const german = {
+  downloading: {
+    title: "Lade Sunnah und Tafseer Assets herunter...",
+    subtitle: "Wenn Sie ein aktives Abonnement haben, können Sie Ihre Käufe nach Abschluss des Downloads wiederherstellen.",
+    error: "Download fehlgeschlagen. Bitte überprüfen Sie Ihre Internetverbindung.",
+    retry: "Erneut versuchen"
+  },
   prayerOffsets: {
     title: "Gebetszeiten anpassen",
     infoText: "Minuten manuell hinzufügen oder abziehen",
@@ -6760,12 +6886,14 @@ const german = {
     intro: "Diese Bedingungen gelten für die Tasneem App von JalalDevs.",
     iapTitle: "Abonnements",
     iapBody:
-      "Die App bietet sich automatisch verlängernde Abonnements. Zahlungen werden sicher verarbeitet. Abonnements werden vollständig vom Apple App Store oder Google Play Console / Store verwaltet.",
+      "Die App bietet sich automatisch verlängernde Abonnements. Zahlungen werden sicher verarbeitet. Abonnements werden vollständig vom Apple App Store Console / Store verwaltet.",
     importantTitle: "Wichtige Bedingung",
     importantBody:
       "Mit dem Abonnement stimmen Sie zu, dass Sie für ein MONATLICHES Abonnement bezahlen. Sie stimmen auch zu, dass der Entwickler sich das Recht vorbehält, die App in Zukunft völlig kostenlos zu machen oder die Suchlimits jederzeit ohne Vorankündigung zu ändern.",
     legalUseBody:
       "Sie stimmen zu, den Quellcode der App nicht zu missbrauchen, auszunutzen, zurückzuentwickeln oder zu ändern, um Zahlungsbeschränkungen zu umgehen. Der Versuch zu betrügen ist strengstens untersagt.",
+    restoreTitle: "Käufe wiederherstellen",
+    restoreBody: "Wenn Sie ein aktives Abonnement hatten und das Gerät gewechselt oder die App gelöscht haben, während das Abonnement aktiv war, drücken Sie bitte die Schaltfläche 'Käufe wiederherstellen' im Blitz-Symbol-Menü, um wieder Zugriff zu erhalten.",
     platformDifferencesBody:
       "Bitte beachten Sie, dass Premium-Funktionen und Einschränkungen zwischen Android und iOS variieren können. Zum Beispiel erhalten Android-Benutzer unbegrenzten kostenlosen Zugang zu allgemeinen und Sunnah-Suchen, während Koran-Suchen ausschließlich Premium sind. Im Gegensatz dazu haben iOS-Benutzer ein globales tägliches Limit.",
   },
@@ -7187,6 +7315,10 @@ const german = {
     privacyLink: "Datenschutzerklärung",
     overviewTitle: "Premium-Funktionen",
     overviewSubtitle: "Ehrliche Übersicht, bevor Sie sich entscheiden",
+    noSubTitle: "Kein Abonnement gefunden",
+    noSubBody: "Wir konnten kein aktives Abonnement finden, das mit Ihrem Konto verknüpft ist. Wenn Sie glauben, dass dies ein Fehler ist, stellen Sie sicher, dass Sie mit demselben App Store-Konto angemeldet sind, mit dem Sie abonniert haben.",
+    restoreSuccessTitle: "Wiederherstellung erfolgreich",
+    restoreSuccessBody: "Ihr Premium-Abonnement wurde erfolgreich wiederhergestellt.",
     getStartedCta: "Loslegen",
     getStartedSub: "Entdecken Sie alle Premium-Funktionen",
   },
@@ -7427,6 +7559,12 @@ const german = {
 };
 
 const japanese = {
+  downloading: {
+    title: "スンナとタフシールのリソースをダウンロードしています...",
+    subtitle: "有効なサブスクリプションをお持ちの場合、ダウンロード完了後に購入を復元できます。",
+    error: "ダウンロードに失敗しました。インターネット接続を確認してください。",
+    retry: "再試行"
+  },
   prayerOffsets: {
     title: "祈りの時間を調整する",
     infoText: "手動で分を追加または減算する",
@@ -7455,6 +7593,8 @@ const japanese = {
       "サブスクリプションを登録することにより、月額サブスクリプションの支払いに同意したことになります。また、開発者が将来アプリを完全に無料にする権利、または予告なしにいつでも検索制限を変更する権利を留保することに同意するものとします。",
     legalUseBody:
       "支払い制限を回避するために、アプリのソースコードを悪用、リバースエンジニアリング、または変更しないことに同意するものとします。不正行為は固く禁じられています。",
+    restoreTitle: "購入を復元",
+    restoreBody: "有効なサブスクリプションがあり、サブスクリプションの有効期間中にデバイスを変更したりアプリを削除したりした場合は、雷アイコンメニューにある「購入を復元」ボタンを押してアクセスを回復してください。",
     platformDifferencesBody:
       "プレミアム機能や制限は、Android デバイスと iOS デバイスで異なる場合があることに注意してください。たとえば、Android ユーザーは一般的な検索とスンナの検索に無料で無制限にアクセスできますが、コーランの検索はプレミアム専用です。逆に、iOS ユーザーにはすべてにグローバルな 1 日の制限があります。",
   },
@@ -7865,6 +8005,10 @@ const japanese = {
     privacyLink: "プライバシーポリシー",
     overviewTitle: "プレミアム機能",
     overviewSubtitle: "決定する前に正直な概要を",
+    noSubTitle: "サブスクリプションが見つかりません",
+    noSubBody: "アカウントに紐づくアクティブなサブスクリプションが見つかりませんでした。誤りだと思われる場合は、サブスクリプション購入時に使用したApp Storeアカウントでサインインしていることを確認してください。",
+    restoreSuccessTitle: "復元成功",
+    restoreSuccessBody: "プレミアムサブスクリプションが正常に復元されました。",
     getStartedCta: "始める",
     getStartedSub: "すべてのプレミアム機能を探索する",
   },
@@ -8100,6 +8244,12 @@ const japanese = {
 };
 
 const italian = {
+  downloading: {
+    title: "Scaricamento delle risorse Sunnah e Tafseer...",
+    subtitle: "Se hai un abbonamento attivo, potrai ripristinare i tuoi acquisti una volta completato il download.",
+    error: "Download non riuscito. Controlla la tua connessione internet.",
+    retry: "Riprova"
+  },
   prayerOffsets: {
     title: "Regola gli orari delle preghiere",
     infoText: "Aggiungi o sottrai minuti manualmente",
@@ -8124,12 +8274,14 @@ const italian = {
     intro: "Questi Termini si applicano all'applicazione Tasneem.",
     iapTitle: "Acquisti in-app",
     iapBody:
-      "L'app offre abbonamenti auto-rinnovabili. Tutti i pagamenti vengono elaborati in modo sicuro. Gli abbonamenti sono gestiti da Apple App Store o Google Play Console / Store.",
+      "L'app offre abbonamenti auto-rinnovabili. Tutti i pagamenti vengono elaborati in modo sicuro. Gli abbonamenti sono gestiti da Apple App Store Console / Store.",
     importantTitle: "Condizione Importante",
     importantBody:
       "Abbonandoti, comprendi e accetti di pagare un abbonamento MENSILE. Accetti inoltre che lo sviluppatore si riserva il diritto di rendere l'app completamente gratuita in futuro o di modificare i limiti di ricerca in qualsiasi momento senza preavviso.",
     legalUseBody:
       "Accetti di non abusare, sfruttare, decodificare o alterare il codice sorgente per aggirare i limiti di pagamento. Tentare di barare è severamente proibito ed è considerato un'offesa personale.",
+    restoreTitle: "Ripristina acquisti",
+    restoreBody: "Se avevi un abbonamento attivo e hai cambiato dispositivo o eliminato l'app mentre l'abbonamento era attivo, premi il pulsante 'Ripristina acquisti' situato nel menu dell'icona a forma di fulmine per riaccedere.",
     platformDifferencesBody:
       "Si prega di notare che le funzionalità e le limitazioni premium possono variare tra Android e iOS. Ad esempio, gli utenti Android ricevono accesso gratuito e illimitato alle ricerche generali e della Sunnah, mentre le ricerche nel Corano sono esclusivamente Premium. Al contrario, gli utenti iOS hanno un limite giornaliero globale.",
   },
@@ -8544,6 +8696,10 @@ const italian = {
     privacyLink: "Informativa sulla Privacy",
     overviewTitle: "Funzionalità Premium",
     overviewSubtitle: "Panoramica onesta prima di decidere",
+    noSubTitle: "Nessun abbonamento trovato",
+    noSubBody: "Non siamo riusciti a trovare un abbonamento attivo collegato al tuo account. Se ritieni che si tratti di un errore, assicurati di essere connesso con lo stesso account App Store utilizzato per abbonarti.",
+    restoreSuccessTitle: "Ripristino riuscito",
+    restoreSuccessBody: "Il tuo abbonamento premium è stato ripristinato con successo.",
     getStartedCta: "Inizia",
     getStartedSub: "Esplora tutte le funzionalità premium",
   },
@@ -8781,6 +8937,12 @@ const italian = {
 };
 
 const korean = {
+  downloading: {
+    title: "순나 및 타프시르 자료 다운로드 중...",
+    subtitle: "활성 구독이 있는 경우, 다운로드가 완료되면 구매를 복원할 수 있습니다.",
+    error: "다운로드 실패. 인터넷 연결을 확인해주세요.",
+    retry: "다시 시도"
+  },
   prayerOffsets: {
     title: "기도 시간 조정",
     infoText: "수동으로 분을 더하거나 뺍니다",
@@ -8808,6 +8970,8 @@ const korean = {
       "구독함으로써 월간 구독 요금을 지불한다는 것을 이해하고 동의합니다. 또한 개발자가 향후 앱을 완전히 무료로 만들거나 사전 통지 없이 언제든지 검색 제한을 변경할 수 있는 권리를 보유한다는 데 동의합니다.",
     legalUseBody:
       "결제 제한을 우회하기 위해 앱의 소스 코드를 오용, 악용, 리버스 엔지니어링 또는 변경하지 않을 것에 동의합니다. 속이려는 시도는 엄격히 금지됩니다.",
+    restoreTitle: "구매 복원",
+    restoreBody: "활성 구독이 있고 구독이 활성화된 상태에서 기기를 변경하거나 앱을 삭제한 경우 번개 아이콘 메뉴에 있는 '구매 복원' 버튼을 눌러 다시 액세스하세요.",
     platformDifferencesBody:
       "프리미엄 기능과 제한 사항은 Android와 iOS 기기 간에 다를 수 있습니다. 예를 들어, Android 사용자는 일반 및 순나 검색에 무제한 무료로 액세스할 수 있지만 꾸란 검색은 프리미엄 전용입니다. 반대로 iOS 사용자는 전역 일일 한도가 있습니다.",
   },
@@ -9213,6 +9377,10 @@ const korean = {
     privacyLink: "개인정보처리방침",
     overviewTitle: "프리미엄 기능",
     overviewSubtitle: "결정하기 전에 솔직한 개요",
+    noSubTitle: "구독을 찾을 수 없음",
+    noSubBody: "계정에 연결된 활성 구독을 찾을 수 없습니다. 이것이 실수라고 생각되면 구독 시 사용한 동일한 App Store 계정으로 로그인되어 있는지 확인하세요.",
+    restoreSuccessTitle: "복원 성공",
+    restoreSuccessBody: "프리미엄 구독이 성공적으로 복원되었습니다.",
     getStartedCta: "시작하기",
     getStartedSub: "모든 프리미엄 기능 살펴보기",
   },
@@ -9443,6 +9611,12 @@ const korean = {
 };
 
 const kurdish = {
+  downloading: {
+    title: "داگرتنی سەرچاوەکانی سوننەت و تەفسیر...",
+    subtitle: "ئەگەر ئابوونەیەکی چالاکت هەیە، دواتر دەتوانی کڕینەکانت بگێڕیتەوە کە داگرتن تەواو بوو.",
+    error: "داگرتن سەرکەوتوو نەبوو. تکایە پشکنینی هێڵی ئینتەرنێتەکەت بکە.",
+    retry: "دووبارە هەوڵبدەرەوە"
+  },
   prayerOffsets: {
     title: "Demên nimêjê rast bikin",
     infoText: "Deqeyan bi destan zêde bikin an kêm bikin",
@@ -9470,6 +9644,8 @@ const kurdish = {
       "بە بەشداریکردن، تۆ تێدەگەیت و ڕازیت کە پارەی بەشداریکردنی مانگانە دەدەیت. هەروەها ڕازیت کە گەشەپێدەر مافی ئەوەی هەیە لە داهاتوودا بەرنامەکە بە تەواوی بێبەرامبەر بکات، یان سنوورەکانی گەڕان لە هەر کاتێکدا بەبێ ئاگادارکردنەوەی پێشوەختە بگۆڕێت.",
     legalUseBody:
       "تۆ ڕازیت کە خراپ بەکارنەهێنیت، ئیستغلال نەکەیت، ئەندازیاری پێچەوانە نەکەیت، یان کۆدی سەرچاوەی بەرنامەکە نەگۆڕیت بۆ تێپەڕاندنی سنوورەکانی پارەدان. هەوڵدان بۆ فێڵکردن بە توندی قەدەغەیە.",
+    restoreTitle: "گێڕانەوەی کڕینەکان",
+    restoreBody: "ئەگەر ئابوونەیەکی چالاکت هەبوو و ئامێرەکەت گۆڕی یان بەرنامەکەت سڕییەوە لە کاتێکدا ئابوونەکە چالاک بوو، تکایە دوگمەی 'گێڕانەوەی کڕینەکان' دابگرە کە لە لیستی ئایکۆنی بروسکەکەدایە بۆ گەڕاندنەوەی دەستپێگەیشتن.",
     platformDifferencesBody:
       "تکایە تێبینی بکە کە تایبەتمەندییە پریمیمەکان و سنووردارکردنەکان لە نێوان ئامێرەکانی ئەندرۆید و iOS جیاوازن. بۆ نموونە، بەکارهێنەرانی ئەندرۆید گەڕانی گشتی و سوننەت بە خۆڕایی و بێ سنوور وەردەگرن، لە کاتێکدا گەڕانی قورئان تەنها بۆ پریمیمە.",
   },
@@ -9873,6 +10049,10 @@ const kurdish = {
     privacyLink: "Polîtîkaya Nepenîtiyê",
     overviewTitle: "Taybetmendiyên Premium",
     overviewSubtitle: "Berî ku hûn biryar bidin, nêrînek rast",
+    noSubTitle: "ئابوونە نەدۆزرایەوە",
+    noSubBody: "نەتوانین ئابوونەیەکی چالاک بدۆزینەوە کە پەیوەندیی بە ئەکاونتەکەت هەبێت. ئەگەر باوەڕت وایە ئەمە هەڵەیە، دڵنیا بە کە بە هەمان ئەکاونتی App Store کە بەکاری هێنا بۆ ئابوونەبوون چوونیتە ژوورەوە.",
+    restoreSuccessTitle: "گێڕانەوە سەرکەوت",
+    restoreSuccessBody: "ئابوونەی پریمیومەکەت بە سەرکەوتوویی گێڕایەوە.",
     getStartedCta: "Dest pê bike",
     getStartedSub: "Hemû taybetmendiyên premium bigere",
   },
@@ -10107,6 +10287,12 @@ const kurdish = {
 };
 
 const macedonian = {
+  downloading: {
+    title: "Преземање на ресурси за Суннет и Тефсир...",
+    subtitle: "Ако имате активна претплата, ќе можете да ги вратите своите купувања откако преземањето е завршено.",
+    error: "Преземањето не успеа. Ве молиме проверете ја вашата интернет врска.",
+    retry: "Обиди се повторно"
+  },
   prayerOffsets: {
     title: "Прилагоди ги времињата за молитва",
     infoText: "Рачно додадете или одземете минути",
@@ -10134,6 +10320,8 @@ const macedonian = {
       "Со претплатата разбирате и се согласувате дека плаќате МЕСЕЧНА претплата. Исто така, се согласувате дека развивачот го задржува правото да ја направи апликацијата целосно бесплатна во иднина или да ги промени ограничувањата за пребарување во кое било време без претходна најава.",
     legalUseBody:
       "Се согласувате да не го злоупотребувате, искористувате, декомпилирате или менувате изворниот код за да ги заобиколите ограничувањата за плаќање. Обидот за мамење е строго забранет.",
+    restoreTitle: "Врати купувања",
+    restoreBody: "Ако сте имале активна претплата и сте го промениле уредот или сте ја избришале апликацијата додека претплатата била активна, ве молиме притиснете го копчето 'Врати купувања' лоцирано во менито со икона на молња за да го вратите пристапот.",
     platformDifferencesBody:
       "Ве молиме имајте предвид дека премиум функциите и ограничувањата може да се разликуваат помеѓу Android и iOS. На пример, корисниците на Android добиваат неограничен бесплатен пристап до општи и пребарувања во Суннетот, додека пребарувањата во Куранот се исклучиво Премиум.",
   },
@@ -10546,6 +10734,10 @@ const macedonian = {
     privacyLink: "Политиката за приватност",
     overviewTitle: "Премиум функции",
     overviewSubtitle: "Искрен преглед пред да одлучите",
+    noSubTitle: "Не е пронајдена претплата",
+    noSubBody: "Не можевме да најдеме активна претплата поврзана со вашата сметка. Ако сметате дека ова е грешка, осигурете се дека сте најавени со истата сметка на App Store што сте ја користеле при претплатата.",
+    restoreSuccessTitle: "Враќањето е успешно",
+    restoreSuccessBody: "Вашата премиум претплата е успешно вратена.",
     getStartedCta: "Започни",
     getStartedSub: "Истражете ги сите премиум функции",
   },
@@ -10782,6 +10974,12 @@ const macedonian = {
 };
 
 const malay = {
+  downloading: {
+    title: "Memuat turun Aset Sunnah Dan Tafsir...",
+    subtitle: "Jika anda mempunyai langganan aktif, anda akan dapat memulihkan pembelian anda setelah muat turun selesai.",
+    error: "Muat turun gagal. Sila periksa sambungan internet anda.",
+    retry: "Cuba Lagi"
+  },
   prayerOffsets: {
     title: "Laraskan Waktu Solat",
     infoText: "Tambah atau tolak minit secara manual",
@@ -10806,12 +11004,14 @@ const malay = {
     intro: "Terma ini terpakai untuk aplikasi Tasneem oleh JalalDevs.",
     iapTitle: "Pembelian Dalam Aplikasi",
     iapBody:
-      "Aplikasi ini menawarkan langganan boleh diperbaharui secara automatik. Semua pembayaran diproses dengan selamat. Langganan diuruskan sepenuhnya oleh Apple App Store atau Google Play Console / Store.",
+      "Aplikasi ini menawarkan langganan boleh diperbaharui secara automatik. Semua pembayaran diproses dengan selamat. Langganan diuruskan sepenuhnya oleh Apple App Store Console / Store.",
     importantTitle: "Syarat Penting",
     importantBody:
       "Dengan melanggan, anda memahami dan bersetuju bahawa anda membayar untuk langganan BULANAN. Anda juga bersetuju bahawa pembangun berhak menjadikan aplikasi ini percuma sepenuhnya pada masa hadapan, atau mengubah had carian tanpa notis awal.",
     legalUseBody:
       "Anda bersetuju untuk tidak menyalahgunakan, mengeksploitasi, merekayasa balik, atau mengubah kod sumber aplikasi untuk memintas had pembayaran. Cubaan menipu adalah dilarang sama sekali.",
+    restoreTitle: "Pulihkan Pembelian",
+    restoreBody: "Jika anda mempunyai langganan aktif dan menukar peranti atau memadamkan aplikasi semasa langganan masih aktif, sila tekan butang 'Pulihkan Pembelian' yang terletak dalam menu ikon kilat untuk mendapatkan semula akses.",
     platformDifferencesBody:
       "Sila ambil perhatian bahawa ciri premium dan had mungkin berbeza antara peranti Android dan iOS. Sebagai contoh, pengguna Android menerima akses percuma tanpa had kepada carian umum dan Sunnah, manakala carian Al-Quran adalah eksklusif kepada Premium. Sebaliknya, pengguna iOS mempunyai had harian.",
   },
@@ -11218,6 +11418,10 @@ const malay = {
     overviewTitle: "Ciri Premium",
     overviewSubtitle:
       "Gambaran keseluruhan yang jujur sebelum anda membuat keputusan",
+    noSubTitle: "Tiada Langganan Ditemui",
+    noSubBody: "Kami tidak dapat menemui langganan aktif yang dikaitkan dengan akaun anda. Jika anda percaya ini adalah kesilapan, pastikan anda log masuk dengan akaun App Store yang sama yang anda gunakan untuk melanggan.",
+    restoreSuccessTitle: "Pemulihan Berjaya",
+    restoreSuccessBody: "Langganan premium anda telah berjaya dipulihkan.",
     getStartedCta: "Mulakan",
     getStartedSub: "Terokai semua ciri premium",
   },
@@ -11452,6 +11656,12 @@ const malay = {
 };
 
 const maltese = {
+  downloading: {
+    title: "Qed jitniżżlu r-Riżorsi tas-Sunnah u t-Tafseer...",
+    subtitle: "Jekk għandek abbonament attiv, tkun tista' tirkupra x-xiri tiegħek ladarba t-tniżżil ikun lest.",
+    error: "It-tniżżil ma rnexxiex. Jekk jogħġbok iċċekkja l-konnessjoni tal-internet tiegħek.",
+    retry: "Erġa' pprova"
+  },
   prayerOffsets: {
     title: "Aġġusta l-Ħinijiet tat-Talb",
     infoText: "Żid jew naqqas minuti manwalment",
@@ -11480,6 +11690,8 @@ const maltese = {
       "Billi tabbona, tifhem u taqbel li qed tħallas għal abbonament XAHAR. Taqbel ukoll li l-iżviluppatur jirriżerva d-dritt li jagħmel l-app kompletament b'xejn fil-futur, jew li jbiddel il-limiti tat-tfittxija mingħajr avviż minn qabel.",
     legalUseBody:
       "Taqbel li ma tabbużax, tesplojta, tagħmel reverse-engineer, jew tbiddel is-source code tal-app biex taqbeż il-limiti tal-ħlas. Li tipprova tqarraq is-sistema huwa strettament ipprojbit.",
+    restoreTitle: "Irkupra x-Xiri",
+    restoreBody: "Jekk kellek abbonament attiv u biddilt apparat jew ħassart l-app waqt li l-abbonament kien attiv, jekk jogħġbok agħfas il-buttuna 'Irkupra x-Xiri' li tinsab fil-menu tal-ikona tas-sajjetti biex terġa' tieħu l-aċċess.",
     platformDifferencesBody:
       "Jekk jogħġbok innota li karatteristiċi u limitazzjonijiet premium jistgħu jvarjaw bejn apparati Android u iOS. Per eżempju, l-utenti Android jirċievu aċċess b'xejn illimitat għal tfittxijiet ġenerali u Sunnah, filwaqt li t-tfittxijiet kollha tal-Quran huma esklussivi għal Premium.",
   },
@@ -11891,6 +12103,10 @@ const maltese = {
     privacyLink: "Politika tal-Privatezza",
     overviewTitle: "Karatteristiċi Premium",
     overviewSubtitle: "Ħarsa ġenerali onesta qabel ma tiddeċiedi",
+    noSubTitle: "Ma Nstabet l-Ebda Abbonament",
+    noSubBody: "Ma stajtx insib abbonament attiv marbut mal-kont tiegħek. Jekk temmen li dan huwa żball, kun żgur li qed tidħol bl-istess kont tal-App Store li użajt biex tabbona.",
+    restoreSuccessTitle: "Irkupru Rixxitu",
+    restoreSuccessBody: "L-abbonament premium tiegħek ġie rkuprat b'suċċess.",
     getStartedCta: "Ibda",
     getStartedSub: "Esplora l-karatteristiċi premium kollha",
   },
@@ -12125,6 +12341,12 @@ const maltese = {
 };
 
 const nepali = {
+  downloading: {
+    title: "सुन्नाह र तफसीर एसेटहरू डाउनलोड हुँदैछ...",
+    subtitle: "यदि तपाइँसँग सक्रिय सदस्यता छ भने, डाउनलोड पूरा भएपछि तपाइँ आफ्नो खरिद पुनर्स्थापना गर्न सक्षम हुनुहुनेछ।",
+    error: "डाउनलोड विफल भयो। कृपया आफ्नो इन्टरनेट जडान जाँच गर्नुहोस्।",
+    retry: "पुनः प्रयास गर्नुहोस्"
+  },
   prayerOffsets: {
     title: "प्रार्थना समय समायोजन गर्नुहोस्",
     infoText: "म्यानुअल रूपमा मिनेट थप्नुहोस् वा घटाउनुहोस्",
@@ -12152,6 +12374,8 @@ const nepali = {
       "सदस्यता लिएर, तपाईंले TasneemApp सँग मासिक सदस्यताका लागि भुक्तानी गर्दै हुनुहुन्छ भन्ने कुरा बुझ्नुहुन्छ र सहमत हुनुहुन्छ। तपाईं भविष्यमा एपलाई पूर्ण रूपमा निःशुल्क बनाउन, वा पूर्व सूचना बिना खोज सीमा परिवर्तन गर्न विकासकर्ताले अधिकार सुरक्षित राख्छ भनी पनि सहमत हुनुहुन्छ।",
     legalUseBody:
       "तपाईं भुक्तान सीमाहरू बाइपास गर्न एपको स्रोत कोडको दुरुपयोग, शोषण, उल्टो-इन्जिनियर वा परिमार्जन नगर्न सहमत हुनुहुन्छ। प्रणालीलाई धोका दिने प्रयास कडा रूपमा निषेधित छ।",
+    restoreTitle: "खरिदहरू पुनर्स्थापना गर्नुहोस्",
+    restoreBody: "यदि तपाइँसँग सक्रिय सदस्यता थियो र सदस्यता सक्रिय हुँदा उपकरण परिवर्तन गर्नुभयो वा एप मेटाउनुभयो भने, कृपया पहुँच पुनः प्राप्त गर्न फ्ल्यास आइकन मेनुमा अवस्थित 'खरिदहरू पुनर्स्थापना गर्नुहोस्' बटन थिच्नुहोस्।",
     platformDifferencesBody:
       "कृपया ध्यान दिनुहोस् कि प्रिमियम सुविधाहरू र सीमितताहरू एन्ड्रोइड र आईओएस उपकरणहरू बीच फरक हुन सक्छ। उदाहरणका लागि, एन्ड्रोइड प्रयोगकर्ताहरूले सामान्य र सुन्नाह खोजहरूमा असीमित निःशुल्क पहुँच पाउँछन्, जबकि सबै कुरान खोजहरू पूर्ण रूपमा प्रिमियमका लागि मात्र हुन्।",
   },
@@ -12563,6 +12787,10 @@ const nepali = {
     privacyLink: "गोपनीयता नीति",
     overviewTitle: "प्रिमियम सुविधाहरू",
     overviewSubtitle: "तपाईंले निर्णय गर्नु अघि इमानदार अवलोकन",
+    noSubTitle: "कुनै सदस्यता फेला परेन",
+    noSubBody: "हामी तपाइँको खातासँग जोडिएको कुनै सक्रिय सदस्यता फेला पार्न सकेनौं। यदि तपाइँलाई लाग्छ कि यो गल्ती हो भने, सुनिश्चित गर्नुहोस् कि तपाइँ सदस्यता लिनको लागि प्रयोग गरेको App Store खाताबाट साइन इन हुनुभएको छ।",
+    restoreSuccessTitle: "पुनर्स्थापना सफल भयो",
+    restoreSuccessBody: "तपाइँको प्रिमियम सदस्यता सफलतापूर्वक पुनर्स्थापना गरिएको छ।",
     getStartedCta: "सुरु गर्नुहोस्",
     getStartedSub: "सबै प्रिमियम सुविधाहरू अन्वेषण गर्नुहोस्",
   },
@@ -12796,6 +13024,12 @@ const nepali = {
 };
 
 const norwegian = {
+  downloading: {
+    title: "Laster ned Sunnah og Tafseer-ressurser...",
+    subtitle: "Hvis du har et aktivt abonnement, vil du kunne gjenopprette kjøpene dine når nedlastingen er fullført.",
+    error: "Nedlasting mislyktes. Vennligst sjekk internettforbindelsen din.",
+    retry: "Prøv på nytt"
+  },
   prayerOffsets: {
     title: "Juster bønnetider",
     infoText: "Legg til eller trekk fra minutter manuelt",
@@ -12824,6 +13058,8 @@ const norwegian = {
       "Ved å abonnere forstår og godtar du at du betaler for et MÅNEDLIG abonnement. Du godtar også at utvikleren forbeholder seg retten til å gjøre appen helt gratis i fremtiden, eller endre søkegrensene uten forvarsel.",
     legalUseBody:
       "Du godtar å ikke misbruke, utnyttja, omvendt konstruere eller endre kildekoden for å omgå betalingsmurer. Forsøk på å jukse systemet er strengt forbudt og anses som et personlig lovbrudd.",
+    restoreTitle: "Gjenopprett kjøp",
+    restoreBody: "Hvis du hadde et aktivt abonnement og byttet enhet eller slettet appen mens abonnementet var aktivt, vennligst trykk på 'Gjenopprett kjøp'-knappen i lyn-ikon-menyen for å få tilgang igjen.",
     platformDifferencesBody:
       "Vær oppmerksom på at premiumfunksjoner og begrensninger kan variere mellom Android og iOS. For eksempel får Android-brukere ubegrenset gratis tilgang til generelle og Sunnah-søk, mens alle Koran-søk er utelukkende Premium. Motsatt har iOS-brukere en global daglig grense.",
   },
@@ -13234,6 +13470,10 @@ const norwegian = {
     privacyLink: "Personvernerklæringen",
     overviewTitle: "Premium-funksjoner",
     overviewSubtitle: "Ærlig oversikt før du bestemmer deg",
+    noSubTitle: "Ingen abonnement funnet",
+    noSubBody: "Vi fant ingen aktivt abonnement knyttet til kontoen din. Hvis du tror dette er en feil, må du sørge for at du er logget inn med den samme App Store-kontoen du brukte til å abonnere.",
+    restoreSuccessTitle: "Gjenoppretting vellykket",
+    restoreSuccessBody: "Ditt premium-abonnement er blitt gjenopprettet.",
     getStartedCta: "Kom i gang",
     getStartedSub: "Utforsk alle premium-funksjoner",
   },
@@ -13466,6 +13706,12 @@ const norwegian = {
 };
 
 const persian = {
+  downloading: {
+    title: "در حال دانلود منابع سنت و تفسیر...",
+    subtitle: "اگر اشتراک فعالی دارید، پس از اتمام دانلود می‌توانید خریدهای خود را بازیابی کنید.",
+    error: "دانلود ناموفق بود. لطفاً اتصال اینترنت خود را بررسی کنید.",
+    retry: "تلاش مجدد"
+  },
   prayerOffsets: {
     title: "تنظیم اوقات شرعی",
     infoText: "دقیقه ها را به صورت دستی اضافه یا کم کنید",
@@ -13494,6 +13740,8 @@ const persian = {
       "با اشتراک، شما درک می کنید و موافقت می کنید که برای یک اشتراک ماهانه هزینه می پردازید. شما همچنین موافقت می کنید که توسعه دهنده این حق را دارد که در آینده برنامه را کاملا رایگان کند، یا محدودیت های جستجو را بدون اطلاع قبلی تغییر دهد.",
     legalUseBody:
       "شما موافقت می کنید که برای دور زدن محدودیت های پرداخت، از کد منبع برنامه سوء استفاده، استخراج، مهندسی معکوس یا تغییر ندهید. تلاش برای تقلب در سیستم اکیدا ممنوع است و یک تخلف شخصی محسوب می شود.",
+    restoreTitle: "بازیابی خریدها",
+    restoreBody: "اگر اشتراک فعالی داشتید و در زمان فعال بودن اشتراک، دستگاه خود را تغییر داده یا برنامه را حذف کرده‌اید، لطفاً برای دسترسی مجدد، دکمه 'بازیابی خریدها' را در منوی آیکون رعد و برق فشار دهید.",
     platformDifferencesBody:
       "لطفاً توجه داشته باشید که ویژگی‌های پریمیوم و محدودیت‌ها ممکن است بین دستگاه‌های اندروید و iOS متفاوت باشد. به عنوان مثال، کاربران اندروید به جستجوهای عمومی و سنت به صورت نامحدود و رایگان دسترسی دارند، در حالی که جستجوهای قرآن فقط برای پریمیوم اختصاصی است.",
   },
@@ -13902,6 +14150,10 @@ const persian = {
     privacyLink: "سیاست حفظ حریم خصوصی",
     overviewTitle: "ویژگی‌های پریمیوم",
     overviewSubtitle: "بررسی صادقانه قبل از تصمیم گیری",
+    noSubTitle: "اشتراکی یافت نشد",
+    noSubBody: "نتوانستیم اشتراک فعالی مرتبط با حساب شما پیدا کنیم. اگر فکر می‌کنید این اشتباه است، مطمئن شوید با همان حساب App Store که برای اشتراک استفاده کرده‌اید وارد شده‌اید.",
+    restoreSuccessTitle: "بازیابی موفق",
+    restoreSuccessBody: "اشتراک پریمیوم شما با موفقیت بازیابی شد.",
     getStartedCta: "شروع کنید",
     getStartedSub: "همه ویژگی‌های پریمیوم را کاوش کنید",
   },
@@ -14134,6 +14386,12 @@ const persian = {
 };
 
 const polish = {
+  downloading: {
+    title: "Pobieranie zasobów Sunny i Tafsir...",
+    subtitle: "Jeśli masz aktywną subskrypcję, będziesz mógł przywrócić zakupy po zakończeniu pobierania.",
+    error: "Pobieranie nie powiodło się. Sprawdź połączenie z internetem.",
+    retry: "Spróbuj ponownie"
+  },
   prayerOffsets: {
     title: "Dostosuj czasy modlitwy",
     infoText: "Ręcznie dodaj lub odejmij minuty",
@@ -14164,6 +14422,8 @@ const polish = {
       "Subskrybując, rozumiesz i zgadzasz się, że płacisz za MIESIĘCZNĄ subskrypcję. Zgadzasz się również, że deweloper zastrzega sobie prawo do udostępnienia aplikacji całkowicie za darmo w przyszłości lub zmiany limitów wyszukiwania bez wcześniejszego powiadomienia.",
     legalUseBody:
       "Zgadzasz się nie nadużywać, nie wykorzystywać, nie modyfikować ani nie dekompilować kodu źródłowego w celu ominięcia ograniczeń. Próba oszustwa systemu jest surowo zabroniona i uważana za naruszenie zaufania.",
+    restoreTitle: "Przywróć zakupy",
+    restoreBody: "Jeśli miałeś aktywną subskrypcję i zmieniłeś urządzenie lub usunąłeś aplikację w czasie jej trwania, naciśnij przycisk 'Przywróć zakupy' w menu z ikoną błyskawicy, aby odzyskać dostęp.",
     platformDifferencesBody:
       "Należy pamiętać, że funkcje premium i ograniczenia mogą się różnić w zależności od systemu Android i iOS. Na przykład użytkownicy Androida mają nieograniczony, bezpłatny dostęp do wyszukiwań ogólnych i Sunny, podczas gdy wyszukiwania w Koranie są wyłącznie dla kont Premium. Z kolei użytkownicy iOS mają globalny dzienny limit.",
   },
@@ -14577,6 +14837,10 @@ const polish = {
     privacyLink: "Politykę prywatności",
     overviewTitle: "Funkcje Premium",
     overviewSubtitle: "Szczery przegląd przed podjęciem decyzji",
+    noSubTitle: "Nie znaleziono subskrypcji",
+    noSubBody: "Nie mogliśmy znaleźć aktywnej subskrypcji powiązanej z Twoim kontem. Jeśli uważasz, że to błąd, upewnij się, że jesteś zalogowany na tym samym koncie App Store, którego używałeś do subskrypcji.",
+    restoreSuccessTitle: "Przywracanie powiodło się",
+    restoreSuccessBody: "Twoja subskrypcja premium została pomyślnie przywrócona.",
     getStartedCta: "Rozpocznij",
     getStartedSub: "Poznaj wszystkie funkcje premium",
   },
@@ -14812,6 +15076,12 @@ const polish = {
 };
 
 const filipino = {
+  downloading: {
+    title: "Dina-download ang mga Sunnah at Tafseer Assets...",
+    subtitle: "Kung mayroon kang aktibong subscription, maaari mong i-restore ang iyong mga pagbili kapag natapos na ang pag-download.",
+    error: "Nabigo ang pag-download. Mangyaring suriin ang iyong koneksyon sa internet.",
+    retry: "Subukan Muli"
+  },
   prayerOffsets: {
     title: "Ayusin ang Oras ng Panalangin",
     infoText: "Manu-manong magdagdag o magbawas ng mga minuto",
@@ -14838,12 +15108,14 @@ const filipino = {
       "Nalalapat ang mga Tuntuning ito sa Tasneem application ng JalalDevs.",
     iapTitle: "Mga In-App na Pagbili at Subscription",
     iapBody:
-      "Nag-aalok ang App ng mga auto-renewable na subscription. Ligtas na pinoproseso ang lahat ng mga pagbabayad. Ang mga subscription ay ganap na pinamamahalaan ng Apple App Store o Google Play Console / Store.",
+      "Nag-aalok ang App ng mga auto-renewable na subscription. Ligtas na pinoproseso ang lahat ng mga pagbabayad. Ang mga subscription ay ganap na pinamamahalaan ng Apple App Store Console / Store.",
     importantTitle: "Mahalagang Kundisyon",
     importantBody:
       "Sa pag-subscribe, nauunawaan at sumasang-ayon ka na nagbabayad ka para sa BUWANANG subscription. Sumasang-ayon ka rin na may karapatan ang developer na gawing libre ang app sa hinaharap, o baguhin ang mga limitasyon sa paghahanap nang walang paunang abiso.",
     legalUseBody:
       "Sumasang-ayon ka na huwag abusuhin, samantalahin, i-reverse-engineer, o baguhin ang source code upang lampasan ang mga limitasyon sa pagbabayad. Ang pagtatangkang mandaya ay mahigpit na ipinagbabawal at itinuturing na personal na pagkakasala.",
+    restoreTitle: "I-restore ang mga Pagbili",
+    restoreBody: "Kung nagkaroon ka ng aktibong subscription at nagpalit ng device o nag-delete ng app habang aktibo ang subscription, mangyaring pindutin ang button na 'I-restore ang mga Pagbili' na nasa menu ng icon ng kidlat para muling magkaroon ng access.",
     platformDifferencesBody:
       "Mangyaring tandaan na ang mga premium na tampok at limitasyon ay maaaring mag-iba sa pagitan ng mga Android at iOS na device. Halimbawa, ang mga user ng Android ay nakakakuha ng walang limitasyong libreng pag-access sa pangkalahatan at Sunnah na mga paghahanap, habang ang mga paghahanap sa Quran ay eksklusibo sa Premium. Sa kabaligtaran, ang mga user ng iOS ay may pandaigdigang pang-araw-araw na limitasyon.",
   },
@@ -15264,6 +15536,10 @@ const filipino = {
     privacyLink: "Patakaran sa Privacy",
     overviewTitle: "Mga Tampok na Premium",
     overviewSubtitle: "Matapat na pangkalahatang-ideya bago ka magpasya",
+    noSubTitle: "Walang Nahanap na Subscription",
+    noSubBody: "Hindi namin mahanap ang isang aktibong subscription na naka-link sa iyong account. Kung naniniwala kang may pagkakamali ito, siguraduhing naka-sign in ka gamit ang parehong App Store account na ginamit mo para mag-subscribe.",
+    restoreSuccessTitle: "Matagumpay ang Pag-restore",
+    restoreSuccessBody: "Ang iyong premium subscription ay matagumpay na na-restore.",
     getStartedCta: "Magsimula",
     getStartedSub: "Tuklasin ang lahat ng mga premium na tampok",
   },
@@ -15507,6 +15783,12 @@ const filipino = {
 };
 
 const romanian = {
+  downloading: {
+    title: "Descărcarea resurselor Sunnah și Tafseer...",
+    subtitle: "Dacă aveți un abonament activ, veți putea restaura achizițiile după finalizarea descărcării.",
+    error: "Descărcarea a eșuat. Vă rugăm să vă verificați conexiunea la internet.",
+    retry: "Reîncearcă descărcarea"
+  },
   prayerOffsets: {
     title: "Ajustați orele de rugăciune",
     infoText: "Adăugați sau scădeți minute manual",
@@ -15536,6 +15818,8 @@ const romanian = {
       "Prin abonare, înțelegeți și sunteți de acord că plătiți pentru un abonament LUNAR. De asemenea, sunteți de acord că dezvoltatorul își rezervă dreptul de a face aplicația complet gratuită în viitor sau de a modifica limitele de căutare fără notificare prealabilă.",
     legalUseBody:
       "Sunteți de acord să nu utilizați abuziv, să exploatați, să efectuați inginerie inversă sau să modificați codul sursă pentru a ocoli limitările de plată. Încercarea de a înșela sistemul este strict interzisă și este considerată o ofensă personală.",
+    restoreTitle: "Restaurează achizițiile",
+    restoreBody: "Dacă ați avut un abonament activ și ați schimbat dispozitivul sau ați șters aplicația în timp ce abonamentul era activ, vă rugăm să apăsați butonul 'Restaurează achizițiile' situat în meniul cu pictograma fulger pentru a recăpăta accesul.",
     platformDifferencesBody:
       "Vă rugăm să rețineți că funcțiile premium și limitările pot varia între dispozitivele Android și iOS. De exemplu, utilizatorii Android beneficiază de acces gratuit nelimitat la căutările generale și Sunnah, în timp ce căutările în Coran sunt strict exclusive Premium. Dimpotrivă, utilizatorii iOS au o limită zilnică globală.",
   },
@@ -15943,6 +16227,10 @@ const romanian = {
     privacyLink: "Politica de Confidențialitate",
     overviewTitle: "Caracteristici Premium",
     overviewSubtitle: "Prezentare generală sinceră înainte de a decide",
+    noSubTitle: "Nu s-a găsit niciun abonament",
+    noSubBody: "Nu am putut găsi un abonament activ asociat contului dvs. Dacă credeți că este o greșeală, asigurați-vă că sunteți conectat cu același cont App Store pe care l-ați folosit pentru abonare.",
+    restoreSuccessTitle: "Restaurare reușită",
+    restoreSuccessBody: "Abonamentul dvs. premium a fost restaurat cu succes.",
     getStartedCta: "Începeți",
     getStartedSub: "Explorați toate caracteristicile premium",
   },
@@ -16179,6 +16467,12 @@ const romanian = {
 };
 
 const dutch = {
+  downloading: {
+    title: "Sunnah- en Tafseer-bestanden downloaden...",
+    subtitle: "Als je een actief abonnement hebt, kun je je aankopen herstellen zodra de download klaar is.",
+    error: "Download mislukt. Controleer je internetverbinding.",
+    retry: "Opnieuw proberen"
+  },
   prayerOffsets: {
     title: "Gebedstijden aanpassen",
     infoText: "Handmatig minuten toevoegen of aftrekken",
@@ -16206,6 +16500,8 @@ const dutch = {
       "Door u te abonneren, begrijpt u en gaat u ermee akkoord dat u betaalt voor een MAANDELIJKS abonnement. U gaat er ook mee akkoord dat de ontwikkelaar het recht behoudt om de app in de toekomst volledig gratis te maken, of de zoeklimieten te wijzigen zonder voorafgaande kennisgeving.",
     legalUseBody:
       "U gaat ermee akkoord de broncode van de app niet te misbruiken, uit te buiten, te reverse-engineeren of te wijzigen om betalingslimieten te omzeilen. Pogingen om het systeem te bedriegen zijn ten strengste verboden.",
+    restoreTitle: "Aankopen herstellen",
+    restoreBody: "Als u een actief abonnement had en van apparaat bent veranderd of de app hebt verwijderd terwijl het abonnement actief was, druk dan op de knop 'Aankopen herstellen' in het bliksempictogram-menu om weer toegang te krijgen.",
     platformDifferencesBody:
       "Houd er rekening mee dat premiumfuncties en beperkingen kunnen variëren tussen Android- en iOS-apparaten. Android-gebruikers krijgen bijvoorbeeld onbeperkt gratis toegang tot algemene en Sunnah-zoekopdrachten, terwijl koranzoekopdrachten exclusief Premium zijn. iOS-gebruikers hebben daarentegen een wereldwijde dagelijkse limiet.",
   },
@@ -16618,6 +16914,10 @@ const dutch = {
     privacyLink: "Privacybeleid",
     overviewTitle: "Premium-functies",
     overviewSubtitle: "Eerlijk overzicht voordat u beslist",
+    noSubTitle: "Geen abonnement gevonden",
+    noSubBody: "We konden geen actief abonnement vinden dat is gekoppeld aan uw account. Als u denkt dat dit een fout is, zorg er dan voor dat u bent ingelogd met hetzelfde App Store-account dat u hebt gebruikt om u te abonneren.",
+    restoreSuccessTitle: "Herstel geslaagd",
+    restoreSuccessBody: "Uw premium-abonnement is succesvol hersteld.",
     getStartedCta: "Begin",
     getStartedSub: "Verken alle premiumfuncties",
   },
@@ -16855,6 +17155,12 @@ const dutch = {
 };
 
 const slovak = {
+  downloading: {
+    title: "Sťahovanie súborov Sunnah a Tafseer...",
+    subtitle: "Ak máte aktívne predplatné, budete môcť obnoviť nákupy po dokončení sťahovania.",
+    error: "Sťahovanie zlyhalo. Skontrolujte prosím svoje internetové pripojenie.",
+    retry: "Skúsiť znova"
+  },
   prayerOffsets: {
     title: "Upravte časy modlitieb",
     infoText: "Ručne pridajte alebo odčítajte minúty",
@@ -16877,12 +17183,14 @@ const slovak = {
     intro: "Tieto Podmienky sa vzťahujú na aplikáciu Tasneem.",
     iapTitle: "Nákupy v aplikácii",
     iapBody:
-      "Aplikácia ponúka automaticky obnoviteľné predplatné. Všetky platby sú spracovávané bezpečne. Predplatné sú plne spravované cez Apple App Store alebo Google Play Console / Store.",
+      "Aplikácia ponúka automaticky obnoviteľné predplatné. Všetky platby sú spracovávané bezpečne. Predplatné sú plne spravované cez Apple App Store aleb Console / Store.",
     importantTitle: "Dôležitá Podmienka",
     importantBody:
       "Predplatením chápete a súhlasíte, že platíte za MESAČNÉ predplatné. Taktiež súhlasíte s tým, že vývojár si vyhradzuje právo v budúcnosti urobiť aplikáciu úplne bezplatnou alebo kedykoľvek zmeniť limity vyhľadávania bez predchádzajúceho upozornenia.",
     legalUseBody:
       "Súhlasíte s tým, že nebudete zneužívať, dekompilovať alebo meniť zdrojový kód na obídenie obmedzení. Pokus o podvádzanie systému je prísne zakázaný a považuje sa za porušenie dôvery.",
+    restoreTitle: "Obnoviť nákupy",
+    restoreBody: "Ak ste mali aktívne predplatné a zmenili ste zariadenie alebo odstránili aplikáciu počas aktívneho predplatného, stlačte tlačidlo 'Obnoviť nákupy' v ponuke s ikonou blesku, aby ste získali prístup späť.",
     platformDifferencesBody:
       "Upozorňujeme, že prémiové funkcie a obmedzenia sa môžu medzi zariadeniami Android a iOS líšiť. Napríklad používatelia Androidu majú neobmedzený bezplatný prístup k všeobecným a Sunnah vyhľadávaniam, zatiaľ čo vyhľadávania v Koráne sú výlučne prémiové. Naopak, používatelia iOS majú denný limit.",
   },
@@ -17294,6 +17602,10 @@ const slovak = {
     privacyLink: "Zásadami ochrany osobných údajov",
     overviewTitle: "Prémiové funkcie",
     overviewSubtitle: "Úprimný prehľad predtým, ako sa rozhodnete",
+    noSubTitle: "Nenašlo sa žiadne predplatné",
+    noSubBody: "Nenašli sme aktívne predplatné spojené s vaším účtom. Ak si myslíte, že je to chyba, uistite sa, že ste prihlásení s rovnakým účtom App Store, ktorý ste použili na prihlásenie sa na odber.",
+    restoreSuccessTitle: "Obnovenie úspešné",
+    restoreSuccessBody: "Vaše prémiové predplatné bolo úspešne obnovené.",
     getStartedCta: "Začať",
     getStartedSub: "Preskúmajte všetky prémiové funkcie",
   },
@@ -17526,6 +17838,12 @@ const slovak = {
 };
 
 const somali = {
+  downloading: {
+    title: "Soo dejinta Hantida Sunnada iyo Tafsiirka...",
+    subtitle: "Haddii aad lahayd is-diiwaangelin firfircoon, waxaad awoodi doontaa inaad soo celiso iibsigaagii marka soo dejintu dhammaato.",
+    error: "Soo dejintu way fashilantay. Fadlan hubi khadkaaga interneedka.",
+    retry: "Iskuday Markale"
+  },
   prayerOffsets: {
     title: "Hagaaji Waqtiyada Salaadda",
     infoText: "Gacanta ku dar ama ka jar daqiiqado",
@@ -17556,6 +17874,8 @@ const somali = {
       "Markaad isdiiwaangeliso, waxaad fahmeysaa oo ogolaatay inaad bixineyso rukumo BILLE ah. Waxaad sidoo kale ogolaatay in horumariyuhu xaq u leeyahay inuu barnaamijka ka dhigo mid bilaash ah mustaqbalka, ama uu beddelo xaddidaadaha raadinta digniin la'aan.",
     legalUseBody:
       "Waxaad ogolaatay in aadan si khaldan u isticmaalin, ka faa'iideysan, dib-u-curin, ama aadan beddelin koodka isha si aad uga gudubto xaddidaadaha lacag bixinta. Isku dayga inaad khiyaanayso nidaamka waa mamnuuc waxaana loo arkaa xad-gudub gaar ah.",
+    restoreTitle: "Soo Celi Iibsiyada",
+    restoreBody: "Haddii aad lahayd is-diiwaangelin firfircoon oo aad beddeshay aaladda ama aad tirtirtay app-ka iyadoo is-diiwaangelintu ay firfircoon tahay, fadlan taabo batoonka 'Soo Celi Iibsiyada' ee ku yaal liiska astaanta hillaaca si aad dib ugu hesho galka.",
     platformDifferencesBody:
       "Fadlan ogow in astaamaha Premium iyo xaddidaadaha ay ku kala duwanaan karaan qalabka Android iyo iOS. Tusaale ahaan, isticmaalayaasha Android waxay helaan marin bilaash ah oo aan xadidnayn ee raadinta guud iyo Sunnada, halka raadinta Quraanka ay yihiin Premium oo keliya. Taa lidkeeda, isticmaalayaasha iOS waxay leeyihiin xaddid maalinle ah.",
   },
@@ -17965,6 +18285,10 @@ const somali = {
     privacyLink: "Siyasadda Qarsoonnimada",
     overviewTitle: "Astaamaha Preemiyumka",
     overviewSubtitle: "Dulmar daacad ah ka hor intaadan go'aan qaadan",
+    noSubTitle: "Ma Jiro Is-diiwaangelin La Helin",
+    noSubBody: "Kama helin is-diiwaangelin firfircoon oo la xidha koontadaada. Haddii aad aaminsan tahay in ay tahay khalad, xaqiiji in aad ku jirto isla koontada App Store ee aad ku is-diiwaangelisay.",
+    restoreSuccessTitle: "Soo Celinta Waxay Guulaysatay",
+    restoreSuccessBody: "Is-diiwaangelintaada premium si guul leh ayaa loo soo celiyay.",
     getStartedCta: "Bilow",
     getStartedSub: "Baadh dhammaan astaamaha preemiyumka",
   },
@@ -18203,6 +18527,12 @@ const somali = {
 };
 
 const swedish = {
+  downloading: {
+    title: "Laddar ner Sunnah- och Tafseer-resurser...",
+    subtitle: "Om du har en aktiv prenumeration kommer du att kunna återställa dina köp när nedladdningen är klar.",
+    error: "Nedladdning misslyckades. Vänligen kontrollera din internetanslutning.",
+    retry: "Försök igen"
+  },
   prayerOffsets: {
     title: "Justera bönetider",
     infoText: "Lägg till eller subtrahera minuter manuellt",
@@ -18232,6 +18562,8 @@ const swedish = {
       "Genom att prenumerera förstår och samtycker du till att du betalar för en MÅNATLIG prenumeration. Du samtycker också till att utvecklaren förbehåller sig rätten att göra appen helt gratis i framtiden eller ändra sökgränserna utan föregående meddelande.",
     legalUseBody:
       "Du samtycker till att inte missbruka, utnyttja, omvandla eller ändra källkoden för att kringgå betalningsgränser. Att försöka fuska systemet är strängt förbjudet och anses vara ett personligt brott.",
+    restoreTitle: "Återställ köp",
+    restoreBody: "Om du hade en aktiv prenumeration och bytte enhet eller tog bort appen medan prenumerationen var aktiv, tryck på knappen 'Återställ köp' i blixtikonmenyn för att återfå åtkomst.",
     platformDifferencesBody:
       "Observera att premiumfunktioner och begränsningar kan variera mellan Android- och iOS-enheter. Till exempel får Android-användare obegränsad gratis tillgång till allmänna och Sunnah-sökningar, medan Koransökningar är exklusivt Premium. Omvänt har iOS-användare en global daglig gräns.",
   },
@@ -18640,6 +18972,10 @@ const swedish = {
     privacyLink: "Integritetspolicyn",
     overviewTitle: "Premiumfunktioner",
     overviewSubtitle: "Ärlig översikt innan du bestämmer dig",
+    noSubTitle: "Inget abonnemang hittades",
+    noSubBody: "Vi kunde inte hitta ett aktivt abonnemang kopplat till ditt konto. Om du tror att detta är ett misstag, se till att du är inloggad med samma App Store-konto som du använde för att prenumerera.",
+    restoreSuccessTitle: "Återställning lyckades",
+    restoreSuccessBody: "Ditt premiumabonnemang har återställts.",
     getStartedCta: "Kom igång",
     getStartedSub: "Utforska alla premiumfunktioner",
   },
@@ -18873,6 +19209,12 @@ const swedish = {
 };
 
 const turkish = {
+  downloading: {
+    title: "Sünnet ve Tefsir Varlıkları İndiriliyor...",
+    subtitle: "Aktif bir aboneliğiniz varsa, indirme tamamlandığında satın alımlarınızı geri yükleyebileceksiniz.",
+    error: "İndirme başarısız oldu. Lütfen internet bağlantınızı kontrol edin.",
+    retry: "Yeniden Dene"
+  },
   prayerOffsets: {
     title: "Namaz Vakitlerini Ayarla",
     infoText: "Dakikaları manuel olarak ekle veya çıkar",
@@ -18897,12 +19239,14 @@ const turkish = {
       "Bu Şartlar, JalalDevs tarafından sağlanan Tasneem uygulaması için geçerlidir.",
     iapTitle: "Uygulama İçi Satın Alımlar",
     iapBody:
-      "Uygulama otomatik yenilenen abonelikler sunar. Tüm ödemeler güvenli bir şekilde işlenir. Abonelikler tamamen Apple App Store veya Google Play Console / Store tarafından yönetilir.",
+      "Uygulama otomatik yenilenen abonelikler sunar. Tüm ödemeler güvenli bir şekilde işlenir. Abonelikler tamamen Apple App Store ve Console / Store tarafından yönetilir.",
     importantTitle: "Önemli Koşul",
     importantBody:
       "Abone olarak AYLIK bir abonelik için ödeme yaptığınızı anlıyor ve kabul ediyorsunuz. Ayrıca geliştiricinin gelecekte uygulamayı tamamen ücretsiz yapma veya önceden haber vermeksizin arama sınırlarını değiştirme hakkını saklı tuttuğunu da kabul ediyorsunuz.",
     legalUseBody:
       "Ödeme duvarlarını aşmak için uygulamanın kaynak kodunu kötüye kullanmamayı, istismar etmemeyi, tersine mühendislik yapmamayı veya değiştirmemeyi kabul ediyorsunuz. Sistemi kandırmaya çalışmak kesinlikle yasaktır ve kişisel bir suç, güven ihlali olarak kabul edilir.",
+    restoreTitle: "Satın Alımları Geri Yükle",
+    restoreBody: "Aktif bir aboneliğiniz varsa ve abonelik aktifken cihaz değiştirdiyseniz veya uygulamayı sildiyseniz, erişimi yeniden kazanmak için lütfen şimşek simgesi menüsünde bulunan 'Satın Alımları Geri Yükle' düğmesine basın.",
     platformDifferencesBody:
       "Premium özelliklerin ve kısıtlamaların Android ve iOS cihazları arasında farklılık gösterebileceğini lütfen unutmayın. Örneğin, Android kullanıcıları genel ve Sünnet aramalarına sınırsız ücretsiz erişim sağlarken, tüm Kuran aramaları tamamen Premium'a özeldir. Aksine, iOS kullanıcılarının günlük küresel bir sınırı vardır.",
   },
@@ -19315,6 +19659,10 @@ const turkish = {
     privacyLink: "Gizlilik Politikası",
     overviewTitle: "Premium Özellikler",
     overviewSubtitle: "Karar vermeden önce dürüst bir bakış",
+    noSubTitle: "Abonelik Bulunamadı",
+    noSubBody: "Hesabınıza bağlı aktif bir abonelik bulamadık. Bunun bir hata olduğunu düşünüyorsanız, abone olmak için kullandığınız App Store hesabıyla giriş yaptığınızdan emin olun.",
+    restoreSuccessTitle: "Geri Yükleme Başarılı",
+    restoreSuccessBody: "Premium aboneliğiniz başarıyla geri yüklendi.",
     getStartedCta: "Başlayın",
     getStartedSub: "Tüm premium özellikleri keşfedin",
   },
@@ -19552,6 +19900,12 @@ const turkish = {
 };
 
 const uzbek = {
+  downloading: {
+    title: "Sunnat va Tafsir resurslari yuklab olinmoqda...",
+    subtitle: "Agar faol obunangiz bo'lsa, yuklab olish tugagandan so'ng xaridlaringizni tiklashingiz mumkin bo'ladi.",
+    error: "Yuklab olish muvaffaqiyatsiz tugadi. Iltimos, internet ulanishingizni tekshiring.",
+    retry: "Qayta urinish"
+  },
   prayerOffsets: {
     title: "Namoz vaqtlarini sozlash",
     infoText: "Daqiqalarni qo'lda qo'shing yoki ayiring",
@@ -19580,6 +19934,8 @@ const uzbek = {
       "Obuna bo'lish orqali siz OYLIK obuna uchun to'layotganingizni tushunasiz va qabul qilasiz. Shuningdek, dasturchi kelajakda ilovani butunlay bepul qilish yoki oldindan ogohlantirmasdan qidiruv cheklovlarini o'zgartirish huquqini o'zida saqlab qolishiga rozi bo'lasiz.",
     legalUseBody:
       "To'lov cheklovlarini chetlab o'tish uchun ilovaning manba kodini suiiste'mol qilmaslikka, o'zgartirmaslikka yoki teskari muhandislik qilmaslikka rozi bo'lasiz. Tizimni aldashga urinish qat'iyan man etiladi.",
+    restoreTitle: "Xaridlarni tiklash",
+    restoreBody: "Agar sizda faol obuna bo'lgan bo'lsa va obuna faol bo'lgan vaqtda qurilmani o'zgartirgan yoki ilovani o'chirib tashlagan bo'lsangiz, kirish huquqini qayta tiklash uchun chaqmoq belgisi menyusidagi 'Xaridlarni tiklash' tugmasini bosing.",
     platformDifferencesBody:
       "Premium xususiyatlar va cheklovlar Android va iOS qurilmalari orasida farq qilishi mumkinligiga e'tibor bering. Masalan, Android foydalanuvchilari umumiy va Sunnat qidiruvlariga cheksiz bepul kirish imkoniga ega, Qur'on qidiruvlari esa faqat Premium uchundir. Aksincha, iOS foydalanuvchilari uchun kundalik cheklov mavjud.",
   },
@@ -19995,6 +20351,10 @@ const uzbek = {
     privacyLink: "Maxfiylik siyosati",
     overviewTitle: "Premium xususiyatlar",
     overviewSubtitle: "Qaror qabul qilishdan oldin halol ko'rish",
+    noSubTitle: "Obuna Topilmadi",
+    noSubBody: "Hisobingizga bog'liq faol obunani topa olmadik. Buning xato ekaniga ishonсangiz, obuna bo'lish uchun foydalangan App Store hisobingiz bilan tizimga kirganingizni tekshiring.",
+    restoreSuccessTitle: "Tiklash Muvaffaqiyatli",
+    restoreSuccessBody: "Sizning premium obunangiz muvaffaqiyatli tiklandi.",
     getStartedCta: "Boshlash",
     getStartedSub: "Barcha premium xususiyatlarni o'rganing",
   },
@@ -20231,6 +20591,12 @@ const uzbek = {
 };
 
 const finnish = {
+  downloading: {
+    title: "Ladataan Sunnah- ja Tafseer-resursseja...",
+    subtitle: "Jos sinulla on aktiivinen tilaus, voit palauttaa ostoksesi latauksen valmistuttua.",
+    error: "Lataus epäonnistui. Tarkista internet-yhteytesi.",
+    retry: "Yritä uudelleen"
+  },
   prayerOffsets: {
     title: "Säädä rukousaikoja",
     infoText: "Lisää tai vähennä minuutteja manuaalisesti",
@@ -20258,6 +20624,8 @@ const finnish = {
       "Tilaamalla ymmärrät ja hyväksyt maksavasi KUUKAUSITTAISESTA tilauksesta. Hyväksyt myös, että kehittäjä pidättää oikeuden tehdä sovelluksesta tulevaisuudessa täysin ilmaisen tai muuttaa hakurajoja ilman ennakkoilmoitusta.",
     legalUseBody:
       "Sitoudut olemaan väärinkäyttämättä, hyödyntämättä, takaisinmallintamatta tai muuttamatta lähdekoodia maksumuurien ohittamiseksi. Järjestelmän huijaaminen on ehdottomasti kielletty ja se katsotaan luottamuksen rikkomiseksi.",
+    restoreTitle: "Palauta ostokset",
+    restoreBody: "Jos sinulla oli aktiivinen tilaus ja vaihdoit laitetta tai poistit sovelluksen tilauksen ollessa voimassa, paina salamakuvakevalikossa olevaa 'Palauta ostokset' -painiketta saadaksesi käyttöoikeuden takaisin.",
     platformDifferencesBody:
       "Huomaa, että premium-ominaisuudet ja rajoitukset voivat vaihdella Android- ja iOS-laitteiden välillä. Esimerkiksi Android-käyttäjät saavat rajoittamattoman ilmaisen pääsyn yleisiin ja Sunnah-hakuihin, kun taas Koraani-haut ovat yksinomaan Premium-ominaisuuksia. Vastaavasti iOS-käyttäjillä on maailmanlaajuinen päivittäinen raja.",
   },
@@ -20666,6 +21034,10 @@ const finnish = {
     privacyLink: "Tietosuojakäytäntö",
     overviewTitle: "Premium-ominaisuudet",
     overviewSubtitle: "Rehellinen katsaus ennen päätöstäsi",
+    noSubTitle: "Tilausta ei löydy",
+    noSubBody: "Emme löytäneet aktiivista tilausta tilisi yhteydessä. Jos uskot tämän olevan virhe, varmista, että olet kirjautunut sisään samalla App Store -tilillä, jota käytit tilaukseen.",
+    restoreSuccessTitle: "Palautus onnistui",
+    restoreSuccessBody: "Premium-tilauksesi on palautettu onnistuneesti.",
     getStartedCta: "Aloita",
     getStartedSub: "Tutustu kaikkiin premium-ominaisuuksiin",
   },
@@ -20900,6 +21272,12 @@ const finnish = {
 };
 
 const tamil = {
+  downloading: {
+    title: "சுன்னா மற்றும் தப்ஸீர் சொத்துகள் பதிவிறக்கப்படுகின்றன...",
+    subtitle: "உங்களுக்கு செயலில் உள்ள சந்தா இருந்தால், பதிவிறக்கம் முடிந்தவுடன் உங்கள் கொள்முதல்களை மீட்டமைக்க முடியும்.",
+    error: "பதிவிறக்கம் தோல்வியடைந்தது. உங்கள் இணைய இணைப்பை சரிபார்க்கவும்.",
+    retry: "மீண்டும் முயற்சிக்கவும்"
+  },
   prayerOffsets: {
     title: "தொழுகை நேரங்களை சரிசெய்யவும்",
     infoText: "கைமுறையாக நிமிடங்களைச் சேர்க்கவும் அல்லது கழிக்கவும்",
@@ -20931,6 +21309,8 @@ const tamil = {
       "சந்தா செலுத்துவதன் மூலம், நீங்கள் ஒரு மாதாந்திர சந்தாவிற்கு பணம் செலுத்துகிறீர்கள் என்பதை புரிந்துகொண்டு ஒப்புக்கொள்கிறீர்கள். எதிர்காலத்தில் செயலியை முற்றிலும் இலவசமாக்குவதற்கு அல்லது முன்னறிவிப்பின்றி தேடல் வரம்புகளை மாற்றுவதற்கு டெவலப்பருக்கு உரிமை உள்ளது என்பதையும் நீங்கள் ஒப்புக்கொள்கிறீர்கள்.",
     legalUseBody:
       "பணம் செலுத்தும் வரம்புகளைத் தவிர்க்க செயலியின் மூலக் குறியீட்டைத் தவறாகப் பயன்படுத்தவோ, சுரண்டவோ, தலைகீழ் பொறியியல் செய்யவோ அல்லது மாற்றவோ கூடாது என்று நீங்கள் ஒப்புக்கொள்கிறீர்கள். ஏமாற்ற முயற்சிப்பது கண்டிப்பாக தடைசெய்யப்பட்டுள்ளது.",
+    restoreTitle: "கொள்முதல்களை மீட்டமை",
+    restoreBody: "உங்களுக்கு செயலில் உள்ள சந்தா இருந்து, சந்தா செயலில் உள்ளபோது சாதனத்தை மாற்றினால் அல்லது பயன்பாட்டை நீக்கினால், அணுகலை மீண்டும் பெற, மின்னல் ஐகான் மெனுவில் உள்ள 'கொள்முதல்களை மீட்டமை' பொத்தானை அழுத்தவும்.",
     platformDifferencesBody:
       "Android மற்றும் iOS சாதனங்களுக்கு இடையே பிரீமியம் அம்சங்கள் மற்றும் வரம்புகள் மாறுபடலாம் என்பதை நினைவில் கொள்க. எடுத்துக்காட்டாக, Android பயனர்கள் பொது மற்றும் சுன்னா தேடல்களுக்கு வரம்பற்ற இலவச அணுகலைப் பெறுகிறார்கள், அதே நேரத்தில் குர்ஆன் தேடல்கள் பிரீமியம் மட்டுமே. மாறாக, iOS பயனர்களுக்கு தினசரி வரம்பு உள்ளது.",
   },
@@ -21347,6 +21727,10 @@ const tamil = {
     privacyLink: "தனியுரிமைக் கொள்கை",
     overviewTitle: "பிரீமியம் அம்சங்கள்",
     overviewSubtitle: "நீங்கள் முடிவு செய்வதற்கு முன் நேர்மையான கண்ணோட்டம்",
+    noSubTitle: "சந்தா எதுவும் கிடைக்கவில்லை",
+    noSubBody: "உங்கள் கணக்குடன் இணைக்கப்பட்ட செயலில் உள்ள சந்தா எதுவும் கிடைக்கவில்லை. இது தவறு என்று நம்பினால், நீங்கள் சந்தா எடுக்க பயன்படுத்திய அதே App Store கணக்கில் உள்நுழைந்திருப்பதை உறுதிசெய்யுங்கள்.",
+    restoreSuccessTitle: "மீட்டமை வெற்றிகரமானது",
+    restoreSuccessBody: "உங்கள் பிரீமியம் சந்தா வெற்றிகரமாக மீட்டமைக்கப்பட்டது.",
     getStartedCta: "தொடங்குங்கள்",
     getStartedSub: "அனைத்து பிரீமியம் அம்சங்களையும் ஆராயுங்கள்",
   },

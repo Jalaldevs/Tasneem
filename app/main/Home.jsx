@@ -160,6 +160,20 @@ const Home = () => {
   const [locationModal, setLocationModal] = useState(false);
   const [showChangeLocation, setShowChangeLocation] = useState(false);
   const [citySearch, setCitySearch] = useState('');
+  const [activeSegment, setActiveSegment] = useState('Home');
+  const [showFirstTimeFlashHint, setShowFirstTimeFlashHint] = useState(false);
+
+  useEffect(() => {
+    const checkFlashHint = async () => {
+      try {
+        const hasSeen = await AsyncStorage.getItem('@has_seen_flash_hint');
+        if (hasSeen !== 'true') {
+          setShowFirstTimeFlashHint(true);
+        }
+      } catch (err) {}
+    };
+    checkFlashHint();
+  }, []);
   const [searchResults, setSearchResults] = useState([]);
   const [searching, setSearching] = useState(false);
   const [showQiblahModal, setShowQiblahModal] = useState(false);
@@ -674,7 +688,14 @@ const Home = () => {
         nextPrayer={nextPrayer}
         currentPrayer={currentPrayer}
         showFlashIcon={true}
-        onFlashPress={() => requirePremium(() => setDailyInsightModalVisible(true))}
+        showFlashHint={showFirstTimeFlashHint}
+        onFlashPress={async () => {
+          if (showFirstTimeFlashHint) {
+            setShowFirstTimeFlashHint(false);
+            await AsyncStorage.setItem('@has_seen_flash_hint', 'true');
+          }
+          requirePremium(() => setDailyInsightModalVisible(true));
+        }}
       />
 
       <ThemedView style={styles.container}>
