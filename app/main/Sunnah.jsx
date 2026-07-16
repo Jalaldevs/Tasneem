@@ -37,9 +37,10 @@ import {
   readOfflineSunnahEdition,
 } from '../utils/offlineContent';
 import { SUNNAH_EDITION_ASSET_MAP } from '../constants/sunnahEditionAssetMap';
+import { useDatabaseDownload, isDatabaseReady } from '../utils/databaseManager';
 
 import useAppTranslation from '../hooks/useAppTranslation';
-import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import { useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { saveBookmark, getBookmarks, removeBookmark } from '../constants/bookmarks';
 import ReferenceModal, { SunnahLanguageSheet } from '../components/ReferenceModal';
 import { RTL_LANGS, LANG_LABELS, APP_LANG_TO_SUNNAH } from '../constants/sunnahTranslations';
@@ -131,6 +132,21 @@ export default function Sunnah() {
   const bookListRef = useRef(null);
   const sectionListRef = useRef(null);
   const lastShownJumpAtRef = useRef(null);
+
+  const queryClient = useQueryClient();
+  const { isDownloading } = useDatabaseDownload();
+  const [dbReady, setDbReady] = useState(false);
+
+  useEffect(() => {
+    const checkDb = async () => {
+      const ready = await isDatabaseReady();
+      setDbReady(ready);
+      if (ready && !isDownloading) {
+        queryClient.invalidateQueries({ queryKey: ['sunnah'] });
+      }
+    };
+    checkDb();
+  }, [isDownloading, queryClient]);
 
   const [fontsLoaded, fontError] = useFonts({
     UthmanicHafs: require('../../assets/fonts/uthmanic_hafs_v22.ttf'),
